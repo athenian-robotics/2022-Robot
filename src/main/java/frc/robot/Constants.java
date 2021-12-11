@@ -6,4 +6,15 @@ package frc.robot;
 
 public final class Constants {
 
+    /** DRIVE MOTOR PORTS **/ //TODO Change these
+    public static final int leftFrontDrivePort = 0;
+    public static final int leftRearDrivePort = 0;
+    public static final int rightFrontDrivePort = 0;
+    public static final int rightRearDrivePort = 0;
+
+    /** MISC IDs **/
+    public static final int driveGearRatio = 0;
+    public static final int wheelDiameter= 0;
+    public static final int xboxControllerPort = 0;
+
 }
