@@ -1,6 +1,5 @@
 package frc.robot.subsystems;
 
-
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -8,6 +7,7 @@ import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SerialPort;
+import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
@@ -48,11 +48,10 @@ public class Drivetrain extends SubsystemBase {
         // Linearize
         double magnitude = Math.max(Math.abs(leftPWM), Math.abs(rightPWM));
         if (magnitude > 1.0) {
-            leftPWM *= 1 / magnitude;
-            rightPWM *= 1 / magnitude;
+            leftPWM /= magnitude;
+            rightPWM /= magnitude;
         }
-
-        setMotorPercentOutput(leftPWM, rightPWM); // Set motor values based off throttle and rotation inputs
+        setMotorPercentOutput(-leftPWM, rightPWM); // Set motor values based off throttle and rotation inputs
     }
 
     /**
@@ -62,7 +61,9 @@ public class Drivetrain extends SubsystemBase {
      */
     public void setMotorPercentOutput(double leftOutput, double rightOutput) {
         driveMotors[0].set(ControlMode.PercentOutput, leftOutput);
+        driveMotors[1].set(ControlMode.PercentOutput, leftOutput);
         driveMotors[2].set(ControlMode.PercentOutput, rightOutput);
+        driveMotors[3].set(ControlMode.PercentOutput, rightOutput);
     }
 
     /**
@@ -72,8 +73,8 @@ public class Drivetrain extends SubsystemBase {
     public void configureDriveMotors(TalonFX[] driveMotors) {
         for (TalonFX motor: driveMotors) {
             motor.configFactoryDefault(); // Initialize motor set up
-            motor.configOpenloopRamp(0.1); // Ramp up (Trapezoid)
-            motor.configClosedloopRamp(0.1); // Ramp down (Trapezoid)
+            motor.configOpenloopRamp(0.2); // Ramp up (Trapezoid)
+            motor.configClosedloopRamp(0.2); // Ramp down (Trapezoid)
             motor.setNeutralMode(NeutralMode.Coast); // Default robot mode should be Coasting
             motor.configForwardSoftLimitEnable(false);
             motor.configReverseSoftLimitEnable(false);
