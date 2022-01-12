@@ -6,15 +6,37 @@ package frc.robot;
 
 public final class Constants {
 
-    /** DRIVE MOTOR PORTS **/
-    public static final int leftFrontDrivePort = 0;
-    public static final int leftRearDrivePort = 1;
-    public static final int rightFrontDrivePort = 3;
-    public static final int rightRearDrivePort = 2;
+    public static final class AutoConstants {
 
-    /** MISC IDs **/
-    public static final int driveGearRatio = 0;
-    public static final int wheelDiameter = 0; //6 Inches
-    public static final int xboxControllerPort = 0;
+    }
 
+    public static final class DriveConstants {
+        /** DRIVE MOTOR PORTS **/
+        public static final int leftFrontDrivePort = 0;
+        public static final int leftRearDrivePort = 1;
+        public static final int rightFrontDrivePort = 3;
+        public static final int rightRearDrivePort = 2;
+
+        /** MISC CONSTANTS **/
+        public static final int driveGearRatio = 0;
+        public static final int wheelDiameter = 0; // 6 in.
+
+    }
+
+    public static final class OIConstants {
+        /** XBOX CONTROLLER PORTS **/
+        public static final int xboxControllerPort = 0;
+        public static final int fightStickPort = 1;
+    }
+
+    public static final class MechanismConstants {
+        public static final int intakeMotorPort = 0;  // CHANGE
+        public static final int shooterMotorPort = 0; // CHANGE
+
+        // Climber motor ports ...
+    }
+
+    public static final class PneumaticConstants {
+        // Pneumatics constants ...
+    }
 }

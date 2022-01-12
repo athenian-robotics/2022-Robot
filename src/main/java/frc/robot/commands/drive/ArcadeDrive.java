@@ -3,13 +3,13 @@ package frc.robot.commands.drive;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.DrivetrainSubsystem;
 
 public class ArcadeDrive extends CommandBase {
-    private final Drivetrain drivetrain;
+    private final DrivetrainSubsystem drivetrain;
     private final XboxController controller;
 
-    public ArcadeDrive(Drivetrain drivetrain, XboxController controller) {
+    public ArcadeDrive(DrivetrainSubsystem drivetrain, XboxController controller) {
         this.drivetrain = drivetrain;
         this.controller = controller;
         addRequirements(drivetrain);

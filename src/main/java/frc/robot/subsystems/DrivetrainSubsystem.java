@@ -7,7 +7,6 @@ import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SerialPort;
-import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
@@ -17,7 +16,7 @@ import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
-public class Drivetrain extends SubsystemBase {
+public class DrivetrainSubsystem extends SubsystemBase {
     ChassisSpeeds chassisSpeeds;
     DifferentialDriveOdometry odometry;
     // Creates kinematics object: track width of 27 inches (track width = distance between two sets of wheels)
@@ -25,13 +24,13 @@ public class Drivetrain extends SubsystemBase {
     private final AHRS gyro = new AHRS(SerialPort.Port.kUSB);
 
     private final TalonFX[] driveMotors = {
-            new TalonFX(Constants.leftFrontDrivePort),
-            new TalonFX(Constants.leftRearDrivePort),
-            new TalonFX(Constants.rightFrontDrivePort),
-            new TalonFX(Constants.rightRearDrivePort)
+            new TalonFX(Constants.DriveConstants.leftFrontDrivePort),
+            new TalonFX(Constants.DriveConstants.leftRearDrivePort),
+            new TalonFX(Constants.DriveConstants.rightFrontDrivePort),
+            new TalonFX(Constants.DriveConstants.rightRearDrivePort)
     };
 
-    public Drivetrain() {
+    public DrivetrainSubsystem() {
         configureDriveMotors(driveMotors); // Initialize motors
         odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading())); // Initialize odometry configuration
     }
@@ -126,7 +125,7 @@ public class Drivetrain extends SubsystemBase {
 
     public double getWheelDistanceMeters(int sensorIndex) {
         return (driveMotors[sensorIndex].getSelectedSensorPosition() / 4096.0)
-                * Constants.driveGearRatio * Math.PI * Units.feetToMeters(Constants.wheelDiameter);
+                * Constants.DriveConstants.driveGearRatio * Math.PI * Units.feetToMeters(Constants.DriveConstants.wheelDiameter);
     }
 
     public Pose2d getRobotPose() {
