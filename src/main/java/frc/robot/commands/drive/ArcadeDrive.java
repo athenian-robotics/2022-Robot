@@ -22,8 +22,8 @@ public class ArcadeDrive extends CommandBase {
 
     @Override
     public void execute() {
-        drivetrain.arcadeDrive(-controller.getY(GenericHID.Hand.kLeft), // Throttle
-                               -controller.getX(GenericHID.Hand.kRight)); // Rotation
+        drivetrain.arcadeDrive(-controller.getLeftY(), // Throttle
+                               -controller.getRightX()); // Rotation
     }
 
     @Override
