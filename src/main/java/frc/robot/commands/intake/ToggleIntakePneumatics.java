@@ -26,6 +26,7 @@ public class ToggleIntakePneumatics extends CommandBase {
 
     @Override
     public boolean isFinished() {
+        System.out.println("Toggling Intake Pneumatics.");
         return true;
     }
 
