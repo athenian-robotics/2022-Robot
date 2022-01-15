@@ -17,6 +17,7 @@ public final class Constants {
         public static final int rightFrontDrivePort = 3;
         public static final int rightRearDrivePort = 2;
 
+
         /** MISC CONSTANTS **/
         public static final int driveGearRatio = 0;
         public static final int wheelDiameter = 0; // 6 in.
@@ -30,13 +31,16 @@ public final class Constants {
     }
 
     public static final class MechanismConstants {
-        public static final int intakeMotorPort = 0;  // CHANGE
+        public static final int IntakeMotorPort = 0;  // CHANGE
         public static final int shooterMotorPort = 0; // CHANGE
 
         // Climber motor ports ...
     }
 
     public static final class PneumaticConstants {
+        public static final int IntakePneumaticPort1 = 0;
+        public static final int IntakePneumaticPort2 = 0;
+
         // Pneumatics constants ...
     }
 }
