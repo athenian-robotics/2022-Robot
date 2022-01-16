@@ -11,8 +11,6 @@ public class StopBelt extends CommandBase {
     public StopBelt(IndexerSubsystem indexerSubsystem, int delay) {
         this.indexerSubsystem = indexerSubsystem;
         this.delay = delay;
-        // each subsystem used by the command must be passed into the
-        // addRequirements() method (which takes a vararg of Subsystem)
         addRequirements(this.indexerSubsystem);
     }
 

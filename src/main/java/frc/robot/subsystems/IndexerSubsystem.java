@@ -5,13 +5,13 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-import static frc.robot.Constants.MechanismConstants.IndexerBeltMotorPort;
-import static frc.robot.Constants.MechanismConstants.IndexerMecanumMotorPort;
+import static frc.robot.Constants.MechanismConstants.indexerBeltMotorPort;
+import static frc.robot.Constants.MechanismConstants.indexerMecanumMotorPort;
 
 public class IndexerSubsystem extends SubsystemBase {
 
-    private final TalonFX indexerMotor = new TalonFX(IndexerMecanumMotorPort);
-    private final TalonFX beltMotor = new TalonFX(IndexerBeltMotorPort);
+    private final TalonFX indexerMotor = new TalonFX(indexerMecanumMotorPort);
+    private final TalonFX beltMotor = new TalonFX(indexerBeltMotorPort);
     public boolean isRunning = false;
 
     public IndexerSubsystem() {

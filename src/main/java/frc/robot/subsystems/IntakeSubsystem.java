@@ -6,14 +6,14 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-import static frc.robot.Constants.MechanismConstants.IntakeMotorPort;
-import static frc.robot.Constants.PneumaticConstants.IntakePneumaticPort1;
-import static frc.robot.Constants.PneumaticConstants.IntakePneumaticPort2;
+import static frc.robot.Constants.MechanismConstants.intakeMotorPort;
+import static frc.robot.Constants.PneumaticConstants.intakePneumaticPortA;
+import static frc.robot.Constants.PneumaticConstants.intakePneumaticPortB;
 
 public class IntakeSubsystem extends SubsystemBase {
-    private final TalonFX intakeMotor = new TalonFX(IntakeMotorPort);
-    private final Solenoid intakePneumatic1 = new Solenoid(PneumaticsModuleType.REVPH,IntakePneumaticPort1);
-    private final Solenoid intakePneumatic2 = new Solenoid(PneumaticsModuleType.REVPH,IntakePneumaticPort2);
+    private final TalonFX intakeMotor = new TalonFX(intakeMotorPort);
+    private final Solenoid intakePneumatic1 = new Solenoid(PneumaticsModuleType.REVPH, intakePneumaticPortA);
+    private final Solenoid intakePneumatic2 = new Solenoid(PneumaticsModuleType.REVPH, intakePneumaticPortB);
     public boolean isRunning = false;
     public boolean isExtended = false;
 

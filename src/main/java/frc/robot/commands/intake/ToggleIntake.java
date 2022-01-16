@@ -14,8 +14,6 @@ public class ToggleIntake extends CommandBase {
     public ToggleIntake(IntakeSubsystem intakeSubsystem, IndexerSubsystem indexerSubsystem) {
         this.intakeSubsystem = intakeSubsystem;
         this.indexerSubsystem = indexerSubsystem;
-        // each subsystem used by the command must be passed into the
-        // addRequirements() method (which takes a vararg of Subsystem)
         addRequirements(this.intakeSubsystem, this.indexerSubsystem);
     }
 

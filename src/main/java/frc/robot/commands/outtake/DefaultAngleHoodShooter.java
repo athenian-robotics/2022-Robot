@@ -4,7 +4,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.OuttakeSubsystem;
 
-import static frc.robot.Constants.MechanismConstants.DefaultHoodAngle;
+import static frc.robot.Constants.MechanismConstants.defaultHoodAngle;
 
 
 public class DefaultAngleHoodShooter extends CommandBase {
@@ -22,12 +22,12 @@ public class DefaultAngleHoodShooter extends CommandBase {
 
     @Override
     public void initialize() {
-        pid.setSetpoint(DefaultHoodAngle);
+        pid.setSetpoint(defaultHoodAngle);
     }
 
     @Override
     public void execute() {
-        double power = pid.calculate(DefaultHoodAngle);
+        double power = pid.calculate(defaultHoodAngle);
         outtakeSubsystem.moveHoodMotor(power);
 
     }

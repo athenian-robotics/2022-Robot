@@ -9,8 +9,6 @@ public class ToggleIntakePneumatics extends CommandBase {
 
     public ToggleIntakePneumatics(IntakeSubsystem intakeSubsystem) {
         this.intakeSubsystem = intakeSubsystem;
-        // each subsystem used by the command must be passed into the
-        // addRequirements() method (which takes a vararg of Subsystem)
         addRequirements(this.intakeSubsystem);
     }
 

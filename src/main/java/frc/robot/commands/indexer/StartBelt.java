@@ -9,8 +9,6 @@ public class StartBelt extends CommandBase {
 
     public StartBelt(IndexerSubsystem indexerSubsystem) {
         this.indexerSubsystem = indexerSubsystem;
-        // each subsystem used by the command must be passed into the
-        // addRequirements() method (which takes a vararg of Subsystem)
         addRequirements(this.indexerSubsystem);
     }
 

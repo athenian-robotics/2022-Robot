@@ -6,18 +6,17 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-import static frc.robot.Constants.EncoderConstants.HoodAngleEncoderPort1;
-import static frc.robot.Constants.EncoderConstants.HoodAngleEncoderPort2;
+import static frc.robot.Constants.EncoderConstants.hoodAngleEncoderPortA;
+import static frc.robot.Constants.EncoderConstants.hoodAngleEncoderPortB;
 import static frc.robot.Constants.MechanismConstants.*;
 
 public class OuttakeSubsystem extends SubsystemBase {
 
-    private final TalonFX shooterMotor1 = new TalonFX(ShooterMotorPort1);
-    private final TalonFX shooterMotor2 = new TalonFX(ShooterMotorPort2);
-    private final TalonFX hoodAngleMotor = new TalonFX(HoodAngleMotorPort);
-    private final TalonFX turretMotor = new TalonFX(TurretMotorPort);
-    private final Encoder hoodEncoder = new Encoder(HoodAngleEncoderPort1, HoodAngleEncoderPort2);
-    private double defaultHoodAngle = 30;
+    private final TalonFX shooterMotor1 = new TalonFX(shooterMotorPortA);
+    private final TalonFX shooterMotor2 = new TalonFX(shooterMotorPortB);
+    private final TalonFX hoodAngleMotor = new TalonFX(hoodAngleMotorPort);
+    private final TalonFX turretMotor = new TalonFX(turretMotorPort);
+    private final Encoder hoodEncoder = new Encoder(hoodAngleEncoderPortA, hoodAngleEncoderPortB);
     private boolean shooterIsRunning = false;
 
     public OuttakeSubsystem() {

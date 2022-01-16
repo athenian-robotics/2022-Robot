@@ -17,11 +17,9 @@ public final class Constants {
         public static final int rightFrontDrivePort = 3;
         public static final int rightRearDrivePort = 2;
 
-
         /** MISC CONSTANTS **/
         public static final int driveGearRatio = 0;
         public static final int wheelDiameter = 0; // 6 in.
-
     }
 
     public static final class OIConstants {
@@ -31,27 +29,27 @@ public final class Constants {
     }
 
     public static final class MechanismConstants {
-        public static final int IntakeMotorPort = 0;  // CHANGE
-        public static final int IndexerMecanumMotorPort = 0;  // CHANGE
-        public static final int IndexerBeltMotorPort = 0;  // CHANGE
-        public static final int TurretMotorPort = 0;  // CHANGE
-        public static final int ShooterMotorPort1 = 0;  // CHANGE
-        public static final int ShooterMotorPort2 = 0;  // CHANGE
-        public static final int HoodAngleMotorPort = 0;  // CHANGE
-        public static final double DefaultHoodAngle = 30; //CHANGE
+        public static final int intakeMotorPort = 0;  // CHANGE
+        public static final int indexerMecanumMotorPort = 0;  // CHANGE
+        public static final int indexerBeltMotorPort = 0;  // CHANGE
+        public static final int turretMotorPort = 0;  // CHANGE
+        public static final int shooterMotorPortA = 0;  // CHANGE
+        public static final int shooterMotorPortB = 0;  // CHANGE
+        public static final int hoodAngleMotorPort = 0;  // CHANGE
+        public static final double defaultHoodAngle = 30; //CHANGE
 
         // Climber motor ports ...
     }
 
     public static final class PneumaticConstants {
-        public static final int IntakePneumaticPort1 = 0;
-        public static final int IntakePneumaticPort2 = 0;
+        public static final int intakePneumaticPortA = 0;
+        public static final int intakePneumaticPortB = 0;
 
         // Pneumatics constants ...
     }
 
     public static final class EncoderConstants {
-        public static final int HoodAngleEncoderPort1 = 0;
-        public static final int HoodAngleEncoderPort2 = 0;
+        public static final int hoodAngleEncoderPortA = 0;
+        public static final int hoodAngleEncoderPortB = 0;
     }
 }
