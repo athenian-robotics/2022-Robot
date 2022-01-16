@@ -33,6 +33,7 @@ public final class Constants {
     public static final class MechanismConstants {
         public static final int IntakeMotorPort = 0;  // CHANGE
         public static final int IndexerMecanumMotorPort = 0;  // CHANGE
+        public static final int IndexerBeltMotorPort = 0;  // CHANGE
         public static final int TurretMotorPort = 0;  // CHANGE
         public static final int ShooterMotorPort1 = 0;  // CHANGE
         public static final int ShooterMotorPort2 = 0;  // CHANGE

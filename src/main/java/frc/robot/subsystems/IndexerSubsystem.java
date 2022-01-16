@@ -5,11 +5,13 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+import static frc.robot.Constants.MechanismConstants.IndexerBeltMotorPort;
 import static frc.robot.Constants.MechanismConstants.IndexerMecanumMotorPort;
 
 public class IndexerSubsystem extends SubsystemBase {
 
     private final TalonFX indexerMotor = new TalonFX(IndexerMecanumMotorPort);
+    private final TalonFX beltMotor = new TalonFX(IndexerBeltMotorPort);
     public boolean isRunning = false;
 
     public IndexerSubsystem() {
@@ -18,12 +20,14 @@ public class IndexerSubsystem extends SubsystemBase {
 
     public void startIndexer() {
         indexerMotor.set(ControlMode.PercentOutput, 0.7);
+        beltMotor.set(ControlMode.PercentOutput, 0.7);
         System.out.println("start indexer");
         isRunning = true;
     }
 
     public void stopIndexer() {
         indexerMotor.set(ControlMode.PercentOutput, 0);
+        beltMotor.set(ControlMode.PercentOutput, 0);
         System.out.println("stop indexer");
         isRunning = false;
     }
@@ -33,6 +37,24 @@ public class IndexerSubsystem extends SubsystemBase {
             stopIndexer();
         } else {
             startIndexer();
+        }
+    }
+
+    public void startBelt() {
+        beltMotor.set(ControlMode.PercentOutput, 0.7);
+        isRunning = true;
+    }
+
+    public void stopBelt() {
+        beltMotor.set(ControlMode.PercentOutput, 0);
+        isRunning = false;
+    }
+
+    public void toggleBelt() {
+        if (isRunning) {
+            stopBelt();
+        } else {
+            startBelt();
         }
     }
 
