@@ -11,6 +11,7 @@ import frc.robot.commands.ExampleCommand;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.drive.ArcadeDrive;
 import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.LimelightSubsystem;
 
 public class RobotContainer {
   public static JoystickButton xboxA;
@@ -26,6 +27,7 @@ public class RobotContainer {
 
   public static XboxController xboxController = new XboxController(Constants.OIConstants.xboxControllerPort);
   public static DrivetrainSubsystem drivetrain = new DrivetrainSubsystem();
+  public static LimelightSubsystem limelight = new LimelightSubsystem("limelight-two");
 
   private final ExampleCommand m_autoCommand = new ExampleCommand();
 
