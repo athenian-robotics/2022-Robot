@@ -14,25 +14,25 @@ public class ArcadeDrive extends CommandBase {
         this.controller = controller;
         addRequirements(drivetrain);
     }
-//
-//    @Override
-//    public void initialize() {
-//
-//    }
-//
-//    @Override
-//    public void execute() {
-//        drivetrain.arcadeDrive(-controller.getLeftY(), // Throttle
-//                               -controller.getRightX()); // Rotation
-//    }
-//
-//    @Override
-//    public boolean isFinished() {
-//        return false;
-//    }
-//
-//    @Override
-//    public void end(boolean interrupted) {
-//
-//    }
+
+    @Override
+    public void initialize() {
+
+    }
+
+    @Override
+    public void execute() {
+        drivetrain.arcadeDrive(-controller.getLeftY(), // Throttle
+                               -controller.getRightX()); // Rotation
+    }
+
+    @Override
+    public boolean isFinished() {
+        return false;
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+
+    }
 }
