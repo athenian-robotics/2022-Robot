@@ -2,7 +2,7 @@ Bruh moment #1
 1/14/22
 
 
-When trying to deploy code to the new roboRIO v2s that we had flashed, we recieved an error in IDE that the flash was bad. The flash was not, in fact, bad, but we were using an outdated version of wpilib/gradleRIO that didn't recognize the new flash file name as a valid flash. After updating to gradleRIO 2022.1.1 and fixing all the problems associated with that update, the flash error no longer appeared.
+When trying to deploy code to the new roboRIO v2s that we had flashed, we received an error in IDE that the flash was bad. The flash was not, in fact, bad, but we were using an outdated version of wpilib/gradleRIO that didn't recognize the new flash file name as a valid flash. After updating to gradleRIO 2022.1.1 and fixing all the problems associated with that update, the flash error no longer appeared.
 
 In build.gradle add:      id “com.github.ben-manes.versions” version “0.41.0"
 
@@ -14,6 +14,8 @@ Verify the path to main in build.gradle follows the path to the Main class start
 Updated ours frc.team852.robot.Main -> frc.robot.Main
 
 If the comm light on the roboRIO lights solid red, deploy code from WPILib VS Code and wait for RIOLog to give you some information. If any exception is thrown while the rio tries to run the main, it will consider the robot code invalid and claim to have no robot code. We verified this by commenting out everything that caused an error.
+
+If you've just flashed by sd card and can't connect to the roboRIO, update team # in roboRIO imager tool
 
 
 
