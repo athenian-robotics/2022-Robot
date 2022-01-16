@@ -20,7 +20,6 @@ public final class Constants {
         /** MISC CONSTANTS **/
         public static final int driveGearRatio = 0;
         public static final int wheelDiameter = 0; // 6 in.
-
     }
 
     public static final class OIConstants {
@@ -31,12 +30,26 @@ public final class Constants {
 
     public static final class MechanismConstants {
         public static final int intakeMotorPort = 0;  // CHANGE
-        public static final int shooterMotorPort = 0; // CHANGE
+        public static final int indexerMecanumMotorPort = 0;  // CHANGE
+        public static final int indexerBeltMotorPort = 0;  // CHANGE
+        public static final int turretMotorPort = 0;  // CHANGE
+        public static final int shooterMotorPortA = 0;  // CHANGE
+        public static final int shooterMotorPortB = 0;  // CHANGE
+        public static final int hoodAngleMotorPort = 0;  // CHANGE
+        public static final double defaultHoodAngle = 30; //CHANGE
 
         // Climber motor ports ...
     }
 
     public static final class PneumaticConstants {
+        public static final int intakePneumaticPortA = 0;
+        public static final int intakePneumaticPortB = 0;
+
         // Pneumatics constants ...
+    }
+
+    public static final class EncoderConstants {
+        public static final int hoodAngleEncoderPortA = 0;
+        public static final int hoodAngleEncoderPortB = 0;
     }
 }
