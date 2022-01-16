@@ -32,8 +32,12 @@ public final class Constants {
 
     public static final class MechanismConstants {
         public static final int IntakeMotorPort = 0;  // CHANGE
-        public static final int shooterMotorPort = 0; // CHANGE
         public static final int IndexerMecanumMotorPort = 0;  // CHANGE
+        public static final int TurretMotorPort = 0;  // CHANGE
+        public static final int ShooterMotorPort1 = 0;  // CHANGE
+        public static final int ShooterMotorPort2 = 0;  // CHANGE
+        public static final int HoodAngleMotorPort = 0;  // CHANGE
+        public static final double DefaultHoodAngle = 30; //CHANGE
 
         // Climber motor ports ...
     }
@@ -43,5 +47,10 @@ public final class Constants {
         public static final int IntakePneumaticPort2 = 0;
 
         // Pneumatics constants ...
+    }
+
+    public static final class EncoderConstants {
+        public static final int HoodAngleEncoderPort1 = 0;
+        public static final int HoodAngleEncoderPort2 = 0;
     }
 }
