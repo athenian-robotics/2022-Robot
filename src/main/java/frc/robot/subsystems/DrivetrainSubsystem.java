@@ -13,6 +13,7 @@ import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.SerialPort;
+import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -21,7 +22,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     DifferentialDriveOdometry odometry;
     // Creates kinematics object: track width of 27 inches (track width = distance between two sets of wheels)
     DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(Units.inchesToMeters(27));
-    private final AHRS gyro = new AHRS(SerialPort.Port.kUSB);
+    private final AHRS gyro = new AHRS(SerialPort.Port.kOnboard);
 
     private final TalonFX[] driveMotors = {
             new TalonFX(Constants.DriveConstants.leftFrontDrivePort),
@@ -94,7 +95,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
         resetEncoderCounts();
     }
 
-    public int getEncoderCount(int sensorIndex) {
+    public double getEncoderCount(int sensorIndex) {
         return driveMotors[sensorIndex].getSelectedSensorPosition();
     }
 
