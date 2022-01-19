@@ -20,6 +20,9 @@ public final class Constants {
         /** MISC CONSTANTS **/
         public static final int driveGearRatio = 0;
         public static final int wheelDiameter = 0; // 6 in.
+        public static final double minDriveSpeed = 0.1;
+        public static final double maxDriveSpeed = 0.7;
+
     }
 
     public static final class OIConstants {

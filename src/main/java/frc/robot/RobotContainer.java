@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.ExampleCommand;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.drive.ArcadeDrive;
+import frc.robot.commands.drive.TankDrive;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
 
@@ -35,7 +36,7 @@ public class RobotContainer {
     xboxButtonSetup();
     configureButtonBindings();
 
-    drivetrain.setDefaultCommand(new ArcadeDrive(drivetrain, xboxController));
+    drivetrain.setDefaultCommand(new ArcadeDrive(drivetrain, xboxController)); // Check for Arcade or Tank
   }
 
   private void configureButtonBindings() {

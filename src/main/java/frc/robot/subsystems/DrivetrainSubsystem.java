@@ -13,16 +13,18 @@ import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.SerialPort;
-import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+
+import static frc.robot.Constants.DriveConstants.maxDriveSpeed;
+import static frc.robot.Constants.DriveConstants.minDriveSpeed;
 
 public class DrivetrainSubsystem extends SubsystemBase {
     ChassisSpeeds chassisSpeeds;
     DifferentialDriveOdometry odometry;
     // Creates kinematics object: track width of 27 inches (track width = distance between two sets of wheels)
     DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(Units.inchesToMeters(27));
-    private final AHRS gyro = new AHRS(SerialPort.Port.kOnboard);
+    private final AHRS gyro = new AHRS(SerialPort.Port.kMXP);
 
     private final TalonFX[] driveMotors = {
             new TalonFX(Constants.DriveConstants.leftFrontDrivePort),
@@ -52,6 +54,21 @@ public class DrivetrainSubsystem extends SubsystemBase {
             rightPWM /= magnitude;
         }
         setMotorPercentOutput(-leftPWM, rightPWM); // Set motor values based off throttle and rotation inputs
+    }
+
+    /**
+     * Utilize both joystick values to tank drive a west-coast drivetrain
+     * @param leftVelocity Speed of the chassis' left side
+     * @param rightVelocity Speed of the chassis' right side
+     */
+    public void tankDrive(double leftVelocity, double rightVelocity) {
+        int leftSign = leftVelocity >= 0 ? 1 : -1; // Checks leftSpeed and gathers whether it is negative or positive
+        int rightSign = rightVelocity >= 0 ? 1 : -1; // Checks rightSpeed and gathers whether it is negative or positive
+
+        double leftPower = ((maxDriveSpeed - minDriveSpeed) * Math.abs(leftVelocity) + minDriveSpeed) * leftSign;
+        double rightPower = ((maxDriveSpeed - minDriveSpeed) * Math.abs(rightVelocity) + minDriveSpeed) * rightSign;
+
+        setMotorPercentOutput(-leftVelocity, rightVelocity);
     }
 
     /**
