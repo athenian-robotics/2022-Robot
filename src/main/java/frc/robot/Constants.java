@@ -12,10 +12,10 @@ public final class Constants {
 
     public static final class DriveConstants {
         /** DRIVE MOTOR PORTS **/
-        public static final int leftFrontDrivePort = 0;
+        public static final int leftFrontDrivePort = 2;
         public static final int leftRearDrivePort = 1;
         public static final int rightFrontDrivePort = 3;
-        public static final int rightRearDrivePort = 2;
+        public static final int rightRearDrivePort = 0;
 
         /** MISC CONSTANTS **/
         public static final int driveGearRatio = 0;

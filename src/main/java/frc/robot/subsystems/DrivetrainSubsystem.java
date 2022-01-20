@@ -12,7 +12,8 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.SerialPort;
+import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -25,6 +26,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
     // Creates kinematics object: track width of 27 inches (track width = distance between two sets of wheels)
     DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(Units.inchesToMeters(27));
     private final AHRS gyro = new AHRS(SerialPort.Port.kMXP);
+    private final Encoder rightEncoder;
+    private final Encoder leftEncoder;
+    //private final DoubleSolenoid solenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 2, 3);
 
     private final TalonFX[] driveMotors = {
             new TalonFX(Constants.DriveConstants.leftFrontDrivePort),
@@ -35,7 +39,13 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     public DrivetrainSubsystem() {
         configureDriveMotors(driveMotors); // Initialize motors
-        odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading())); // Initialize odometry configuration
+        //odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading())); // Initialize odometry configuration
+
+        rightEncoder = new Encoder(0, 1, false, Encoder.EncodingType.k2X);
+        leftEncoder = new Encoder(2, 3, false, Encoder.EncodingType.k2X);
+
+        //leftEncoder.setDistancePerPulse(6.0 * (5/9) * Math.PI / 2048); // 6 inch wheel, to meters, 2048 ticks //0.0254
+        //rightEncoder.setDistancePerPulse(6.0 * (5/9) * Math.PI / 2048); // 6 inch wheel, to meters, 2048 ticks
     }
 
     /**
@@ -95,9 +105,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
             motor.setNeutralMode(NeutralMode.Coast); // Default robot mode should be Coasting
             motor.configForwardSoftLimitEnable(false);
             motor.configReverseSoftLimitEnable(false);
-
-            motor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 30, 0, 0));
-            motor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
         }
     }
 
@@ -107,57 +114,50 @@ public class DrivetrainSubsystem extends SubsystemBase {
      * @param rot Robot's rotation as a Rotation2d object
      */
     public void resetOdometry(Pose2d pose, Rotation2d rot) {
-        setGyroOffset(rot.getDegrees());
+        //setGyroOffset(rot.getDegrees());
         odometry.resetPosition(pose, rot);
-        resetEncoderCounts();
+        // resetEncoderCounts();
     }
 
-    public double getEncoderCount(int sensorIndex) {
-        return driveMotors[sensorIndex].getSelectedSensorPosition();
+    public int getLeftEncoderCount() { return this.leftEncoder.get(); } // Returns left encoder raw count
+
+    public int getRightEncoderCount() { return this.rightEncoder.get(); } // Returns right encoder raw count
+
+    public void resetEncoderCounts() { // Resets the encoders
+        this.leftEncoder.reset();
+        this.rightEncoder.reset();
     }
+
+    public double getRightDistanceDriven() { return rightEncoder.getDistance(); } // Returns the distance the right side has driven
+
+    public double getLeftDistanceDriven() { return leftEncoder.getDistance(); } // Returns the distance the left side has driven
 
     public double getGyroAngle() {
-        return gyro.getAngle();
-    }
-
-    public double getHeading() {
-        return Math.IEEEremainder(-gyro.getAngle(), 360);
+        return gyro.getAngle(); // Returns gyro angle
     }
 
     public void resetGyroAngle() {
-        gyro.zeroYaw();
+        gyro.zeroYaw(); // Zero Gyro's angle
     }
 
     public void setGyroOffset(double angle) { // Units: Degrees
-        gyro.setAngleAdjustment(angle);
+        gyro.setAngleAdjustment(angle); // Sets the gyro's offset
     }
 
-    public double getMotorInputCurrent(int motorIndex) {
-        return driveMotors[motorIndex].getSupplyCurrent();
-    }
-
-    public void resetEncoderCounts() {
-        driveMotors[0].setSelectedSensorPosition(0);
-        driveMotors[2].setSelectedSensorPosition(0);
-    }
-
-    public double getWheelDistanceMeters(int sensorIndex) {
-        return (driveMotors[sensorIndex].getSelectedSensorPosition() / 4096.0)
-                * Constants.DriveConstants.driveGearRatio * Math.PI * Units.feetToMeters(Constants.DriveConstants.wheelDiameter);
-    }
-
-    public Pose2d getRobotPose() {
-        return odometry.getPoseMeters();
-    }
-
-    public DifferentialDriveKinematics getDrivetrainKinematics() {
-        return kinematics;
+    public double getHeading() {
+        return Math.IEEEremainder(-gyro.getAngle(), 360); // Gets the gyro's heading, scaled within 360 degrees
     }
 
     @Override
     public void periodic() {
         // Consistently update the robot's odometry as it moves throughout the field
-        odometry.update(Rotation2d.fromDegrees(getHeading()), getWheelDistanceMeters(0), getWheelDistanceMeters(2));
+
+        SmartDashboard.putNumber("Gyro Angle: ", gyro.getAngle());
+        SmartDashboard.putNumber("Gyro Yaw: ", gyro.getYaw());
+        SmartDashboard.putNumber("Raw Left Enc: ", getLeftEncoderCount());
+        SmartDashboard.putNumber("Raw Right Enc: ", getRightEncoderCount());
+        SmartDashboard.putNumber("Left Dist: ", getLeftDistanceDriven());
+        SmartDashboard.putNumber("Right Dist: ", getRightDistanceDriven());
     }
 }
 
