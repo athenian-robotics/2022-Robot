@@ -1,9 +1,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -26,9 +24,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
     // Creates kinematics object: track width of 27 inches (track width = distance between two sets of wheels)
     DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(Units.inchesToMeters(27));
     private final AHRS gyro = new AHRS(SerialPort.Port.kMXP);
-    private final Encoder rightEncoder;
-    private final Encoder leftEncoder;
-    //private final DoubleSolenoid solenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 2, 3);
+    public final Encoder rightEncoder;
+    public final Encoder leftEncoder;
+    private final DoubleSolenoid solenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 2, 3);
 
     private final TalonFX[] driveMotors = {
             new TalonFX(Constants.DriveConstants.leftFrontDrivePort),
@@ -41,11 +39,13 @@ public class DrivetrainSubsystem extends SubsystemBase {
         configureDriveMotors(driveMotors); // Initialize motors
         //odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading())); // Initialize odometry configuration
 
-        rightEncoder = new Encoder(0, 1, false, Encoder.EncodingType.k2X);
+        rightEncoder = new Encoder(0, 1, true, Encoder.EncodingType.k2X);
         leftEncoder = new Encoder(2, 3, false, Encoder.EncodingType.k2X);
 
-        //leftEncoder.setDistancePerPulse(6.0 * (5/9) * Math.PI / 2048); // 6 inch wheel, to meters, 2048 ticks //0.0254
-        //rightEncoder.setDistancePerPulse(6.0 * (5/9) * Math.PI / 2048); // 6 inch wheel, to meters, 2048 ticks
+        leftEncoder.setDistancePerPulse(6.0 * 0.0254 * Math.PI / 1264); // 6 inch wheel, to meters, 2048 ticks //0.0254
+        rightEncoder.setDistancePerPulse(6.0 * 0.0254 * Math.PI / 1264); // 6 inch wheel, to meters, 2048 ticks
+
+        //solenoid.set(DoubleSolenoid.Value.kReverse);
     }
 
     /**
@@ -57,12 +57,16 @@ public class DrivetrainSubsystem extends SubsystemBase {
         double leftPWM = throttle + rot;
         double rightPWM = throttle - rot;
 
-        // Linearize
-        double magnitude = Math.max(Math.abs(leftPWM), Math.abs(rightPWM));
-        if (magnitude > 1.0) {
-            leftPWM /= magnitude;
-            rightPWM /= magnitude;
-        }
+        int leftSign = leftPWM >= 0 ? 1 : -1; // Checks leftSpeed and gathers whether it is negative or positive
+        int rightSign = rightPWM >= 0 ? 1 : -1; // Checks rightSpeed and gathers whether it is negative or positive
+
+        // Deadband
+        leftPWM = Math.abs(leftPWM) > maxDriveSpeed ? maxDriveSpeed * leftSign : leftPWM;
+        rightPWM = Math.abs(rightPWM) > maxDriveSpeed ? maxDriveSpeed * rightSign : rightPWM;
+
+        leftPWM = Math.abs(leftPWM) < minDriveSpeed ? 0 : leftPWM;
+        rightPWM = Math.abs(rightPWM) < minDriveSpeed ? 0 : rightPWM;
+
         setMotorPercentOutput(-leftPWM, rightPWM); // Set motor values based off throttle and rotation inputs
     }
 
@@ -75,8 +79,12 @@ public class DrivetrainSubsystem extends SubsystemBase {
         int leftSign = leftVelocity >= 0 ? 1 : -1; // Checks leftSpeed and gathers whether it is negative or positive
         int rightSign = rightVelocity >= 0 ? 1 : -1; // Checks rightSpeed and gathers whether it is negative or positive
 
-        double leftPower = ((maxDriveSpeed - minDriveSpeed) * Math.abs(leftVelocity) + minDriveSpeed) * leftSign;
-        double rightPower = ((maxDriveSpeed - minDriveSpeed) * Math.abs(rightVelocity) + minDriveSpeed) * rightSign;
+        // Deadband
+        leftVelocity = Math.abs(leftVelocity) > maxDriveSpeed ? maxDriveSpeed * leftSign : leftVelocity;
+        rightVelocity = Math.abs(rightVelocity) > maxDriveSpeed ? maxDriveSpeed * rightSign : rightVelocity;
+
+        leftVelocity = Math.abs(leftVelocity) < minDriveSpeed ? 0 : leftVelocity;
+        rightVelocity = Math.abs(rightVelocity) < minDriveSpeed ? 0 : rightVelocity;
 
         setMotorPercentOutput(-leftVelocity, rightVelocity);
     }
@@ -100,9 +108,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
     public void configureDriveMotors(TalonFX[] driveMotors) {
         for (TalonFX motor: driveMotors) {
             motor.configFactoryDefault(); // Initialize motor set up
-            motor.configOpenloopRamp(0.2); // Ramp up (Trapezoid)
-            motor.configClosedloopRamp(0.2); // Ramp down (Trapezoid)
-            motor.setNeutralMode(NeutralMode.Coast); // Default robot mode should be Coasting
+            motor.configOpenloopRamp(0.3); // Ramp up (Trapezoid)
+            motor.configClosedloopRamp(0.3); // Ramp down (Trapezoid)
+            motor.setNeutralMode(NeutralMode.Brake); // Default robot mode should be Coasting
             motor.configForwardSoftLimitEnable(false);
             motor.configReverseSoftLimitEnable(false);
         }
@@ -144,9 +152,11 @@ public class DrivetrainSubsystem extends SubsystemBase {
         gyro.setAngleAdjustment(angle); // Sets the gyro's offset
     }
 
-    public double getHeading() {
-        return Math.IEEEremainder(-gyro.getAngle(), 360); // Gets the gyro's heading, scaled within 360 degrees
-    }
+    public double getHeading() { return Math.IEEEremainder(-gyro.getAngle(), 360); } // Gets the gyro's heading, scaled within 360 degrees
+
+    public void toggleShifter() { solenoid.toggle(); }
+
+
 
     @Override
     public void periodic() {
