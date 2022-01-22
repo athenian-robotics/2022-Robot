@@ -23,6 +23,8 @@ import frc.robot.Constants;
 
 import static frc.robot.Constants.DriveConstants.maxDriveSpeed;
 import static frc.robot.Constants.DriveConstants.minDriveSpeed;
+import static frc.robot.Constants.PneumaticConstants.shifterSolenoidPortA;
+import static frc.robot.Constants.PneumaticConstants.shifterSolenoidPortB;
 
 public class DrivetrainSubsystem extends SubsystemBase {
     ChassisSpeeds chassisSpeeds;
@@ -31,32 +33,30 @@ public class DrivetrainSubsystem extends SubsystemBase {
     private final AHRS gyro = new AHRS(SerialPort.Port.kMXP);
     public final Encoder rightEncoder;
     public final Encoder leftEncoder;
-    private final DoubleSolenoid solenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 2, 3);
+    private final DoubleSolenoid driveShifter = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, shifterSolenoidPortA, shifterSolenoidPortB);
 
-    private final MotorControllerGroup leftMotors = new MotorControllerGroup(
-            new WPI_TalonFX(Constants.DriveConstants.leftFrontDrivePort),
-            new WPI_TalonFX(Constants.DriveConstants.leftRearDrivePort));
-    private final MotorControllerGroup rightMotors = new MotorControllerGroup(
-            new WPI_TalonFX(Constants.DriveConstants.rightFrontDrivePort),
-            new WPI_TalonFX(Constants.DriveConstants.rightRearDrivePort));
+    private final MotorControllerGroup leftMotors;
+    private final MotorControllerGroup rightMotors;
     private final DifferentialDrive drive;
 
     public DrivetrainSubsystem() {
         WPI_TalonFX[] driveMotors = {
-                new WPI_TalonFX(Constants.DriveConstants.leftFrontDrivePort),
+                new WPI_TalonFX(Constants.DriveConstants.rightRearDrivePort),
+                new WPI_TalonFX(Constants.DriveConstants.rightFrontDrivePort),
                 new WPI_TalonFX(Constants.DriveConstants.leftRearDrivePort),
-
+                new WPI_TalonFX(Constants.DriveConstants.leftFrontDrivePort)
         };
         configureDriveMotors(driveMotors); // Initialize motors
-        //odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading())); // Initialize odometry configuration
-        drive = new DifferentialDrive(leftMotors, rightMotors); // Initialize drivetrain
+        leftMotors = new MotorControllerGroup(driveMotors[0], driveMotors[1]);
+        rightMotors = new MotorControllerGroup(driveMotors[2], driveMotors[3]);
+        drive = new DifferentialDrive(leftMotors, rightMotors); // Initialize Differential Drive
+
         rightEncoder = new Encoder(0, 1, true, Encoder.EncodingType.k2X);
         leftEncoder = new Encoder(2, 3, false, Encoder.EncodingType.k2X);
+        leftEncoder.setDistancePerPulse(6.0 * 0.0254 * Math.PI / 2048 * 4/3); // 6 inch wheel, to meters, 2048 ticks //0.0254
+        rightEncoder.setDistancePerPulse(6.0 * 0.0254 * Math.PI / 2048 * 4/3);// 6 inch wheel, to meters, 2048 ticks
 
-        leftEncoder.setDistancePerPulse(6.0 * 0.0254 * Math.PI / 1264); // 6 inch wheel, to meters, 2048 ticks //0.0254
-        rightEncoder.setDistancePerPulse(6.0 * 0.0254 * Math.PI / 1264); // 6 inch wheel, to meters, 2048 ticks
-
-        //solenoid.set(DoubleSolenoid.Value.kReverse);
+        driveShifter.set(DoubleSolenoid.Value.kReverse);
     }
 
     /**
@@ -65,21 +65,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
      * @param rot Velocity of rotation
      */
     public void arcadeDrive(double throttle, double rot) {
-        double leftPWM = throttle + rot;
-        double rightPWM = throttle - rot;
-
-        int leftSign = leftPWM >= 0 ? 1 : -1; // Checks leftSpeed and gathers whether it is negative or positive
-        int rightSign = rightPWM >= 0 ? 1 : -1; // Checks rightSpeed and gathers whether it is negative or positive
-
-        // Deadband
-
-        leftPWM = Math.abs(leftPWM) > maxDriveSpeed ? maxDriveSpeed * leftSign : leftPWM;
-        rightPWM = Math.abs(rightPWM) > maxDriveSpeed ? maxDriveSpeed * rightSign : rightPWM;
-
-        leftPWM = Math.abs(leftPWM) < minDriveSpeed ? 0 : leftPWM;
-        rightPWM = Math.abs(rightPWM) < minDriveSpeed ? 0 : rightPWM;
-
-        setMotorPercentOutput(-leftPWM, rightPWM); // Set motor values based off throttle and rotation inputs
+        drive.arcadeDrive(throttle * maxDriveSpeed, maxDriveSpeed < 0 ? rot * maxDriveSpeed : -rot * maxDriveSpeed);
     }
 
     /**
@@ -91,14 +77,19 @@ public class DrivetrainSubsystem extends SubsystemBase {
         int leftSign = leftVelocity >= 0 ? 1 : -1; // Checks leftSpeed and gathers whether it is negative or positive
         int rightSign = rightVelocity >= 0 ? 1 : -1; // Checks rightSpeed and gathers whether it is negative or positive
 
-        // Deadband
-        leftVelocity = Math.abs(leftVelocity) > maxDriveSpeed ? maxDriveSpeed * leftSign : leftVelocity;
-        rightVelocity = Math.abs(rightVelocity) > maxDriveSpeed ? maxDriveSpeed * rightSign : rightVelocity;
+        double leftPower = ((maxDriveSpeed - minDriveSpeed) * Math.abs(leftVelocity) + minDriveSpeed) * leftSign;
+        double rightPower = ((maxDriveSpeed - minDriveSpeed) * Math.abs(rightVelocity) + minDriveSpeed) * rightSign;
 
-        leftVelocity = Math.abs(leftVelocity) < minDriveSpeed ? 0 : leftVelocity;
-        rightVelocity = Math.abs(rightVelocity) < minDriveSpeed ? 0 : rightVelocity;
+        drive.tankDrive(leftVelocity, rightVelocity);
+    }
 
-        setMotorPercentOutput(-leftVelocity, rightVelocity);
+    /**
+     * Tank drive without deadband, giving full control of velocities to PID controller
+     * @param leftVelocity Velocity of the left wheels
+     * @param rightVelocity Velocity of the right wheels
+     */
+    public void autoTankDrive(double leftVelocity, double rightVelocity) {
+        setMotorPercentOutput(leftVelocity, rightVelocity);
     }
 
     public void tankDriveVolts(double leftVolts, double rightVolts) {
@@ -161,11 +152,11 @@ public class DrivetrainSubsystem extends SubsystemBase {
     public double getLeftDistanceDriven() { return leftEncoder.getDistance(); } // Returns the distance the left side has driven
 
     public double getGyroAngle() {
-        return gyro.getAngle(); // Returns gyro angle
+        return gyro.getAngle() % 360; // Returns gyro angle
     }
 
-    public void resetGyroAngle() {
-        gyro.zeroYaw(); // Zero Gyro's angle
+    public void resetGyro() {
+        gyro.reset(); // Zero Gyro's angle
     }
 
     public void setGyroOffset(double angle) { // Units: Degrees
@@ -173,8 +164,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
     }
 
     public double getHeading() { return Math.IEEEremainder(-gyro.getAngle(), 360); } // Gets the gyro's heading, scaled within 360 degrees
-
-    public void toggleShifter() { solenoid.toggle(); }
 
     public void resetOdometry(Pose2d pose) {
         resetEncoders();
@@ -186,13 +175,14 @@ public class DrivetrainSubsystem extends SubsystemBase {
         rightEncoder.reset();
     }
 
+    public void toggleShifter() { driveShifter.toggle(); }
 
     @Override
     public void periodic() {
         // Consistently update the robot's odometry as it moves throughout the field
 
-        SmartDashboard.putNumber("Gyro Angle: ", gyro.getAngle());
-        SmartDashboard.putNumber("Gyro Yaw: ", gyro.getYaw());
+        SmartDashboard.putNumber("Gyro Angle: ", getGyroAngle());
+        SmartDashboard.putNumber("Gyro Heading: ", getHeading());
         SmartDashboard.putNumber("Raw Left Enc: ", getLeftEncoderCount());
         SmartDashboard.putNumber("Raw Right Enc: ", getRightEncoderCount());
         SmartDashboard.putNumber("Left Dist: ", getLeftDistanceDriven());

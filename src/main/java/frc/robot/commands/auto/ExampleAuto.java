@@ -1,20 +1,20 @@
-package frc.robot.commands.drive;
+package frc.robot.commands.auto;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DrivetrainSubsystem;
 
 
-public class ToggleShifter extends CommandBase {
+public class ExampleAuto extends CommandBase {
     private final DrivetrainSubsystem drivetrainSubsystem;
 
-    public ToggleShifter(DrivetrainSubsystem drivetrainSubsystem) {
+    public ExampleAuto(DrivetrainSubsystem drivetrainSubsystem) {
         this.drivetrainSubsystem = drivetrainSubsystem;
         addRequirements(this.drivetrainSubsystem);
     }
 
     @Override
     public void initialize() {
-        drivetrainSubsystem.toggleShifter();
+
     }
 
     @Override
@@ -24,7 +24,8 @@ public class ToggleShifter extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return true;
+        // TODO: Make this return true when this Command no longer needs to run execute()
+        return false;
     }
 
     @Override

@@ -23,8 +23,9 @@ public final class Constants {
         public static final double trackWidth = Units.inchesToMeters(27);
         public static final int driveGearRatio = 0;
         public static final int wheelDiameter = 0; // 6 in.
-        public static final double minDriveSpeed = 0.2;
+        public static final double minDriveSpeed = 0.1;
         public static final double maxDriveSpeed = 0.85;
+        public static final double maxAutoSpeed = 0.55;
 
     }
 
@@ -48,8 +49,12 @@ public final class Constants {
     }
 
     public static final class PneumaticConstants {
-        public static final int intakePneumaticPortA = 0;
-        public static final int intakePneumaticPortB = 0;
+        public static final int shifterSolenoidPortA = 0; //3A
+        public static final int shifterSolenoidPortB = 2; //3B
+        public static final int intakePneumaticPortA = 1; //2A
+        public static final int intakePneumaticPortB = 4; //2B
+        public static final int pneumaticPortOneA = 7; //1A
+        public static final int pneumaticPortOneB = 3; // 1B
 
         // Pneumatics constants ...
     }

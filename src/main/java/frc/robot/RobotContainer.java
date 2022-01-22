@@ -9,11 +9,11 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.ExampleCommand;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.commands.auto.AutoForwardDistance;
+import frc.robot.commands.auto.lib.AutoForwardDistance;
 import frc.robot.commands.drive.ArcadeDrive;
-import frc.robot.commands.drive.TankDrive;
 import frc.robot.commands.drive.ToggleShifter;
 import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
 
 public class RobotContainer {
@@ -30,6 +30,7 @@ public class RobotContainer {
 
   public static XboxController xboxController = new XboxController(Constants.OIConstants.xboxControllerPort);
   public static DrivetrainSubsystem drivetrain = new DrivetrainSubsystem();
+  public static IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
   public static LimelightSubsystem limelight = new LimelightSubsystem("limelight-two");
 
   private final ExampleCommand m_autoCommand = new ExampleCommand();
@@ -42,8 +43,10 @@ public class RobotContainer {
   }
 
   private void configureButtonBindings() {
-    xboxA.whenPressed(new AutoForwardDistance(drivetrain, 3));
-    //xboxA.whenPressed(new ToggleShifter(drivetrain));
+    xboxA.whenPressed(new AutoForwardDistance(drivetrain, -1));
+    xboxB.whenPressed(new AutoForwardDistance(drivetrain, 1));
+    xboxY.whenPressed(new AutoForwardDistance(drivetrain, 2));
+    //xboxX.whenPressed(new ToggleShifter(drivetrain));
   }
 
   private void xboxButtonSetup() {

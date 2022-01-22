@@ -2,22 +2,24 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import static frc.robot.Constants.MechanismConstants.intakeMotorPort;
-import static frc.robot.Constants.PneumaticConstants.intakePneumaticPortA;
-import static frc.robot.Constants.PneumaticConstants.intakePneumaticPortB;
+import static frc.robot.Constants.PneumaticConstants.*;
 
 public class IntakeSubsystem extends SubsystemBase {
     private final TalonFX intakeMotor = new TalonFX(intakeMotorPort);
-    private final Solenoid intakePneumatic1 = new Solenoid(PneumaticsModuleType.REVPH, intakePneumaticPortA);
-    private final Solenoid intakePneumatic2 = new Solenoid(PneumaticsModuleType.REVPH, intakePneumaticPortB);
+    private final DoubleSolenoid intakePneumatic = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, intakePneumaticPortA, intakePneumaticPortB);
+    private final DoubleSolenoid testPneumatic = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, pneumaticPortOneA, pneumaticPortOneB);
     public boolean isRunning = false;
     public boolean isExtended = false;
 
     public IntakeSubsystem() {
+        intakePneumatic.close();
+        testPneumatic.close();
     }
 
     public void startIntake() {
@@ -44,28 +46,8 @@ public class IntakeSubsystem extends SubsystemBase {
         }
     }
 
-    //push out intake over bumper
-    public void extendIntakePneumatic(){
-        intakePneumatic1.set(true);
-        intakePneumatic2.set(true);
-        isExtended=true;
-    }
-
-    //retract intake over bumper
-    public void retractIntakePneumatic(){
-        intakePneumatic1.set(false);
-        intakePneumatic2.set(false);
-        isExtended=false;
-    }
-
-
     public void togglePneumatic(){
-        if(isExtended){
-            retractIntakePneumatic();
-        }
-        else{
-            extendIntakePneumatic();
-        }
+        intakePneumatic.toggle();
     }
 
     @Override
