@@ -7,6 +7,10 @@ package frc.robot;
 import edu.wpi.first.math.util.Units;
 
 public final class Constants {
+    
+    public static final class AutoConstants {
+
+    }
 
     public static final class DriveConstants {
         /** DRIVE MOTOR PORTS **/
