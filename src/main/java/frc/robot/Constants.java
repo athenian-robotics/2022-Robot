@@ -55,4 +55,8 @@ public final class Constants {
         public static final int hoodAngleEncoderPortA = 0;
         public static final int hoodAngleEncoderPortB = 0;
     }
+
+    public static final class LEDConstants {
+        public static final int LEDPort = 0;
+    }
 }
