@@ -9,7 +9,10 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.ExampleCommand;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.commands.auto.AutoForwardDistance;
 import frc.robot.commands.drive.ArcadeDrive;
+import frc.robot.commands.drive.TankDrive;
+import frc.robot.commands.drive.ToggleShifter;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
 
@@ -35,11 +38,12 @@ public class RobotContainer {
     xboxButtonSetup();
     configureButtonBindings();
 
-    drivetrain.setDefaultCommand(new ArcadeDrive(drivetrain, xboxController));
+    drivetrain.setDefaultCommand(new ArcadeDrive(drivetrain, xboxController)); // Check for Arcade or Tank
   }
 
   private void configureButtonBindings() {
-
+    xboxA.whenPressed(new AutoForwardDistance(drivetrain, 3));
+    //xboxA.whenPressed(new ToggleShifter(drivetrain));
   }
 
   private void xboxButtonSetup() {

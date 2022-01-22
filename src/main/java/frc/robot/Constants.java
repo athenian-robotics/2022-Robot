@@ -12,14 +12,17 @@ public final class Constants {
 
     public static final class DriveConstants {
         /** DRIVE MOTOR PORTS **/
-        public static final int leftFrontDrivePort = 0;
-        public static final int leftRearDrivePort = 1;
-        public static final int rightFrontDrivePort = 3;
-        public static final int rightRearDrivePort = 2;
+        public static final int leftFrontDrivePort = 4;
+        public static final int leftRearDrivePort = 3;
+        public static final int rightFrontDrivePort = 2;
+        public static final int rightRearDrivePort = 1;
 
         /** MISC CONSTANTS **/
         public static final int driveGearRatio = 0;
         public static final int wheelDiameter = 0; // 6 in.
+        public static final double minDriveSpeed = 0.2;
+        public static final double maxDriveSpeed = 0.85;
+
     }
 
     public static final class OIConstants {
