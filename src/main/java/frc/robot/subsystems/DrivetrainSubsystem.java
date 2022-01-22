@@ -49,6 +49,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
         configureDriveMotors(driveMotors); // Initialize motors
         leftMotors = new MotorControllerGroup(driveMotors[0], driveMotors[1]);
         rightMotors = new MotorControllerGroup(driveMotors[2], driveMotors[3]);
+        rightMotors.setInverted(true);
         drive = new DifferentialDrive(leftMotors, rightMotors); // Initialize Differential Drive
 
         rightEncoder = new Encoder(0, 1, true, Encoder.EncodingType.k2X);
@@ -65,7 +66,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
      * @param rot Velocity of rotation
      */
     public void arcadeDrive(double throttle, double rot) {
-        drive.arcadeDrive(throttle * maxDriveSpeed, maxDriveSpeed < 0 ? rot * maxDriveSpeed : -rot * maxDriveSpeed);
+        drive.arcadeDrive(throttle * maxDriveSpeed, maxDriveSpeed < 0 ? -rot * maxDriveSpeed : rot * maxDriveSpeed);
     }
 
     /**
@@ -119,8 +120,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
     public void configureDriveMotors(TalonFX[] driveMotors) {
         for (TalonFX motor: driveMotors) {
             motor.configFactoryDefault(); // Initialize motor set up
-            motor.configOpenloopRamp(0.3); // Ramp up (Trapezoid)
-            motor.configClosedloopRamp(0.3); // Ramp down (Trapezoid)
+            motor.configOpenloopRamp(0.2); // Ramp up (Trapezoid)
+            motor.configClosedloopRamp(0.2); // Ramp down (Trapezoid)
             motor.setNeutralMode(NeutralMode.Brake); // Default robot mode should be Coasting
             motor.configForwardSoftLimitEnable(false);
             motor.configReverseSoftLimitEnable(false);

@@ -23,7 +23,7 @@ public class ArcadeDrive extends CommandBase {
     @Override
     public void execute() {
         drivetrain.arcadeDrive(-controller.getLeftY(), // Throttle
-                               controller.getRightX()); // Rotation
+                               -controller.getRightX()); // Rotation
     }
 
     @Override
