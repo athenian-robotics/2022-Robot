@@ -4,8 +4,10 @@
 
 package frc.robot;
 
-public final class Constants {
+import edu.wpi.first.math.util.Units;
 
+public final class Constants {
+    
     public static final class AutoConstants {
 
     }
@@ -18,6 +20,7 @@ public final class Constants {
         public static final int rightRearDrivePort = 1;
 
         /** MISC CONSTANTS **/
+        public static final double trackWidth = Units.inchesToMeters(27);
         public static final int driveGearRatio = 0;
         public static final int wheelDiameter = 0; // 6 in.
         public static final double minDriveSpeed = 0.2;
@@ -55,4 +58,6 @@ public final class Constants {
         public static final int hoodAngleEncoderPortA = 0;
         public static final int hoodAngleEncoderPortB = 0;
     }
+
+
 }
