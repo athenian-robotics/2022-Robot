@@ -1,16 +1,22 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.kauailabs.navx.frc.AHRS;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -22,23 +28,28 @@ public class DrivetrainSubsystem extends SubsystemBase {
     ChassisSpeeds chassisSpeeds;
     DifferentialDriveOdometry odometry;
     // Creates kinematics object: track width of 27 inches (track width = distance between two sets of wheels)
-    DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(Units.inchesToMeters(27));
     private final AHRS gyro = new AHRS(SerialPort.Port.kMXP);
     public final Encoder rightEncoder;
     public final Encoder leftEncoder;
     private final DoubleSolenoid solenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 2, 3);
 
-    private final TalonFX[] driveMotors = {
-            new TalonFX(Constants.DriveConstants.leftFrontDrivePort),
-            new TalonFX(Constants.DriveConstants.leftRearDrivePort),
-            new TalonFX(Constants.DriveConstants.rightFrontDrivePort),
-            new TalonFX(Constants.DriveConstants.rightRearDrivePort)
-    };
+    private final MotorControllerGroup leftMotors = new MotorControllerGroup(
+            new WPI_TalonFX(Constants.DriveConstants.leftFrontDrivePort),
+            new WPI_TalonFX(Constants.DriveConstants.leftRearDrivePort));
+    private final MotorControllerGroup rightMotors = new MotorControllerGroup(
+            new WPI_TalonFX(Constants.DriveConstants.rightFrontDrivePort),
+            new WPI_TalonFX(Constants.DriveConstants.rightRearDrivePort));
+    private final DifferentialDrive drive;
 
     public DrivetrainSubsystem() {
+        WPI_TalonFX[] driveMotors = {
+                new WPI_TalonFX(Constants.DriveConstants.leftFrontDrivePort),
+                new WPI_TalonFX(Constants.DriveConstants.leftRearDrivePort),
+
+        };
         configureDriveMotors(driveMotors); // Initialize motors
         //odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading())); // Initialize odometry configuration
-
+        drive = new DifferentialDrive(leftMotors, rightMotors); // Initialize drivetrain
         rightEncoder = new Encoder(0, 1, true, Encoder.EncodingType.k2X);
         leftEncoder = new Encoder(2, 3, false, Encoder.EncodingType.k2X);
 
@@ -61,6 +72,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
         int rightSign = rightPWM >= 0 ? 1 : -1; // Checks rightSpeed and gathers whether it is negative or positive
 
         // Deadband
+
         leftPWM = Math.abs(leftPWM) > maxDriveSpeed ? maxDriveSpeed * leftSign : leftPWM;
         rightPWM = Math.abs(rightPWM) > maxDriveSpeed ? maxDriveSpeed * rightSign : rightPWM;
 
@@ -89,16 +101,24 @@ public class DrivetrainSubsystem extends SubsystemBase {
         setMotorPercentOutput(-leftVelocity, rightVelocity);
     }
 
+    public void tankDriveVolts(double leftVolts, double rightVolts) {
+        leftMotors.setVoltage(leftVolts);
+        leftMotors.setVoltage(rightVolts);
+        drive.feed();
+    }
+
     /**
      * Set the front wheels to a desired output. Units: Percentage
      * @param leftOutput Left front wheel output percentage
      * @param rightOutput Right front wheel output percentage
      */
     public void setMotorPercentOutput(double leftOutput, double rightOutput) {
-        driveMotors[0].set(ControlMode.PercentOutput, leftOutput);
-        driveMotors[1].set(ControlMode.PercentOutput, leftOutput);
-        driveMotors[2].set(ControlMode.PercentOutput, rightOutput);
-        driveMotors[3].set(ControlMode.PercentOutput, rightOutput);
+//        driveMotors[0].set(ControlMode.PercentOutput, leftOutput);
+//        driveMotors[1].set(ControlMode.PercentOutput, leftOutput);
+//        driveMotors[2].set(ControlMode.PercentOutput, rightOutput);
+//        driveMotors[3].set(ControlMode.PercentOutput, rightOutput);
+        leftMotors.set(leftOutput);
+        rightMotors.set(rightOutput);
     }
 
     /**
@@ -156,6 +176,15 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     public void toggleShifter() { solenoid.toggle(); }
 
+    public void resetOdometry(Pose2d pose) {
+        resetEncoders();
+        odometry.resetPosition(pose, Rotation2d.fromDegrees(getHeading()));
+    }
+
+    private void resetEncoders() {
+        leftEncoder.reset();
+        rightEncoder.reset();
+    }
 
 
     @Override
@@ -168,6 +197,15 @@ public class DrivetrainSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Raw Right Enc: ", getRightEncoderCount());
         SmartDashboard.putNumber("Left Dist: ", getLeftDistanceDriven());
         SmartDashboard.putNumber("Right Dist: ", getRightDistanceDriven());
+    }
+
+
+    public Pose2d getPose() {
+        return odometry.getPoseMeters();
+    }
+
+    public DifferentialDriveWheelSpeeds getWheelSpeeds() {
+        return new DifferentialDriveWheelSpeeds(leftEncoder.getRate(), rightEncoder.getRate());
     }
 }
 
