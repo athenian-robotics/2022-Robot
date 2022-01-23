@@ -9,9 +9,9 @@ import static frc.robot.Constants.DriveConstants.maxAutoSpeed;
 public class AutoForwardDistance extends CommandBase {
     DrivetrainSubsystem drivetrain;
     private final double metersToDrive;
-    private final double Kp = 3.3;
+    private final double Kp = 3.3; //3.3
     private final double Ki = 0.0;
-    private final double Kd = 0.13;
+    private final double Kd = 0.13; //0.13
     private double setpoint = 0.0;
     private double drivePower = 0.0;
     PIDController pid = new PIDController(Kp, Ki, Kd);
@@ -31,15 +31,16 @@ public class AutoForwardDistance extends CommandBase {
 
     @Override
     public void execute() {
-        this.drivePower = Math.min(pid.calculate(drivetrain.getRightDistanceDriven()), maxAutoSpeed);
-        drivePower = Math.abs(drivePower) < 0.02 ? 0 : drivePower;
+        int sign = pid.calculate(drivetrain.getRightDistanceDriven()) < 0 ? -1 : 1;
+        this.drivePower = Math.min(Math.abs(pid.calculate(drivetrain.getRightDistanceDriven())), maxAutoSpeed);
+        drivePower *= sign;
         System.out.println(drivePower);
         drivetrain.tankDrive(drivePower, drivePower);
     }
 
     @Override
     public boolean isFinished() {
-        return pid.atSetpoint() || drivePower < 0.02;
+        return pid.atSetpoint(); // || Math.abs(drivePower) < 0.26;
     }
 
     @Override
