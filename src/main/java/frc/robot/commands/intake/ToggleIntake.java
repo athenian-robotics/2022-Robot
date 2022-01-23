@@ -19,11 +19,10 @@ public class ToggleIntake extends CommandBase {
 
     @Override
     public void initialize() {
-        System.out.println("Toggling Intake.");
         intakeSubsystem.toggleIntake();
-        if (intakeSubsystem.isRunning) {
-            new StartBelt(indexerSubsystem).schedule();
-        }
+//        if (intakeSubsystem.isRunning) {
+//            new StartBelt(indexerSubsystem).schedule();
+//        }
     }
 
     @Override
@@ -38,7 +37,7 @@ public class ToggleIntake extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        if (!intakeSubsystem.isRunning)
-            new StopBelt(indexerSubsystem, 5).schedule();
+//        if (!intakeSubsystem.isRunning)
+//            new StopBelt(indexerSubsystem, 5).schedule();
     }
 }

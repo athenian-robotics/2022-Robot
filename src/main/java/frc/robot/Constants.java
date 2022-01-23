@@ -26,7 +26,6 @@ public final class Constants {
         public static final double minDriveSpeed = 0.1;
         public static final double maxDriveSpeed = 0.95;
         public static final double maxAutoSpeed = 0.55;
-
     }
 
     public static final class OIConstants {
@@ -36,14 +35,19 @@ public final class Constants {
     }
 
     public static final class MechanismConstants {
-        public static final int intakeMotorPort = 0;  // CHANGE
+        public static final int intakeMotorPort = 6;
         public static final int indexerMecanumMotorPort = 0;  // CHANGE
         public static final int indexerBeltMotorPort = 0;  // CHANGE
+
         public static final int turretMotorPort = 0;  // CHANGE
+
         public static final int shooterMotorPortA = 0;  // CHANGE
         public static final int shooterMotorPortB = 0;  // CHANGE
+
         public static final int hoodAngleMotorPort = 0;  // CHANGE
         public static final double defaultHoodAngle = 30; //CHANGE
+
+        public static final double intakeSpeed = 0.5; //0 to 1
 
         // Climber motor ports ...
     }
@@ -51,10 +55,10 @@ public final class Constants {
     public static final class PneumaticConstants {
         public static final int shifterSolenoidPortA = 0; //3A
         public static final int shifterSolenoidPortB = 2; //3B
-        public static final int intakePneumaticPortA = 1; //2A
-        public static final int intakePneumaticPortB = 4; //2B
-        public static final int pneumaticPortOneA = 7; //1A
-        public static final int pneumaticPortOneB = 3; // 1B
+        public static final int intakePneumaticPortLeftA = 1; //2A
+        public static final int intakePneumaticPortLeftB = 4; //2B
+        public static final int pneumaticPortRightA = 7; //1A
+        public static final int pneumaticPortRightB = 3; // 1B
 
         // Pneumatics constants ...
     }

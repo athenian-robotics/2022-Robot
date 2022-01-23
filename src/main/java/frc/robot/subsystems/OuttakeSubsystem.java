@@ -65,7 +65,7 @@ public class OuttakeSubsystem extends SubsystemBase {
     }
 
     //Degrees off the vertical
-    public Double getHoodAngle() {
+    public double getHoodAngle() {
         return hoodEncoder.getDistance();
     }
 
