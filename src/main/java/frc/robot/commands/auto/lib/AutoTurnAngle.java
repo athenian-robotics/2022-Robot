@@ -10,21 +10,19 @@ public class AutoTurnAngle extends CommandBase {
     private final DrivetrainSubsystem drivetrainSubsystem;
     private int leftSign;
     private int rightSign;
-    private long startTime;
-    private long elapsedTime;
     private final double tolerance;
     private final double angleToTurn;
     private double power = 0.0;
     private double setpoint = 0.0;
-    private double Kp = 0.0;
+    private double Kp = 0.01;
     private double Ki = 0.0;
-    private double Kd = 0.0;
+    private double Kd = 0.0001;
 
     PIDController pid = new PIDController(Kp, Ki, Kd);
 
     public AutoTurnAngle(DrivetrainSubsystem drivetrainSubsystem, double angleToTurn) {
         this.drivetrainSubsystem = drivetrainSubsystem;
-        this.tolerance = 0.5;
+        this.tolerance = 0.2;
         this.angleToTurn = angleToTurn;
         pid.setTolerance(tolerance);
         addRequirements(this.drivetrainSubsystem);
@@ -32,24 +30,24 @@ public class AutoTurnAngle extends CommandBase {
 
     @Override
     public void initialize() {
-        setpoint = drivetrainSubsystem.getGyroAngle() + angleToTurn;
+        setpoint = drivetrainSubsystem.getHeading() - angleToTurn;
         pid.setSetpoint(setpoint);
-        startTime = System.currentTimeMillis();
     }
 
     @Override
     public void execute() {
-        elapsedTime = System.currentTimeMillis() - startTime;
-        power = Math.min(pid.calculate(drivetrainSubsystem.getGyroAngle()), Constants.DriveConstants.maxAutoSpeed);
+        power = Math.min(Math.abs(pid.calculate(drivetrainSubsystem.getHeading())), Constants.DriveConstants.maxAutoTurn); // Scale under max constant
         leftSign = Math.abs(setpoint - drivetrainSubsystem.getGyroAngle()) > 180 ? -1 : 1;
-        rightSign = Math.abs(setpoint - drivetrainSubsystem.getGyroAngle()) > 180 ? 1 : -1;
+        rightSign = Math.abs(setpoint - drivetrainSubsystem.getGyroAngle()) > 180 ? 1 : -1; // Fastest direction
+        power = Math.abs(power) < 0.01 ? 0 : power; // Deadband
+        System.out.println(power);
 
         drivetrainSubsystem.autoTankDrive(power * leftSign, power * rightSign);
     }
 
     @Override
     public boolean isFinished() {
-        return drivetrainSubsystem.getGyroAngle() <= setpoint + tolerance && drivetrainSubsystem.getGyroAngle() >= setpoint - tolerance;
+        return pid.atSetpoint() || power < 0.01;
     }
 
     @Override

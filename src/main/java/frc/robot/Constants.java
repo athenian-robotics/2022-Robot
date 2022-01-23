@@ -26,6 +26,7 @@ public final class Constants {
         public static final double minDriveSpeed = 0.1;
         public static final double maxDriveSpeed = 0.95;
         public static final double maxAutoSpeed = 0.55;
+        public static final double maxAutoTurn = 0.3;
     }
 
     public static final class OIConstants {
@@ -55,19 +56,19 @@ public final class Constants {
     }
 
     public static final class PneumaticConstants {
-        public static final int shifterSolenoidPortA = 0; //3A
-        public static final int shifterSolenoidPortB = 2; //3B
-        public static final int intakePneumaticPortLeftA = 1; //2A
-        public static final int intakePneumaticPortLeftB = 4; //2B
-        public static final int pneumaticPortRightA = 7; //1A
-        public static final int pneumaticPortRightB = 3; // 1B
+        public static final int shifterRightSolenoidPortA = 1; // SOLENOID 2
+        public static final int shifterRightSolenoidPortB = 4;
+        public static final int shifterLeftSolenoidPortA = 7; // SOLENOID 1
+        public static final int shifterLeftSolenoidPortB = 3;
+        public static final int pneumaticPortRightA = 0;
+        public static final int pneumaticPortRightB = 2;
 
         // Pneumatics constants ...
     }
 
     public static final class EncoderConstants {
-        public static final int hoodAngleEncoderPortA = 0;
-        public static final int hoodAngleEncoderPortB = 0;
+        public static final int hoodAngleEncoderPortA = 8;
+        public static final int hoodAngleEncoderPortB = 9;
     }
 
 

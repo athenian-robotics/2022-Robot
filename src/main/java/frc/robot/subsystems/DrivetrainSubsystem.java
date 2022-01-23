@@ -27,7 +27,12 @@ public class DrivetrainSubsystem extends SubsystemBase {
     private final AHRS gyro = new AHRS(SerialPort.Port.kMXP);
     public final Encoder rightEncoder;
     public final Encoder leftEncoder;
-    private final DoubleSolenoid driveShifter = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, Constants.PneumaticConstants.shifterSolenoidPortA, Constants.PneumaticConstants.shifterSolenoidPortB);
+
+    private final DoubleSolenoid driveShifterRight = new DoubleSolenoid(PneumaticsModuleType.CTREPCM,
+            Constants.PneumaticConstants.shifterRightSolenoidPortA, Constants.PneumaticConstants.shifterRightSolenoidPortB);
+    private final DoubleSolenoid driveShifterLeft = new DoubleSolenoid(PneumaticsModuleType.CTREPCM,
+            Constants.PneumaticConstants.shifterLeftSolenoidPortA, Constants.PneumaticConstants.shifterLeftSolenoidPortB);
+
 
     private final MotorControllerGroup leftMotors;
     private final MotorControllerGroup rightMotors;
@@ -51,7 +56,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
         leftEncoder.setDistancePerPulse(6.0 * 0.0254 * Math.PI / 2048 * 4/3); // 6 inch wheel, to meters, 2048 ticks //0.0254
         rightEncoder.setDistancePerPulse(6.0 * 0.0254 * Math.PI / 2048 * 4/3);// 6 inch wheel, to meters, 2048 ticks
 
-        driveShifter.set(DoubleSolenoid.Value.kReverse);
+        driveShifterRight.set(DoubleSolenoid.Value.kReverse);
+        driveShifterLeft.set(DoubleSolenoid.Value.kReverse);
     }
 
     /**
@@ -147,7 +153,11 @@ public class DrivetrainSubsystem extends SubsystemBase {
     public double getLeftDistanceDriven() { return leftEncoder.getDistance(); } // Returns the distance the left side has driven
 
     public double getGyroAngle() {
-        return gyro.getAngle() % 360; // Returns gyro angle
+        return gyro.getAngle() % 360;
+    }
+
+    public double getGyroYaw() {
+        return gyro.getYaw();
     }
 
     public void resetGyro() {
@@ -170,7 +180,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
         rightEncoder.reset();
     }
 
-    public void toggleShifter() { driveShifter.toggle(); }
+    public void toggleShifter() {
+        driveShifterRight.toggle();
+        driveShifterLeft.toggle();
+    }
 
     public Pose2d getPose() {
         return odometry.getPoseMeters();
@@ -179,7 +192,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
     public DifferentialDriveWheelSpeeds getWheelSpeeds() {
         return new DifferentialDriveWheelSpeeds(leftEncoder.getRate(), rightEncoder.getRate());
     }
-
 
     public void disable() {
         drive.tankDrive(0, 0);

@@ -5,13 +5,13 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.XboxController;
-import frc.robot.commands.intake.InvertIntake;
-import frc.robot.commands.intake.ToggleIntake;
+import frc.robot.commands.auto.lib.AutoTurnAngle;
+import frc.robot.commands.drive.ToggleShifter;;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.ExampleCommand;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.drive.ArcadeDrive;
+import frc.robot.commands.intake.ToggleIntake;
 import frc.robot.lib.controllers.FightStick;
 import frc.robot.subsystems.*;
 
@@ -35,8 +35,6 @@ public class RobotContainer {
   public static LimelightSubsystem limelight = new LimelightSubsystem("limelight-two");
   public static OuttakeSubsystem outtake = new OuttakeSubsystem();
 
-  private final ExampleCommand m_autoCommand = new ExampleCommand();
-
   public RobotContainer() {
     xboxButtonSetup();
     configureButtonBindings();
@@ -45,12 +43,13 @@ public class RobotContainer {
   }
 
   private void configureButtonBindings() {
-    //xboxA.whenPressed(new AutoForwardDistance(drivetrain, -1));
-    //xboxB.whenPressed(new AutoForwardDistance(drivetrain, 1));
-    //xboxY.whenPressed(new AutoForwardDistance(drivetrain, 2));
+    xboxY.whenPressed(new ToggleShifter(drivetrain));
 
     FightStick.fightStickA.whenPressed(new ToggleIntake(intake, indexer));
-    FightStick.fightStickB.whenPressed(new InvertIntake(intake));
+    //FightStick.fightStickB.whenPressed(new InvertIntake(intake));
+
+    xboxA.whenPressed(new AutoTurnAngle(drivetrain, 90));
+
   }
 
   private void xboxButtonSetup() {
@@ -73,8 +72,7 @@ public class RobotContainer {
     outtake.disable();
   }
 
-
   public Command getAutonomousCommand() {
-    return m_autoCommand;
+    return null;
   }
 }

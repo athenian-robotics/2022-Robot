@@ -14,7 +14,6 @@ import static frc.robot.Constants.PneumaticConstants.*;
 public class IntakeSubsystem extends SubsystemBase {
     private final TalonFX intakeMotor = new TalonFX(Constants.MechanismConstants.intakeMotorPort);
 
-    private final DoubleSolenoid leftIntakePneumatic = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, intakePneumaticPortLeftA, intakePneumaticPortLeftB);
     private final DoubleSolenoid rightIntakePneumatic = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, pneumaticPortRightA, pneumaticPortRightB);
 
     public boolean isRunning = false;
@@ -22,8 +21,7 @@ public class IntakeSubsystem extends SubsystemBase {
     public boolean isInverted = false;
 
     public IntakeSubsystem() {
-        leftIntakePneumatic.close();
-        rightIntakePneumatic.close();
+        //rightIntakePneumatic.close();
 
         intakeMotor.configFactoryDefault(); // Initialize motor set up
         intakeMotor.setNeutralMode(NeutralMode.Coast);
@@ -31,28 +29,22 @@ public class IntakeSubsystem extends SubsystemBase {
         intakeMotor.configClosedloopRamp(0.1); // Ramp down (Trapezoid)
     }
 
-    private void startIntake() {
+    public void startIntake() {
         intakeMotor.set(ControlMode.PercentOutput, Constants.MechanismConstants.intakeSpeed);
         isRunning = true;
     }
 
-    private void stopIntake() {
+    public void stopIntake() {
         intakeMotor.set(ControlMode.PercentOutput, 0);
         isRunning = false;
-        isInverted = false;
     }
 
-    private void toggleIntake() {
+    public void toggleIntake() {
         if (isRunning) {
             stopIntake();
         } else {
             startIntake();
         }
-    }
-
-    public void toggleIntakeAndPneumatic() {
-        togglePneumatic(); toggleIntake();
-        if (!isExtended && isRunning) disable();
     }
 
     public void invert() {
@@ -61,27 +53,29 @@ public class IntakeSubsystem extends SubsystemBase {
         if (isRunning) intakeMotor.set(ControlMode.PercentOutput, sign * Constants.MechanismConstants.intakeSpeed);
     }
 
-    private void extendPneumatic() {
+    public void extendPneumatic() {
         rightIntakePneumatic.set(DoubleSolenoid.Value.kForward);
-        leftIntakePneumatic.set(DoubleSolenoid.Value.kForward);
         isExtended = true;
     }
 
-    private void retractPneumatic() {
+    public void retractPneumatic() {
         rightIntakePneumatic.set(DoubleSolenoid.Value.kReverse);
-        leftIntakePneumatic.set(DoubleSolenoid.Value.kReverse);
         isExtended = false;
     }
 
-    private void togglePneumatic(){
-        if (rightIntakePneumatic.get() != leftIntakePneumatic.get()) {
-            return;
-        } if (rightIntakePneumatic.get() == DoubleSolenoid.Value.kForward) {
+    public void togglePneumatic(){
+        if (rightIntakePneumatic.get() == DoubleSolenoid.Value.kForward) {
             retractPneumatic();
         } else {
             extendPneumatic();
         }
     }
+
+    public void toggleIntakeAndPneumatic() {
+        togglePneumatic(); toggleIntake();
+        if (!isExtended && isRunning) disable();
+    }
+
 
 
     public void disable() {
