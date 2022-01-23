@@ -18,6 +18,9 @@ public class LimelightSubsystem extends SubsystemBase {
         }, EntryListenerFlags.kUpdate);
     }
 
+
+    public void disable() {}
+
     public void periodic() {
 
     }

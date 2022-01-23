@@ -48,6 +48,8 @@ public final class Constants {
         public static final double defaultHoodAngle = 30; //CHANGE
 
         public static final double intakeSpeed = 0.3; //0 to 1
+        public static final double indexerSpeed = 0.5;
+        public static final double beltSpeed = 0.5;
 
         // Climber motor ports ...
     }

@@ -172,6 +172,19 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     public void toggleShifter() { driveShifter.toggle(); }
 
+    public Pose2d getPose() {
+        return odometry.getPoseMeters();
+    }
+
+    public DifferentialDriveWheelSpeeds getWheelSpeeds() {
+        return new DifferentialDriveWheelSpeeds(leftEncoder.getRate(), rightEncoder.getRate());
+    }
+
+
+    public void disable() {
+        drive.tankDrive(0, 0);
+    }
+
     @Override
     public void periodic() {
         // Consistently update the robot's odometry as it moves throughout the field
@@ -182,15 +195,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Raw Right Enc: ", getRightEncoderCount());
         SmartDashboard.putNumber("Left Dist: ", getLeftDistanceDriven());
         SmartDashboard.putNumber("Right Dist: ", getRightDistanceDriven());
-    }
-
-
-    public Pose2d getPose() {
-        return odometry.getPoseMeters();
-    }
-
-    public DifferentialDriveWheelSpeeds getWheelSpeeds() {
-        return new DifferentialDriveWheelSpeeds(leftEncoder.getRate(), rightEncoder.getRate());
     }
 }
 

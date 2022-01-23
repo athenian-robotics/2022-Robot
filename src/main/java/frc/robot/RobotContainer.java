@@ -13,10 +13,7 @@ import frc.robot.commands.ExampleCommand;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.drive.ArcadeDrive;
 import frc.robot.lib.controllers.FightStick;
-import frc.robot.subsystems.DrivetrainSubsystem;
-import frc.robot.subsystems.IndexerSubsystem;
-import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.LimelightSubsystem;
+import frc.robot.subsystems.*;
 
 public class RobotContainer {
   public static JoystickButton xboxA;
@@ -36,6 +33,7 @@ public class RobotContainer {
   public static IntakeSubsystem intake = new IntakeSubsystem();
   public static IndexerSubsystem indexer = new IndexerSubsystem();
   public static LimelightSubsystem limelight = new LimelightSubsystem("limelight-two");
+  public static OuttakeSubsystem outtake = new OuttakeSubsystem();
 
   private final ExampleCommand m_autoCommand = new ExampleCommand();
 
@@ -65,6 +63,14 @@ public class RobotContainer {
     xboxSquares = new JoystickButton(xboxController, 7);
     xboxHamburger = new JoystickButton(xboxController, 8);
     xboxLS = new Trigger();
+  }
+
+  private void disableAll() {
+    drivetrain.disable();
+    indexer.disable();
+    intake.disable();
+    limelight.disable();
+    outtake.disable();
   }
 
 

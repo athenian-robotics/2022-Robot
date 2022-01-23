@@ -19,7 +19,7 @@ public class ToggleIntake extends CommandBase {
 
     @Override
     public void initialize() {
-        intakeSubsystem.toggleIntake();
+        intakeSubsystem.toggleIntakeAndPneumatic();
 //        if (intakeSubsystem.isRunning) {
 //            new StartBelt(indexerSubsystem).schedule();
 //        }

@@ -31,22 +31,28 @@ public class IntakeSubsystem extends SubsystemBase {
         intakeMotor.configClosedloopRamp(0.1); // Ramp down (Trapezoid)
     }
 
-    public void startIntake() {
+    private void startIntake() {
         intakeMotor.set(ControlMode.PercentOutput, Constants.MechanismConstants.intakeSpeed);
         isRunning = true;
     }
 
-    public void stopIntake() {
+    private void stopIntake() {
         intakeMotor.set(ControlMode.PercentOutput, 0);
         isRunning = false;
+        isInverted = false;
     }
 
-    public void toggleIntake() {
+    private void toggleIntake() {
         if (isRunning) {
             stopIntake();
         } else {
             startIntake();
         }
+    }
+
+    public void toggleIntakeAndPneumatic() {
+        togglePneumatic(); toggleIntake();
+        if (!isExtended && isRunning) disable();
     }
 
     public void invert() {
@@ -55,19 +61,19 @@ public class IntakeSubsystem extends SubsystemBase {
         if (isRunning) intakeMotor.set(ControlMode.PercentOutput, sign * Constants.MechanismConstants.intakeSpeed);
     }
 
-    public void extendPneumatic() {
+    private void extendPneumatic() {
         rightIntakePneumatic.set(DoubleSolenoid.Value.kForward);
         leftIntakePneumatic.set(DoubleSolenoid.Value.kForward);
         isExtended = true;
     }
 
-    public void retractPneumatic() {
+    private void retractPneumatic() {
         rightIntakePneumatic.set(DoubleSolenoid.Value.kReverse);
         leftIntakePneumatic.set(DoubleSolenoid.Value.kReverse);
         isExtended = false;
     }
 
-    public void togglePneumatic(){
+    private void togglePneumatic(){
         if (rightIntakePneumatic.get() != leftIntakePneumatic.get()) {
             return;
         } if (rightIntakePneumatic.get() == DoubleSolenoid.Value.kForward) {
@@ -75,6 +81,12 @@ public class IntakeSubsystem extends SubsystemBase {
         } else {
             extendPneumatic();
         }
+    }
+
+
+    public void disable() {
+        stopIntake();
+        retractPneumatic();
     }
 
     @Override
