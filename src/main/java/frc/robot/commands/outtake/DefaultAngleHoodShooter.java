@@ -4,32 +4,33 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.OuttakeSubsystem;
 
-import static frc.robot.Constants.MechanismConstants.defaultHoodAngle;
+import frc.robot.Constants.MechanismConstants;
 
 
 public class DefaultAngleHoodShooter extends CommandBase {
-    private final OuttakeSubsystem outtakeSubsystem;
+    private final OuttakeSubsystem outtake;
     double Kp = 0;
     double Ki = 0;
     double Kd = 0;
 
     PIDController pid = new PIDController(Kp, Ki, Kd);
 
-    public DefaultAngleHoodShooter(OuttakeSubsystem outtakeSubsystem) {
-        this.outtakeSubsystem = outtakeSubsystem;
-        addRequirements(this.outtakeSubsystem);
+    public DefaultAngleHoodShooter(OuttakeSubsystem outtake) {
+        this.outtake = outtake;
+        addRequirements(this.outtake);
+
+        pid.setTolerance(1);
     }
 
     @Override
     public void initialize() {
-        pid.setSetpoint(defaultHoodAngle);
+        pid.setSetpoint(MechanismConstants.defaultHoodAngle);
     }
 
     @Override
     public void execute() {
-        double power = pid.calculate(defaultHoodAngle);
-        outtakeSubsystem.moveHoodMotor(power);
-
+        double power = pid.calculate(outtake.getHoodAngle());
+        outtake.moveHoodMotor(power);
     }
 
     @Override

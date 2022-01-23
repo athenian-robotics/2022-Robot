@@ -14,12 +14,14 @@ public class OuttakeSubsystem extends SubsystemBase {
 
     private final TalonFX shooterMotor1 = new TalonFX(shooterMotorPortA);
     private final TalonFX shooterMotor2 = new TalonFX(shooterMotorPortB);
-    private final TalonFX hoodAngleMotor = new TalonFX(hoodAngleMotorPort);
+    private final TalonFX hoodAngleMotor = new TalonFX(hoodAngleMotorPort); //DEGREES
     private final TalonFX turretMotor = new TalonFX(turretMotorPort);
     private final Encoder hoodEncoder = new Encoder(hoodAngleEncoderPortA, hoodAngleEncoderPortB);
     private boolean shooterIsRunning = false;
 
     public OuttakeSubsystem() {
+        hoodEncoder.setDistancePerPulse(360.0/2048.0);
+        hoodEncoder.reset();
     }
 
     public void startShooter() {
@@ -60,6 +62,11 @@ public class OuttakeSubsystem extends SubsystemBase {
     //positive = spin right
     public void spinTurret(double power) {
         this.turretMotor.set(ControlMode.PercentOutput, power);
+    }
+
+    //Degrees off the vertical
+    public Double getHoodAngle() {
+        return hoodEncoder.getDistance();
     }
 
     @Override
