@@ -6,12 +6,10 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.intake.ToggleIntake;
-import frc.robot.lib.controllers.FightStick;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.ExampleCommand;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.commands.auto.lib.AutoForwardDistance;
 import frc.robot.commands.drive.ArcadeDrive;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.IndexerSubsystem;
@@ -27,7 +25,7 @@ public class RobotContainer {
   public static JoystickButton xboxLB; // Define all the xbox controller functionality
   public static JoystickButton xboxRB;
   public static JoystickButton xboxSquares;
-  public static JoystickButton xboxBurger;
+  public static JoystickButton xboxHamburger;
   public static Trigger xboxLS;
   public static XboxController.Axis xboxRS;
 
@@ -48,11 +46,11 @@ public class RobotContainer {
   }
 
   private void configureButtonBindings() {
-    xboxA.whenPressed(new AutoForwardDistance(drivetrain, -1));
-    xboxB.whenPressed(new AutoForwardDistance(drivetrain, 1));
-    xboxY.whenPressed(new AutoForwardDistance(drivetrain, 2));
+    //xboxA.whenPressed(new AutoForwardDistance(drivetrain, -1));
+    //xboxB.whenPressed(new AutoForwardDistance(drivetrain, 1));
+    //xboxY.whenPressed(new AutoForwardDistance(drivetrain, 2));
 
-    FightStick.fightStickA.whenPressed(new ToggleIntake(intake, indexer));
+    xboxHamburger.whenPressed(new ToggleIntake(intake, indexer));
   }
 
   private void xboxButtonSetup() {
@@ -63,7 +61,7 @@ public class RobotContainer {
     xboxLB = new JoystickButton(xboxController, 5);
     xboxRB = new JoystickButton(xboxController, 6);
     xboxSquares = new JoystickButton(xboxController, 7);
-    xboxBurger = new JoystickButton(xboxController, 8);
+    xboxHamburger = new JoystickButton(xboxController, 8);
     xboxLS = new Trigger();
   }
 

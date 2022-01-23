@@ -47,7 +47,7 @@ public final class Constants {
         public static final int hoodAngleMotorPort = 0;  // CHANGE
         public static final double defaultHoodAngle = 30; //CHANGE
 
-        public static final double intakeSpeed = 0.5; //0 to 1
+        public static final double intakeSpeed = 0.4; //0 to 1
 
         // Climber motor ports ...
     }

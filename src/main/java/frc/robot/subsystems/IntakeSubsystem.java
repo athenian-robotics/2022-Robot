@@ -19,7 +19,6 @@ public class IntakeSubsystem extends SubsystemBase {
     public boolean isRunning = false;
     public boolean isExtended = false;
 
-
     public IntakeSubsystem() {
         leftIntakePneumatic.close();
         rightIntakePneumatic.close();
@@ -31,7 +30,7 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public void stopIntake() {
-        intakeMotor.set(ControlMode.PercentOutput,0);
+        intakeMotor.set(ControlMode.PercentOutput, 0);
         isRunning = false;
     }
 
