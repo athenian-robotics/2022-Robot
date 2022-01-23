@@ -5,17 +5,18 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.XboxController;
+import frc.robot.commands.intake.InvertIntake;
 import frc.robot.commands.intake.ToggleIntake;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.ExampleCommand;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.drive.ArcadeDrive;
+import frc.robot.lib.controllers.FightStick;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
-
 
 public class RobotContainer {
   public static JoystickButton xboxA;
@@ -50,7 +51,8 @@ public class RobotContainer {
     //xboxB.whenPressed(new AutoForwardDistance(drivetrain, 1));
     //xboxY.whenPressed(new AutoForwardDistance(drivetrain, 2));
 
-    xboxHamburger.whenPressed(new ToggleIntake(intake, indexer));
+    FightStick.fightStickA.whenPressed(new ToggleIntake(intake, indexer));
+    FightStick.fightStickB.whenPressed(new InvertIntake(intake));
   }
 
   private void xboxButtonSetup() {

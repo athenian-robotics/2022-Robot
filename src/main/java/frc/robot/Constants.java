@@ -30,8 +30,8 @@ public final class Constants {
 
     public static final class OIConstants {
         /** XBOX CONTROLLER PORTS **/
-        public static final int xboxControllerPort = 0;
-        public static final int fightStickPort = 1;
+        public static final int xboxControllerPort = 1;
+        public static final int fightStickPort = 0;
     }
 
     public static final class MechanismConstants {
@@ -47,7 +47,7 @@ public final class Constants {
         public static final int hoodAngleMotorPort = 0;  // CHANGE
         public static final double defaultHoodAngle = 30; //CHANGE
 
-        public static final double intakeSpeed = 0.4; //0 to 1
+        public static final double intakeSpeed = 0.3; //0 to 1
 
         // Climber motor ports ...
     }

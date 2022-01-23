@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
@@ -18,10 +19,16 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public boolean isRunning = false;
     public boolean isExtended = false;
+    public boolean isInverted = false;
 
     public IntakeSubsystem() {
         leftIntakePneumatic.close();
         rightIntakePneumatic.close();
+
+        intakeMotor.configFactoryDefault(); // Initialize motor set up
+        intakeMotor.setNeutralMode(NeutralMode.Coast);
+        intakeMotor.configOpenloopRamp(0.1); // Ramp up (Trapezoid)
+        intakeMotor.configClosedloopRamp(0.1); // Ramp down (Trapezoid)
     }
 
     public void startIntake() {
@@ -43,7 +50,9 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public void invert() {
-        intakeMotor.setInverted(!intakeMotor.getInverted());
+        isInverted = !this.isInverted;
+        int sign = isInverted ? 1: -1;
+        if (isRunning) intakeMotor.set(ControlMode.PercentOutput, sign * Constants.MechanismConstants.intakeSpeed);
     }
 
     public void extendPneumatic() {
