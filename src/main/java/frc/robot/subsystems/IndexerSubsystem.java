@@ -21,14 +21,12 @@ public class IndexerSubsystem extends SubsystemBase {
     public void startIndexer() {
         indexerMotor.set(ControlMode.PercentOutput, 0.7);
         beltMotor.set(ControlMode.PercentOutput, 0.7);
-        System.out.println("start indexer");
         isRunning = true;
     }
 
     public void stopIndexer() {
         indexerMotor.set(ControlMode.PercentOutput, 0);
         beltMotor.set(ControlMode.PercentOutput, 0);
-        System.out.println("stop indexer");
         isRunning = false;
     }
 

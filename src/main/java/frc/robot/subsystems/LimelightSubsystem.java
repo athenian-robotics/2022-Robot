@@ -14,7 +14,6 @@ public class LimelightSubsystem extends SubsystemBase {
         this.limelight.addEntryListener(new TableEntryListener() {
             @Override
             public void valueChanged(NetworkTable table, String key, NetworkTableEntry entry, NetworkTableValue value, int flags) {
-                System.out.println(key + " " + value);
             }
         }, EntryListenerFlags.kUpdate);
     }

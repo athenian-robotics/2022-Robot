@@ -24,7 +24,6 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public void startIntake() {
         intakeMotor.set(ControlMode.PercentOutput, 0.5);
-        System.out.println("start intake");
         isRunning = true;
     }
 
@@ -34,7 +33,6 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public void stopIntake() {
         intakeMotor.set(ControlMode.PercentOutput,0);
-        System.out.println("stop intake");
         isRunning = false;
     }
 
