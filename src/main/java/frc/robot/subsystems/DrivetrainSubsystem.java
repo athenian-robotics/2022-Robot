@@ -1,19 +1,14 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.kauailabs.navx.frc.AHRS;
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
@@ -23,8 +18,7 @@ import frc.robot.Constants;
 
 import static frc.robot.Constants.DriveConstants.maxDriveSpeed;
 import static frc.robot.Constants.DriveConstants.minDriveSpeed;
-import static frc.robot.Constants.PneumaticConstants.shifterSolenoidPortA;
-import static frc.robot.Constants.PneumaticConstants.shifterSolenoidPortB;
+
 
 public class DrivetrainSubsystem extends SubsystemBase {
     ChassisSpeeds chassisSpeeds;
@@ -33,7 +27,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     private final AHRS gyro = new AHRS(SerialPort.Port.kMXP);
     public final Encoder rightEncoder;
     public final Encoder leftEncoder;
-    private final DoubleSolenoid driveShifter = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, shifterSolenoidPortA, shifterSolenoidPortB);
+    private final DoubleSolenoid driveShifter = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, Constants.PneumaticConstants.shifterSolenoidPortA, Constants.PneumaticConstants.shifterSolenoidPortB);
 
     private final MotorControllerGroup leftMotors;
     private final MotorControllerGroup rightMotors;
