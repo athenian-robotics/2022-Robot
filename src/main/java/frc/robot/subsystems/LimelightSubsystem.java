@@ -6,7 +6,7 @@ import edu.wpi.first.networktables.*;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class LimelightSubsystem extends SubsystemBase {
-
+    // Setup limelight network table
     final NetworkTable limelight;
 
     public LimelightSubsystem(String tableName) {
@@ -18,12 +18,8 @@ public class LimelightSubsystem extends SubsystemBase {
         }, EntryListenerFlags.kUpdate);
     }
 
-
     public void disable() {}
 
-    public void periodic() {
-
-    }
-
+    public void periodic() { }
 }
 

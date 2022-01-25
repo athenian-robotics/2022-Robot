@@ -14,7 +14,7 @@ public class InvertIntake extends CommandBase {
 
     @Override
     public void initialize() {
-        intakeSubsystem.invert();
+        intakeSubsystem.invertIntake();
     }
 
     @Override

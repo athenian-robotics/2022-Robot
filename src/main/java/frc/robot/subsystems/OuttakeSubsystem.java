@@ -9,47 +9,37 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import static frc.robot.Constants.MechanismConstants.*;
 
 public class OuttakeSubsystem extends SubsystemBase {
-
+    // Setup motors, pid controller, and booleans
     private final TalonFX shooterMotorFront = new TalonFX(shooterMotorPortA);
     private final TalonFX shooterMotorBack = new TalonFX(shooterMotorPortB);
-    //private final TalonFX hoodAngleMotor = new TalonFX(hoodAngleMotorPort); //DEGREES
-    //private final TalonFX turretMotor = new TalonFX(turretMotorPort);
-    //private final Encoder hoodEncoder = new Encoder(hoodAngleEncoderPortA, hoodAngleEncoderPortB);
-
     PIDController pid;
-
-    public boolean shooterRunning;
+    public boolean shooterRunning = false;
     public boolean hoodUp = false;
 
     public OuttakeSubsystem() {
-        //hoodEncoder.setDistancePerPulse(360.0/2048.0);
-        //hoodEncoder.reset();
-
         shooterMotorFront.setInverted(true);
         shooterMotorBack.setInverted(false);
-        shooterRunning = false;
         pid = new PIDController(0, 0 ,0);
     }
 
-    private void setShooterPower(double power) {
-        setShooterFront(maxOuttakeSpeed);
-        setShooterBack(maxOuttakeSpeed);
+    private void setShooterPower(double power) { // Enables both wheels
+        setShooterFront(power);
+        setShooterBack(power);
         shooterRunning = true;
     }
     
-    public void setShooterFront(double power) {
+    public void setShooterFront(double power) { // Enables front wheels
         shooterMotorFront.set(ControlMode.PercentOutput, power);
         shooterRunning = true;
     }
 
-    public void setShooterBack(double power) {
+    public void setShooterBack(double power) { // Enables back wheels
         shooterMotorBack.set(ControlMode.PercentOutput, power);
         shooterRunning = true;
     }
 
-    public void stopShooter() {
-        shooterMotorFront.set(ControlMode.PercentOutput, 0);
-        shooterMotorBack.set(ControlMode.PercentOutput, 0);
+    public void stopShooter() { // Disables shooter
+        setShooterPower(0);
         shooterRunning = false;
     }
 
