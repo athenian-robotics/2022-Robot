@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.OuttakeSubsystem;
 
 public class ToggleShooter extends CommandBase {
-    private final OuttakeSubsystem outtake;
+    private final OuttakeSubsystem outtake; // Define outtake subsystem
 
     public ToggleShooter(OuttakeSubsystem outtake) {
         this.outtake = outtake;
@@ -14,12 +14,10 @@ public class ToggleShooter extends CommandBase {
     @Override
     public void initialize() {
         outtake.toggleShooter();
-    }
+    } // On initialize/setup, toggle the shooter
 
     @Override
-    public void execute() {
-
-    }
+    public void execute() {}
 
     @Override
     public boolean isFinished() {
@@ -27,7 +25,5 @@ public class ToggleShooter extends CommandBase {
     }
 
     @Override
-    public void end(boolean interrupted) {
-
-    }
+    public void end(boolean interrupted) {}
 }

@@ -4,8 +4,8 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DrivetrainSubsystem;
 
-
 public class TankDrive extends CommandBase {
+    // Setup drivetrain and xbox controller
     private final DrivetrainSubsystem drivetrain;
     private final XboxController xboxController;
 
@@ -16,14 +16,12 @@ public class TankDrive extends CommandBase {
     }
 
     @Override
-    public void initialize() {
-
-    }
+    public void initialize() {} // Nothing needed on initialize
 
     @Override
     public void execute() {
-        drivetrain.tankDrive(xboxController.getLeftY(), // Left velocity
-                             -xboxController.getRightY()); // Right velocity
+        drivetrain.tankDrive(xboxController.getLeftY(), // Left velocity (Xbox Controller: Left stick, Y axis)
+                             -xboxController.getRightY()); // Right velocity (Xbox Controller: Right stick, Y axis)
     }
 
     @Override
@@ -32,7 +30,5 @@ public class TankDrive extends CommandBase {
     }
 
     @Override
-    public void end(boolean interrupted) {
-
-    }
+    public void end(boolean interrupted) {}
 }
