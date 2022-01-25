@@ -1,38 +1,41 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
-import static frc.robot.Constants.MechanismConstants.IntakeMotorPort;
-import static frc.robot.Constants.PneumaticConstants.IntakePneumaticPort1;
-import static frc.robot.Constants.PneumaticConstants.IntakePneumaticPort2;
+import static frc.robot.Constants.PneumaticConstants.*;
+
 
 public class IntakeSubsystem extends SubsystemBase {
-    private final TalonFX intakeMotor = new TalonFX(IntakeMotorPort);
-    private final Solenoid intakePneumatic1 = new Solenoid(PneumaticsModuleType.REVPH,IntakePneumaticPort1);
-    private final Solenoid intakePneumatic2 = new Solenoid(PneumaticsModuleType.REVPH,IntakePneumaticPort2);
+    private final TalonFX intakeMotor = new TalonFX(Constants.MechanismConstants.intakeMotorPort);
+
+    private final DoubleSolenoid rightIntakePneumatic = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, pneumaticPortRightA, pneumaticPortRightB);
+
     public boolean isRunning = false;
     public boolean isExtended = false;
+    public boolean isInverted = false;
 
     public IntakeSubsystem() {
+        //rightIntakePneumatic.close();
+
+        intakeMotor.configFactoryDefault(); // Initialize motor set up
+        intakeMotor.setNeutralMode(NeutralMode.Coast);
+        intakeMotor.configOpenloopRamp(0.1); // Ramp up (Trapezoid)
+        intakeMotor.configClosedloopRamp(0.1); // Ramp down (Trapezoid)
     }
 
     public void startIntake() {
-        intakeMotor.set(ControlMode.PercentOutput, 50);
-        System.out.println("start intake");
+        intakeMotor.set(ControlMode.PercentOutput, Constants.MechanismConstants.intakeSpeed);
         isRunning = true;
     }
 
-    public void invert() {
-        intakeMotor.setInverted(!intakeMotor.getInverted());
-    }
-
     public void stopIntake() {
-        intakeMotor.set(ControlMode.PercentOutput,0);
-        System.out.println("stop intake");
+        intakeMotor.set(ControlMode.PercentOutput, 0);
         isRunning = false;
     }
 
@@ -44,28 +47,40 @@ public class IntakeSubsystem extends SubsystemBase {
         }
     }
 
-    //push out intake over bumper
-    public void extendIntakePneumatic(){
-        intakePneumatic1.set(true);
-        intakePneumatic2.set(true);
-        isExtended=true;
+    public void invert() {
+        isInverted = !this.isInverted;
+        int sign = isInverted ? 1: -1;
+        if (isRunning) intakeMotor.set(ControlMode.PercentOutput, sign * Constants.MechanismConstants.intakeSpeed);
     }
 
-    //retract intake over bumper
-    public void retractIntakePneumatic(){
-        intakePneumatic1.set(false);
-        intakePneumatic2.set(false);
-        isExtended=false;
+    public void extendPneumatic() {
+        rightIntakePneumatic.set(DoubleSolenoid.Value.kForward);
+        isExtended = true;
     }
 
+    public void retractPneumatic() {
+        rightIntakePneumatic.set(DoubleSolenoid.Value.kReverse);
+        isExtended = false;
+    }
 
     public void togglePneumatic(){
-        if(isExtended){
-            retractIntakePneumatic();
+        if (rightIntakePneumatic.get() == DoubleSolenoid.Value.kForward) {
+            retractPneumatic();
+        } else {
+            extendPneumatic();
         }
-        else{
-            extendIntakePneumatic();
-        }
+    }
+
+    public void toggleIntakeAndPneumatic() {
+        togglePneumatic(); toggleIntake();
+        if (!isExtended && isRunning) disable();
+    }
+
+
+
+    public void disable() {
+        stopIntake();
+        retractPneumatic();
     }
 
     @Override

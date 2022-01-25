@@ -1,38 +1,64 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.SerialPort;
+import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
+import static frc.robot.Constants.DriveConstants.*;
+
+
 public class DrivetrainSubsystem extends SubsystemBase {
+    // Setup autonomous and sensor objects
     ChassisSpeeds chassisSpeeds;
     DifferentialDriveOdometry odometry;
-    // Creates kinematics object: track width of 27 inches (track width = distance between two sets of wheels)
-    DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(Units.inchesToMeters(27));
-    private final AHRS gyro = new AHRS(SerialPort.Port.kUSB);
+    private final AHRS gyro = new AHRS(SerialPort.Port.kMXP);
 
-    private final TalonFX[] driveMotors = {
-            new TalonFX(Constants.DriveConstants.leftFrontDrivePort),
-            new TalonFX(Constants.DriveConstants.leftRearDrivePort),
-            new TalonFX(Constants.DriveConstants.rightFrontDrivePort),
-            new TalonFX(Constants.DriveConstants.rightRearDrivePort)
-    };
+    // Setup drive objects
+    public final Encoder rightEncoder;
+    public final Encoder leftEncoder;
+    private final DoubleSolenoid driveShifterRight = new DoubleSolenoid(PneumaticsModuleType.CTREPCM,
+            Constants.PneumaticConstants.shifterRightSolenoidPortA, Constants.PneumaticConstants.shifterRightSolenoidPortB);
+    private final DoubleSolenoid driveShifterLeft = new DoubleSolenoid(PneumaticsModuleType.CTREPCM,
+            Constants.PneumaticConstants.shifterLeftSolenoidPortA, Constants.PneumaticConstants.shifterLeftSolenoidPortB);
+    private final MotorControllerGroup leftMotors;
+    private final MotorControllerGroup rightMotors;
+    private final DifferentialDrive drive;
 
     public DrivetrainSubsystem() {
+        // Configure motors
+        WPI_TalonFX[] driveMotors = {
+                new WPI_TalonFX(Constants.DriveConstants.rightRearDrivePort),
+                new WPI_TalonFX(Constants.DriveConstants.rightFrontDrivePort),
+                new WPI_TalonFX(Constants.DriveConstants.leftRearDrivePort),
+                new WPI_TalonFX(Constants.DriveConstants.leftFrontDrivePort)
+        };
         configureDriveMotors(driveMotors); // Initialize motors
-        odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading())); // Initialize odometry configuration
+        leftMotors = new MotorControllerGroup(driveMotors[0], driveMotors[1]);
+        rightMotors = new MotorControllerGroup(driveMotors[2], driveMotors[3]);
+        rightMotors.setInverted(true);
+        drive = new DifferentialDrive(leftMotors, rightMotors); // Initialize Differential Drive
+
+        // Configure encoders
+        rightEncoder = new Encoder(rightEncoderChannelA, rightEncoderchannelB, true, Encoder.EncodingType.k2X);
+        leftEncoder = new Encoder(leftEncoderChannelA, leftEncoderChannelB, false, Encoder.EncodingType.k2X);
+        leftEncoder.setDistancePerPulse(6.0 * 0.0254 * Math.PI / 2048 * 4/3); // 6 inch wheel, to meters, 2048 ticks //0.0254
+        rightEncoder.setDistancePerPulse(6.0 * 0.0254 * Math.PI / 2048 * 4/3);// 6 inch wheel, to meters, 2048 ticks
+
+        //Configure solenoids
+        driveShifterRight.set(DoubleSolenoid.Value.kReverse);
+        driveShifterLeft.set(DoubleSolenoid.Value.kReverse);
     }
 
     /**
@@ -41,16 +67,37 @@ public class DrivetrainSubsystem extends SubsystemBase {
      * @param rot Velocity of rotation
      */
     public void arcadeDrive(double throttle, double rot) {
-        double leftPWM = throttle + rot;
-        double rightPWM = throttle - rot;
+        drive.arcadeDrive(throttle * maxDriveSpeed, maxDriveSpeed < 0 ? -rot * maxDriveSpeed : rot * maxDriveSpeed);
+    }
 
-        // Linearize
-        double magnitude = Math.max(Math.abs(leftPWM), Math.abs(rightPWM));
-        if (magnitude > 1.0) {
-            leftPWM /= magnitude;
-            rightPWM /= magnitude;
-        }
-        setMotorPercentOutput(-leftPWM, rightPWM); // Set motor values based off throttle and rotation inputs
+    /**
+     * Utilize both joystick values to tank drive a west-coast drivetrain
+     * @param leftVelocity Speed of the chassis' left side
+     * @param rightVelocity Speed of the chassis' right side
+     */
+    public void tankDrive(double leftVelocity, double rightVelocity) {
+        int leftSign = leftVelocity >= 0 ? 1 : -1; // Checks leftSpeed and gathers whether it is negative or positive
+        int rightSign = rightVelocity >= 0 ? 1 : -1; // Checks rightSpeed and gathers whether it is negative or positive
+
+        double leftPower = ((maxDriveSpeed - minDriveSpeed) * Math.abs(leftVelocity) + minDriveSpeed) * leftSign;
+        double rightPower = ((maxDriveSpeed - minDriveSpeed) * Math.abs(rightVelocity) + minDriveSpeed) * rightSign;
+
+        drive.tankDrive(leftVelocity, rightVelocity);
+    }
+
+    /**
+     * Tank drive without deadband, giving full control of velocities to PID controller
+     * @param leftVelocity Velocity of the left wheels
+     * @param rightVelocity Velocity of the right wheels
+     */
+    public void autoTankDrive(double leftVelocity, double rightVelocity) {
+        setMotorPercentOutput(leftVelocity, rightVelocity);
+    }
+
+    public void tankDriveVolts(double leftVolts, double rightVolts) {
+        leftMotors.setVoltage(leftVolts);
+        leftMotors.setVoltage(rightVolts);
+        drive.feed();
     }
 
     /**
@@ -59,10 +106,12 @@ public class DrivetrainSubsystem extends SubsystemBase {
      * @param rightOutput Right front wheel output percentage
      */
     public void setMotorPercentOutput(double leftOutput, double rightOutput) {
-        driveMotors[0].set(ControlMode.PercentOutput, leftOutput);
-        driveMotors[1].set(ControlMode.PercentOutput, leftOutput);
-        driveMotors[2].set(ControlMode.PercentOutput, rightOutput);
-        driveMotors[3].set(ControlMode.PercentOutput, rightOutput);
+//        driveMotors[0].set(ControlMode.PercentOutput, leftOutput);
+//        driveMotors[1].set(ControlMode.PercentOutput, leftOutput);
+//        driveMotors[2].set(ControlMode.PercentOutput, rightOutput);
+//        driveMotors[3].set(ControlMode.PercentOutput, rightOutput);
+        leftMotors.set(leftOutput);
+        rightMotors.set(rightOutput);
     }
 
     /**
@@ -74,12 +123,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
             motor.configFactoryDefault(); // Initialize motor set up
             motor.configOpenloopRamp(0.2); // Ramp up (Trapezoid)
             motor.configClosedloopRamp(0.2); // Ramp down (Trapezoid)
-            motor.setNeutralMode(NeutralMode.Coast); // Default robot mode should be Coasting
+            motor.setNeutralMode(NeutralMode.Brake); // Default robot mode should be Coasting
             motor.configForwardSoftLimitEnable(false);
             motor.configReverseSoftLimitEnable(false);
-
-            motor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 30, 0, 0));
-            motor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
         }
     }
 
@@ -94,52 +140,73 @@ public class DrivetrainSubsystem extends SubsystemBase {
         resetEncoderCounts();
     }
 
-    public int getEncoderCount(int sensorIndex) {
-        return driveMotors[sensorIndex].getSelectedSensorPosition();
+    public int getLeftEncoderCount() { return this.leftEncoder.get(); } // Returns left encoder raw count
+
+    public int getRightEncoderCount() { return this.rightEncoder.get(); } // Returns right encoder raw count
+
+    public void resetEncoderCounts() { // Resets the encoders
+        this.leftEncoder.reset();
+        this.rightEncoder.reset();
     }
+
+    public double getRightDistanceDriven() { return rightEncoder.getDistance(); } // Returns the distance the right side has driven
+
+    public double getLeftDistanceDriven() { return leftEncoder.getDistance(); } // Returns the distance the left side has driven
 
     public double getGyroAngle() {
-        return gyro.getAngle();
+        return gyro.getAngle() % 360;
     }
 
-    public double getHeading() {
-        return Math.IEEEremainder(-gyro.getAngle(), 360);
+    public double getGyroYaw() {
+        return gyro.getYaw();
     }
 
-    public void resetGyroAngle() {
-        gyro.zeroYaw();
-    }
+    public void resetGyro() { gyro.reset(); } // Zero Gyro's angle
 
     public void setGyroOffset(double angle) { // Units: Degrees
-        gyro.setAngleAdjustment(angle);
+        gyro.setAngleAdjustment(angle); // Sets the gyro's offset
     }
 
-    public double getMotorInputCurrent(int motorIndex) {
-        return driveMotors[motorIndex].getSupplyCurrent();
+    public double getHeading() { return Math.IEEEremainder(-gyro.getAngle(), 360); } // Gets the gyro's heading, scaled within 360 degrees
+
+    public void resetOdometry(Pose2d pose) {
+        resetEncoders();
+        odometry.resetPosition(pose, Rotation2d.fromDegrees(getHeading()));
     }
 
-    public void resetEncoderCounts() {
-        driveMotors[0].setSelectedSensorPosition(0);
-        driveMotors[2].setSelectedSensorPosition(0);
+    private void resetEncoders() {
+        leftEncoder.reset();
+        rightEncoder.reset();
     }
 
-    public double getWheelDistanceMeters(int sensorIndex) {
-        return (driveMotors[sensorIndex].getSelectedSensorPosition() / 4096.0)
-                * Constants.DriveConstants.driveGearRatio * Math.PI * Units.feetToMeters(Constants.DriveConstants.wheelDiameter);
+    public void toggleShifter() {
+        driveShifterRight.toggle();
+        driveShifterLeft.toggle();
     }
 
-    public Pose2d getRobotPose() {
+    public Pose2d getPose() {
         return odometry.getPoseMeters();
     }
 
-    public DifferentialDriveKinematics getDrivetrainKinematics() {
-        return kinematics;
+    public DifferentialDriveWheelSpeeds getWheelSpeeds() {
+        return new DifferentialDriveWheelSpeeds(leftEncoder.getRate(), rightEncoder.getRate());
+    }
+
+    public void disable() {
+        drive.tankDrive(0, 0);
     }
 
     @Override
     public void periodic() {
         // Consistently update the robot's odometry as it moves throughout the field
-        odometry.update(Rotation2d.fromDegrees(getHeading()), getWheelDistanceMeters(0), getWheelDistanceMeters(2));
+
+        SmartDashboard.putNumber("Gyro Angle: ", getGyroAngle());
+        SmartDashboard.putNumber("Gyro Heading: ", getHeading());
+        SmartDashboard.putNumber("Raw Left Enc: ", getLeftEncoderCount());
+        SmartDashboard.putNumber("Raw Right Enc: ", getRightEncoderCount());
+        SmartDashboard.putNumber("Left Dist: ", getLeftDistanceDriven());
+        SmartDashboard.putNumber("Right Dist: ", getRightDistanceDriven());
+        SmartDashboard.putNumber("GYRO YAW: ", getGyroAngle());
     }
 }
 
