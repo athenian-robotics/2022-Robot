@@ -19,10 +19,16 @@ public final class Constants {
         public static final int rightFrontDrivePort = 2;
         public static final int rightRearDrivePort = 1;
 
+        public static final int rightEncoderChannelA = 0;
+        public static final int rightEncoderchannelB = 1;
+        public static final int leftEncoderChannelA = 2;
+        public static final int leftEncoderChannelB = 3;
+
         /** MISC CONSTANTS **/
         public static final double trackWidth = Units.inchesToMeters(27);
         public static final int driveGearRatio = 0;
         public static final int wheelDiameter = 0; // 6 in.
+
         public static final double minDriveSpeed = 0.1;
         public static final double maxDriveSpeed = 0.95;
         public static final double maxAutoSpeed = 0.55;
@@ -39,17 +45,18 @@ public final class Constants {
         public static final int intakeMotorPort = 6;
         public static final int indexerMecanumMotorPort = 0;  // CHANGE
         public static final int indexerBeltMotorPort = 0;  // CHANGE
+        public static final double indexerSpeed = 0.5;
 
         public static final int turretMotorPort = 0;  // CHANGE
 
-        public static final int shooterMotorPortA = 0;  // CHANGE
-        public static final int shooterMotorPortB = 0;  // CHANGE
+        public static final int shooterMotorPortA = 7;  // CHANGE
+        public static final int shooterMotorPortB = 8;  // CHANGE
 
         public static final int hoodAngleMotorPort = 0;  // CHANGE
         public static final double defaultHoodAngle = 30; //CHANGE
 
+        public static final double maxOuttakeSpeed = 0.65;
         public static final double intakeSpeed = 0.3; //0 to 1
-        public static final double indexerSpeed = 0.5;
         public static final double beltSpeed = 0.5;
 
         // Climber motor ports ...

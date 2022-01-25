@@ -16,29 +16,28 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
-import static frc.robot.Constants.DriveConstants.maxDriveSpeed;
-import static frc.robot.Constants.DriveConstants.minDriveSpeed;
+import static frc.robot.Constants.DriveConstants.*;
 
 
 public class DrivetrainSubsystem extends SubsystemBase {
+    // Setup autonomous and sensor objects
     ChassisSpeeds chassisSpeeds;
     DifferentialDriveOdometry odometry;
-    // Creates kinematics object: track width of 27 inches (track width = distance between two sets of wheels)
     private final AHRS gyro = new AHRS(SerialPort.Port.kMXP);
+
+    // Setup drive objects
     public final Encoder rightEncoder;
     public final Encoder leftEncoder;
-
     private final DoubleSolenoid driveShifterRight = new DoubleSolenoid(PneumaticsModuleType.CTREPCM,
             Constants.PneumaticConstants.shifterRightSolenoidPortA, Constants.PneumaticConstants.shifterRightSolenoidPortB);
     private final DoubleSolenoid driveShifterLeft = new DoubleSolenoid(PneumaticsModuleType.CTREPCM,
             Constants.PneumaticConstants.shifterLeftSolenoidPortA, Constants.PneumaticConstants.shifterLeftSolenoidPortB);
-
-
     private final MotorControllerGroup leftMotors;
     private final MotorControllerGroup rightMotors;
     private final DifferentialDrive drive;
 
     public DrivetrainSubsystem() {
+        // Configure motors
         WPI_TalonFX[] driveMotors = {
                 new WPI_TalonFX(Constants.DriveConstants.rightRearDrivePort),
                 new WPI_TalonFX(Constants.DriveConstants.rightFrontDrivePort),
@@ -51,11 +50,13 @@ public class DrivetrainSubsystem extends SubsystemBase {
         rightMotors.setInverted(true);
         drive = new DifferentialDrive(leftMotors, rightMotors); // Initialize Differential Drive
 
-        rightEncoder = new Encoder(0, 1, true, Encoder.EncodingType.k2X);
-        leftEncoder = new Encoder(2, 3, false, Encoder.EncodingType.k2X);
+        // Configure encoders
+        rightEncoder = new Encoder(rightEncoderChannelA, rightEncoderchannelB, true, Encoder.EncodingType.k2X);
+        leftEncoder = new Encoder(leftEncoderChannelA, leftEncoderChannelB, false, Encoder.EncodingType.k2X);
         leftEncoder.setDistancePerPulse(6.0 * 0.0254 * Math.PI / 2048 * 4/3); // 6 inch wheel, to meters, 2048 ticks //0.0254
         rightEncoder.setDistancePerPulse(6.0 * 0.0254 * Math.PI / 2048 * 4/3);// 6 inch wheel, to meters, 2048 ticks
 
+        //Configure solenoids
         driveShifterRight.set(DoubleSolenoid.Value.kReverse);
         driveShifterLeft.set(DoubleSolenoid.Value.kReverse);
     }
@@ -134,9 +135,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
      * @param rot Robot's rotation as a Rotation2d object
      */
     public void resetOdometry(Pose2d pose, Rotation2d rot) {
-        //setGyroOffset(rot.getDegrees());
+        setGyroOffset(rot.getDegrees());
         odometry.resetPosition(pose, rot);
-        // resetEncoderCounts();
+        resetEncoderCounts();
     }
 
     public int getLeftEncoderCount() { return this.leftEncoder.get(); } // Returns left encoder raw count
@@ -160,9 +161,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
         return gyro.getYaw();
     }
 
-    public void resetGyro() {
-        gyro.reset(); // Zero Gyro's angle
-    }
+    public void resetGyro() { gyro.reset(); } // Zero Gyro's angle
 
     public void setGyroOffset(double angle) { // Units: Degrees
         gyro.setAngleAdjustment(angle); // Sets the gyro's offset
@@ -207,6 +206,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Raw Right Enc: ", getRightEncoderCount());
         SmartDashboard.putNumber("Left Dist: ", getLeftDistanceDriven());
         SmartDashboard.putNumber("Right Dist: ", getRightDistanceDriven());
+        SmartDashboard.putNumber("GYRO YAW: ", getGyroAngle());
     }
 }
 

@@ -5,13 +5,12 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import frc.robot.commands.auto.lib.AutoTurnAngle;
-import frc.robot.commands.drive.ToggleShifter;;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.drive.ArcadeDrive;
-import frc.robot.commands.intake.ToggleIntake;
 import frc.robot.lib.controllers.FightStick;
 import frc.robot.subsystems.*;
 
@@ -43,12 +42,9 @@ public class RobotContainer {
   }
 
   private void configureButtonBindings() {
-    xboxY.whenPressed(new ToggleShifter(drivetrain));
-
-    FightStick.fightStickA.whenPressed(new ToggleIntake(intake, indexer));
-    //FightStick.fightStickB.whenPressed(new InvertIntake(intake));
-
-    xboxA.whenPressed(new AutoTurnAngle(drivetrain, 90));
+    // have fun with this - jason and jacob '22
+    xboxHamburger.whenPressed(new FunctionalCommand(()->drivetrain.resetGyro(),()->{},interrupted->{},()->true,drivetrain));//Reset gyro
+    xboxY.whenPressed(new FunctionalCommand(()->drivetrain.toggleShifter(),()->{},interrupted->{},()->true,drivetrain));//Toggle shifter
 
   }
 
