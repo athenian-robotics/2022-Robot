@@ -14,10 +14,10 @@ public final class Constants {
 
     public static final class DriveConstants {
         /** DRIVE MOTOR PORTS **/
-        public static final int leftFrontDrivePort = 4;
-        public static final int leftRearDrivePort = 3;
-        public static final int rightFrontDrivePort = 2;
-        public static final int rightRearDrivePort = 1;
+        public static final int leftFrontDrivePort = 2;
+        public static final int leftRearDrivePort = 1;
+        public static final int rightFrontDrivePort = 3;
+        public static final int rightRearDrivePort = 4;
 
         public static final int rightEncoderChannelA = 0;
         public static final int rightEncoderchannelB = 1;

@@ -182,6 +182,16 @@ public class DrivetrainSubsystem extends SubsystemBase {
         driveShifterLeft.toggle();
     }
 
+    public void shiftUp() { // Shifts up drive shifters
+        driveShifterRight.set(DoubleSolenoid.Value.kForward);
+        driveShifterLeft.set(DoubleSolenoid.Value.kForward);
+    }
+
+    public void shiftDown() { // Shift down drive shifters
+        driveShifterRight.set(DoubleSolenoid.Value.kReverse);
+        driveShifterLeft.set(DoubleSolenoid.Value.kReverse);
+    }
+
     public Pose2d getPose() { // Returns the Pose2d object of the robot in meters
         return odometry.getPoseMeters();
     }
