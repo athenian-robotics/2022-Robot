@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.drive.ArcadeDrive;
+import frc.robot.commands.drive.TankDrive;
 import frc.robot.commands.outtake.ToggleShooter;
 import frc.robot.lib.controllers.FightStick;
 import frc.robot.subsystems.*;
@@ -46,8 +47,14 @@ public class RobotContainer {
   private void configureButtonBindings() {
     FightStick.fightStickB.whenPressed(new ToggleShooter(outtake));
     // have fun with this - jason and jacob '22
-    xboxHamburger.whenPressed(new FunctionalCommand(() -> drivetrain.resetGyro(), () -> {}, interrupted -> {}, () -> true, drivetrain)); // Reset gyro
-    xboxY.whenPressed(new FunctionalCommand( () -> drivetrain.toggleShifter(), () -> {}, interrupted -> {}, () -> true, drivetrain)); // Toggle shifter
+    //xboxHamburger.whenPressed(new FunctionalCommand(() -> drivetrain.resetGyro(), () -> {}, interrupted -> {}, () -> true, drivetrain)); // Reset gyro
+    xboxHamburger.whenPressed(new FunctionalCommand( () -> drivetrain.toggleShifter(), () -> {}, interrupted -> {}, () -> true, drivetrain)); // Toggle shifter
+    xboxSquares.whenPressed(new FunctionalCommand(
+            () -> {
+              if (drivetrain.getDefaultCommand() instanceof ArcadeDrive)
+                drivetrain.setDefaultCommand(new TankDrive(drivetrain, xboxController));
+              else drivetrain.setDefaultCommand(new ArcadeDrive(drivetrain, xboxController));
+            }, () -> {}, interrupted -> {}, () -> true, drivetrain)); // Toggle drive mode
   }
 
   // Connects xbox buttons to button #'s for the driver station
