@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -12,7 +11,6 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.drive.ArcadeDrive;
 import frc.robot.commands.drive.TankDrive;
-import frc.robot.commands.outtake.ToggleShooter;
 import frc.robot.lib.controllers.FightStick;
 import frc.robot.subsystems.*;
 
@@ -42,6 +40,7 @@ public class RobotContainer {
     configureButtonBindings();
 
     drivetrain.setDefaultCommand(new ArcadeDrive(drivetrain, xboxController)); // Check for Arcade or Tank
+    outtake.setDefaultCommand(new SetShooterPower(outtake, 0));
   }
 
   // Configures xbox buttons to commands
