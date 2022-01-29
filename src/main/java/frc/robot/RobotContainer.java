@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.drive.ArcadeDrive;
 import frc.robot.commands.drive.TankDrive;
+import frc.robot.lib.controllers.FightStick;
 import frc.robot.subsystems.*;
 
 public class RobotContainer {
@@ -21,8 +22,6 @@ public class RobotContainer {
   public static JoystickButton xboxY;
   public static JoystickButton xboxLB;
   public static JoystickButton xboxRB;
-  public static JoystickButton xboxLP;
-  public static JoystickButton xboxRP;
   public static JoystickButton xboxSquares;
   public static JoystickButton xboxHamburger;
   public static Trigger xboxLS;
@@ -41,24 +40,23 @@ public class RobotContainer {
     configureButtonBindings();
 
     drivetrain.setDefaultCommand(new ArcadeDrive(drivetrain, xboxController)); // Check for Arcade or Tank
-    //outtake.setDefaultCommand(new SetShooterPower(outtake, 0));
   }
 
   // Configures xbox buttons to commands
   private void configureButtonBindings() {
     /*  SUBSYSTEM COMMANDS (Main, functional commands) */
-    //FightStick.fightStickB.whenPressed(new ToggleShooter(outtake));
     /* MISC COMMANDS (Random lib of commands. Written using functional commands because most are just one line ) */
     // have fun with this - jason and jacob '22
+    //xboxHamburger.whenPressed(new FunctionalCommand(() -> drivetrain.resetGyro(), () -> {}, interrupted -> {}, () -> true, drivetrain)); // Reset gyro
+    xboxHamburger.whenPressed(new FunctionalCommand( () -> drivetrain.toggleShifter(), () -> {}, interrupted -> {}, () -> true, drivetrain)); // Toggle shifter
     xboxSquares.whenPressed(new FunctionalCommand(  // Toggle drive mode
             () -> {
               if (drivetrain.getDefaultCommand() instanceof ArcadeDrive)
                 drivetrain.setDefaultCommand(new TankDrive(drivetrain, xboxController));
               else drivetrain.setDefaultCommand(new ArcadeDrive(drivetrain, xboxController));
             }, () -> {}, interrupted -> {}, () -> true, drivetrain));
-    xboxLP.whenPressed(new FunctionalCommand( () -> drivetrain.shiftDown(), () -> {}, interrupted -> {}, () -> true, drivetrain)); // Shift down
-    xboxRP.whenPressed(new FunctionalCommand( () -> drivetrain.shiftUp(), () -> {}, interrupted -> {}, () -> true, drivetrain)); // Shift up
-    xboxHamburger.whenPressed(new FunctionalCommand(() -> drivetrain.resetGyro(), () -> {}, interrupted -> {}, () -> true, drivetrain)); // Reset gyro
+    xboxLB.whenPressed(new FunctionalCommand( () -> drivetrain.shiftDown(), () -> {}, interrupted -> {}, () -> true, drivetrain)); // Shift down
+    xboxRB.whenPressed(new FunctionalCommand( () -> drivetrain.shiftUp(), () -> {}, interrupted -> {}, () -> true, drivetrain)); // Shift up
   }
 
   // Connects xbox buttons to button #'s for the driver station
@@ -69,8 +67,6 @@ public class RobotContainer {
     xboxY = new JoystickButton(xboxController, 4);
     xboxLB = new JoystickButton(xboxController, 5);
     xboxRB = new JoystickButton(xboxController, 6);
-    xboxLP = new JoystickButton(xboxController, 9);
-    xboxRP = new JoystickButton(xboxController, 10);
     xboxSquares = new JoystickButton(xboxController, 7);
     xboxHamburger = new JoystickButton(xboxController, 8);
     xboxLS = new Trigger();
