@@ -54,7 +54,8 @@ public final class Constants {
         public static final int shooterMotorPortB = 8;  // CHANGE
         //SHOOTER HOOD
         public static final int hoodAngleMotorPort = 0;  // CHANGE
-        public static final int hoodAngleEncoderPort = 9;
+        public static final int hoodAngleEncoderPortA = 8;
+        public static final int hoodAngleEncoderPortB = 9;
         public static final double defaultHoodAngle = 30; //CHANGE
         //MAX MECHANISM SPEEDS
         public static final double idleOuttakeSpeed = 0.5;

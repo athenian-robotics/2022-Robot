@@ -73,7 +73,7 @@ public class RobotContainer {
   }
 
   // Disables all robot subsystems (Emergency only)
-  private void disableAll() {
+  public void disableAll() {
     drivetrain.disable();
     indexer.disable();
     intake.disable();
