@@ -155,58 +155,68 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     public double getGyroAngle() {
         return gyro.getAngle() % 360;
-    }
+    } // Returns the total accumulated yaw scaled under 360
 
     public double getGyroYaw() {
         return gyro.getYaw();
-    }
+    } // Returns the gyro's rotation about the Z-axis
 
     public void resetGyro() { gyro.reset(); } // Zero Gyro's angle
 
-    public void setGyroOffset(double angle) { // Units: Degrees
-        gyro.setAngleAdjustment(angle); // Sets the gyro's offset
-    }
+    public void setGyroOffset(double angle) { gyro.setAngleAdjustment(angle); }//  Sets the gyro's offset (units: degrees)
 
     public double getHeading() { return Math.IEEEremainder(-gyro.getAngle(), 360); } // Gets the gyro's heading, scaled within 360 degrees
 
-    public void resetOdometry(Pose2d pose) {
+    public void resetOdometry(Pose2d pose) { // Reset's robot odometry
         resetEncoders();
         odometry.resetPosition(pose, Rotation2d.fromDegrees(getHeading()));
     }
 
-    private void resetEncoders() {
+    private void resetEncoders() { // Resets the drive encoders
         leftEncoder.reset();
         rightEncoder.reset();
     }
 
-    public void toggleShifter() {
+    public void toggleShifter() { // Toggles drive shifters
         driveShifterRight.toggle();
         driveShifterLeft.toggle();
     }
 
-    public Pose2d getPose() {
+    public void shiftUp() { // Shifts up drive shifters
+        driveShifterRight.set(DoubleSolenoid.Value.kForward);
+        driveShifterLeft.set(DoubleSolenoid.Value.kForward);
+    }
+
+    public void shiftDown() { // Shift down drive shifters
+        driveShifterRight.set(DoubleSolenoid.Value.kReverse);
+        driveShifterLeft.set(DoubleSolenoid.Value.kReverse);
+    }
+
+    public Pose2d getPose() { // Returns the Pose2d object of the robot in meters
         return odometry.getPoseMeters();
     }
 
-    public DifferentialDriveWheelSpeeds getWheelSpeeds() {
+    public DifferentialDriveWheelSpeeds getWheelSpeeds() { // Returns the differential drive wheel speeds of the chassis
         return new DifferentialDriveWheelSpeeds(leftEncoder.getRate(), rightEncoder.getRate());
     }
 
-    public void disable() {
+    public void disable() { // Disables drivetrain movement
         drive.tankDrive(0, 0);
     }
 
+    /**
+     * Periodic will be run over and over again, similar to that of a command's execute method, when the subsystem is initialized
+     */
     @Override
     public void periodic() {
         // Consistently update the robot's odometry as it moves throughout the field
-
         SmartDashboard.putNumber("Gyro Angle: ", getGyroAngle());
         SmartDashboard.putNumber("Gyro Heading: ", getHeading());
-        SmartDashboard.putNumber("Raw Left Enc: ", getLeftEncoderCount());
-        SmartDashboard.putNumber("Raw Right Enc: ", getRightEncoderCount());
-        SmartDashboard.putNumber("Left Dist: ", getLeftDistanceDriven());
-        SmartDashboard.putNumber("Right Dist: ", getRightDistanceDriven());
-        SmartDashboard.putNumber("GYRO YAW: ", getGyroAngle());
+        SmartDashboard.putNumber("Gyro Yaw: ", getGyroYaw());
+        SmartDashboard.putNumber("Left Drive Encoder: ", getLeftEncoderCount());
+        SmartDashboard.putNumber("Right Drive Encoder: ", getRightEncoderCount());
+        SmartDashboard.putNumber("Left Drive Distance: ", getLeftDistanceDriven());
+        SmartDashboard.putNumber("Right Drive Distance: ", getRightDistanceDriven());
     }
 }
 

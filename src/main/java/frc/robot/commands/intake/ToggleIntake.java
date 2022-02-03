@@ -1,13 +1,11 @@
 package frc.robot.commands.intake;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.commands.indexer.StartBelt;
-import frc.robot.commands.indexer.StopBelt;
 import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 
-
 public class ToggleIntake extends CommandBase {
+    // Define necessary subsystems
     private final IntakeSubsystem intakeSubsystem;
     private final IndexerSubsystem indexerSubsystem;
 
@@ -18,17 +16,10 @@ public class ToggleIntake extends CommandBase {
     }
 
     @Override
-    public void initialize() {
-        intakeSubsystem.toggleIntake();
-//        if (intakeSubsystem.isRunning) {
-//            new StartBelt(indexerSubsystem).schedule();
-//        }
-    }
+    public void initialize() { intakeSubsystem.toggleIntake(); } // On initialize, toggle intake
 
     @Override
-    public void execute() {
-
-    }
+    public void execute() {}
 
     @Override
     public boolean isFinished() {
@@ -36,8 +27,5 @@ public class ToggleIntake extends CommandBase {
     }
 
     @Override
-    public void end(boolean interrupted) {
-//        if (!intakeSubsystem.isRunning)
-//            new StopBelt(indexerSubsystem, 5).schedule();
-    }
+    public void end(boolean interrupted) {}
 }
