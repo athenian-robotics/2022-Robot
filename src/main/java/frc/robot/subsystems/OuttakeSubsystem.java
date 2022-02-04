@@ -17,7 +17,7 @@ public class OuttakeSubsystem extends SubsystemBase {
     // Setup motors, pid controller, and booleans
     private final TalonFX shooterMotorFront = new TalonFX(shooterMotorPortA);
     private final TalonFX shooterMotorBack = new TalonFX(shooterMotorPortB);
-    private final CANSparkMax hoodAngleMotor = new CANSparkMax(hoodAngleMotorPort, CANSparkMaxLowLevel.MotorType.kBrushless);
+    //private final CANSparkMax hoodAngleMotor = new CANSparkMax(hoodAngleMotorPort, CANSparkMaxLowLevel.MotorType.kBrushless);
 
     private final Encoder hoodAngleEncoder = new Encoder(hoodAngleEncoderPortA, hoodAngleEncoderPortB);
 
@@ -37,7 +37,7 @@ public class OuttakeSubsystem extends SubsystemBase {
 
         shooterMotorFront.setInverted(true);
         shooterMotorBack.setInverted(false);
-        hoodAngleMotor.setInverted(false);
+        //hoodAngleMotor.setInverted(false);
 
         hoodAnglePID = new PIDController(0.035, 0.12,0.001);
         frontShooterPID = new PIDController(0, 0 ,0);
@@ -86,7 +86,7 @@ public class OuttakeSubsystem extends SubsystemBase {
 
         if (shooterRunning) {
             double power = hoodAnglePID.calculate(getHoodAngle());
-            hoodAngleMotor.set(power);
+            //hoodAngleMotor.set(power);
         }
     }
 }

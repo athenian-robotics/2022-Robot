@@ -70,8 +70,10 @@ public final class Constants {
         public static final int shifterRightSolenoidPortB = 4;
         public static final int shifterLeftSolenoidPortA = 7; // SOLENOID 1
         public static final int shifterLeftSolenoidPortB = 3;
-        public static final int pneumaticPortRightA = 0;
-        public static final int pneumaticPortRightB = 2;
+        public static final int pneumaticPortRightA = 6; // SOLENOID 4
+        public static final int pneumaticPortRightB = 5;
+        public static final int pneumaticPortLeftA = 0; // SOLENOID 3
+        public static final int pneumaticPortLeftB = 2;
 
         // Pneumatics constants ...
     }
