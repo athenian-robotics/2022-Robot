@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.commands.auto.AutoRoutine6;
 import frc.robot.commands.drive.ArcadeDrive;
 import frc.robot.commands.drive.TankDrive;
 import frc.robot.commands.intake.ToggleIntake;
@@ -88,6 +89,8 @@ public class RobotContainer {
 
   // Returns the robot's main autonomous command
   public Command getAutonomousCommand() {
-    return null;
+
+    return new AutoRoutine6(drivetrain);
   }
 }
+
