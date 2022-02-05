@@ -36,7 +36,7 @@ public class AutoTurnAngle extends CommandBase {
 
     @Override
     public void execute() {
-        power = Math.min(Math.abs(pid.calculate(drivetrainSubsystem.getGyroYaw())), Constants.DriveConstants.maxAutoTurn); // Scale under max constant
+        power = Math.min(Math.abs(pid.calculate(drivetrainSubsystem.getGyroYaw())), Constants.AutoConstants.maxAutoTurn); // Scale under max constant
         leftSign = Math.abs(setpoint - drivetrainSubsystem.getGyroYaw()) > 180 ? -1 : 1; // Fastest direction
         rightSign = Math.abs(setpoint - drivetrainSubsystem.getGyroYaw()) > 180 ? 1 : -1; // Fastest direction
         power = Math.abs(power) < 0.01 ? 0 : power; // Deadband
