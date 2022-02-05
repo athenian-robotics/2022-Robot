@@ -53,7 +53,7 @@ public class AutoRoutine6 extends CommandBase {
 
         // An example trajectory to follow.  All units in meters.
         // create a new trajectory 1 meter forward
-        Trajectory exampleTrajectory = PathPlanner.loadPath("New Path", 3,3);
+        Trajectory exampleTrajectory = PathPlanner.loadPath("New Path", 3, 3);
 
         this.ramseteCommand = new RamseteCommand(
                 exampleTrajectory,
