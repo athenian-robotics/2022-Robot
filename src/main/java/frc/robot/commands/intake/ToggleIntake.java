@@ -16,7 +16,10 @@ public class ToggleIntake extends CommandBase {
     }
 
     @Override
-    public void initialize() { intakeSubsystem.toggleIntake(); } // On initialize, toggle intake
+    public void initialize() {
+        intakeSubsystem.toggleIntake(); // On initialize, toggle intake
+        intakeSubsystem.togglePneumatic();
+    }
 
     @Override
     public void execute() {}

@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.drive.ArcadeDrive;
 import frc.robot.commands.drive.TankDrive;
+import frc.robot.commands.intake.ToggleIntake;
 import frc.robot.lib.controllers.FightStick;
 import frc.robot.subsystems.*;
 
@@ -47,9 +48,7 @@ public class RobotContainer {
   // Configures xbox buttons to commands
   private void configureButtonBindings() {
     /*  SUBSYSTEM COMMANDS (Main, functional commands) */
-    FightStick.fightStickA.whenPressed(new FunctionalCommand(() -> intake.toggleIntake(), () -> {}, interrupted -> {}, () -> true, intake));
-    FightStick.fightStickB.whenPressed(new FunctionalCommand(() -> intake.extendPneumatic(), () -> {}, interrupted -> {}, () -> true, intake));
-    FightStick.fightStickY.whenPressed(new FunctionalCommand(() -> intake.retractPneumatic(), () -> {}, interrupted -> {}, () -> true, intake));
+    FightStick.fightStickA.whenPressed(new ToggleIntake(intake, indexer)); // Toggle intake wheels and pneumatics
 
     /* MISC COMMANDS (Random lib of commands. Written using functional commands because most are just one line ) */
     // have fun with this - jason and jacob '22
@@ -61,7 +60,6 @@ public class RobotContainer {
             }, () -> {}, interrupted -> {}, () -> true, drivetrain));
     xboxLP.whenPressed(new FunctionalCommand( () -> drivetrain.shiftDown(), () -> {}, interrupted -> {}, () -> true, drivetrain)); // Shift down
     xboxRP.whenPressed(new FunctionalCommand( () -> drivetrain.shiftUp(), () -> {}, interrupted -> {}, () -> true, drivetrain)); // Shift up
-    xboxHamburger.whenPressed(new FunctionalCommand(() -> drivetrain.resetGyro(), () -> {}, interrupted -> {}, () -> true, drivetrain)); // Reset gyro
   }
 
   // Connects xbox buttons to button #'s for the driver station
