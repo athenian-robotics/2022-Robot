@@ -5,6 +5,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.lib.colorwheel.ColorWheelUtils;
 import frc.robot.lib.controllers.FightStick;
 
 import static frc.robot.Constants.MechanismConstants.*;
@@ -16,7 +17,7 @@ public class OuttakeSubsystem extends SubsystemBase {
     private final TalonFX shooterMotorBack = new TalonFX(shooterMotorPortB);
     private final Servo leftHoodAngleServo = new Servo(1);
     private final Servo rightHoodAngleServo = new Servo(2);
-
+    ColorWheelUtils colorWheel = new ColorWheelUtils();
     PIDController frontShooterPID;
     PIDController backShooterPID;
 
@@ -71,6 +72,8 @@ public class OuttakeSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        colorWheel.updateColorsOnDashboard();
+        colorWheel.currentColor();
         SmartDashboard.putBoolean("Outtake", shooterRunning);
         System.out.println(leftHoodAngleServo.getPosition());
 

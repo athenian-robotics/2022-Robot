@@ -6,7 +6,7 @@ package frc.robot.lib.controllers;
 
 public interface FightStickButton {
 
-    frc.robot.lib.controllers.FightStickInput.input getButtonInputType();
+    FightStickInput.input getButtonInputType();
 
     boolean get();
 
