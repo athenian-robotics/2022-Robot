@@ -2,18 +2,23 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
-import static frc.robot.Constants.MechanismConstants.indexerBeltMotorPort;
-import static frc.robot.Constants.MechanismConstants.indexerMecanumMotorPort;
+import static frc.robot.Constants.MechanismConstants.*;
 
 public class IndexerSubsystem extends SubsystemBase {
     // Configure motors and booleans
     private final TalonFX indexerMotor = new TalonFX(indexerMecanumMotorPort);
     private final TalonFX beltMotor = new TalonFX(indexerBeltMotorPort);
+
+    private final AnalogInput magazineBallSensor = new AnalogInput(magazineBallSensorPort);
+
     public boolean indexerRunning = false;
     public boolean beltRunning = false;
+    public boolean ballInMagazine = false;
 
     public IndexerSubsystem() { }
 
@@ -47,6 +52,10 @@ public class IndexerSubsystem extends SubsystemBase {
     }
 
     @Override
-    public void periodic() { }
+    public void periodic() {
+        ballInMagazine = magazineBallSensor.getValue() != 0;
+        SmartDashboard.putNumber("distance sensor raw value", magazineBallSensor.getValue());
+        SmartDashboard.putNumber("distance sensor average value", magazineBallSensor.getAverageValue());
+    }
 }
 

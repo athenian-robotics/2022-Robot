@@ -57,6 +57,7 @@ public final class Constants {
         public static final int intakeMotorPort = 6;
         public static final int indexerMecanumMotorPort = 0;  // CHANGE
         public static final int indexerBeltMotorPort = 0;  // CHANGE
+        public static final int magazineBallSensorPort = 0;
         public static final double indexerSpeed = 0.5;
         //TURRET
         public static final int turretMotorPort = 0;  // CHANGE
@@ -64,9 +65,8 @@ public final class Constants {
         public static final int shooterMotorPortA = 7;  // CHANGE
         public static final int shooterMotorPortB = 8;  // CHANGE
         //SHOOTER HOOD
-        public static final int hoodAngleMotorPort = 0;  // CHANGE
-        public static final int hoodAngleEncoderPortA = 8;
-        public static final int hoodAngleEncoderPortB = 9;
+        public static final int leftHoodAngleServoPort = 0;
+        public static final int rightHoodAngleServoPort = 1;
         public static final double defaultHoodAngle = 30; //CHANGE
         //MAX MECHANISM SPEEDS
         public static final double idleOuttakeSpeed = 0.5;

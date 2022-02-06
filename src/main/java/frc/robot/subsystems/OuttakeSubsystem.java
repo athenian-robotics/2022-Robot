@@ -12,8 +12,8 @@ public class OuttakeSubsystem extends SubsystemBase {
     // Setup motors, pid controller, and booleans
     private final TalonFX shooterMotorFront = new TalonFX(shooterMotorPortA);
     private final TalonFX shooterMotorBack = new TalonFX(shooterMotorPortB);
-    private final LinearServo leftHoodAngleServo = new LinearServo(1, 140, 24);
-    private final LinearServo rightHoodAngleServo = new LinearServo(2, 140, 24);
+    private final LinearServo leftHoodAngleServo = new LinearServo(leftHoodAngleServoPort, 140, 24);
+    private final LinearServo rightHoodAngleServo = new LinearServo(rightHoodAngleServoPort, 140, 24);
 
     PIDController frontShooterPID;
     PIDController backShooterPID;
