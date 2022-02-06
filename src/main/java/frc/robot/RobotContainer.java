@@ -13,9 +13,7 @@ import frc.robot.commands.auto.AutoRoutine6;
 import frc.robot.commands.drive.ArcadeDrive;
 import frc.robot.commands.drive.TankDrive;
 import frc.robot.commands.intake.ToggleIntake;
-import frc.robot.commands.outtake.AdjustHoodAngle;
 import frc.robot.lib.controllers.FightStick;
-import frc.robot.lib.controllers.FightStickInput;
 import frc.robot.subsystems.*;
 
 public class RobotContainer {
@@ -37,7 +35,7 @@ public class RobotContainer {
   public static DrivetrainSubsystem drivetrain = new DrivetrainSubsystem();
   public static IntakeSubsystem intake = new IntakeSubsystem();
   public static IndexerSubsystem indexer = new IndexerSubsystem();
-  public static LimeLightSubsystem limelight = new LimeLightSubsystem("limelight-two");
+  public static LimelightSubsystem limelight = new LimelightSubsystem("limelight-two");
   public static OuttakeSubsystem outtake = new OuttakeSubsystem();
 
   // Sets up controllers, configures controllers, and sets the default drive mode (tank or arcade)
