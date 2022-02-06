@@ -12,7 +12,7 @@ public class LinearServo extends Servo {
  double curPos;
 
  /**
- * Parameters for L16-R Actuonix Linear Actuators
+  ** Parameters for L16-R Actuonix Linear Actuators
  *
  * @param channel PWM channel used to control the servo
  * @param length max length of the servo [mm]
@@ -53,6 +53,7 @@ servo
     } else if (curPos < setPos - m_speed *dt){
         curPos += m_speed *dt;
     } else {curPos = setPos;}
+    //lastTime = Timer.getFPGATimestamp();
  }
 
  /**

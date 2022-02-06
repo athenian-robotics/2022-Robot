@@ -2,10 +2,9 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.commands.outtake.AdjustHoodAngle;
-import frc.robot.lib.LinearServo;
 import frc.robot.lib.controllers.FightStick;
 
 import static frc.robot.Constants.MechanismConstants.*;
@@ -15,8 +14,8 @@ public class OuttakeSubsystem extends SubsystemBase {
     // Setup motors, pid controller, and booleans
     private final TalonFX shooterMotorFront = new TalonFX(shooterMotorPortA);
     private final TalonFX shooterMotorBack = new TalonFX(shooterMotorPortB);
-    private final LinearServo leftHoodAngleServo = new LinearServo(1, 140, 24);
-    private final LinearServo rightHoodAngleServo = new LinearServo(2, 140, 24);
+    private final Servo leftHoodAngleServo = new Servo(1);
+    private final Servo rightHoodAngleServo = new Servo(2);
 
     PIDController frontShooterPID;
     PIDController backShooterPID;
@@ -34,8 +33,10 @@ public class OuttakeSubsystem extends SubsystemBase {
         frontShooterPID = new PIDController(0, 0 ,0);
         backShooterPID = new PIDController(0, 0 ,0);
 
-        setHoodAngle(45);
+        //setHoodAngle(45);
         currentHoodAngle = getHoodAngle();
+        leftHoodAngleServo.setBounds(2.0, 1.8, 1.5, 1.2, 1.0);
+        rightHoodAngleServo.setBounds(2.0, 1.8, 1.5, 1.2, 1.0);
     }
 
     public void setShooterPower(double power) { // Enables both wheels
@@ -43,7 +44,7 @@ public class OuttakeSubsystem extends SubsystemBase {
         setShooterBack(power);
         shooterRunning = true;
     }
-    
+
     public void setShooterFront(double power) { if (power>1.0 || power<0.0) return; currentFrontShooterPower = power; }
 
     public void setShooterBack(double power) { if (power>1.0 || power<0.0) return; currentBackShooterPower = power; }
@@ -65,18 +66,21 @@ public class OuttakeSubsystem extends SubsystemBase {
     public void disable() {
         stopShooter();
         stopHood();
-        //stopHood();
         //stopTurret();
     }
 
     @Override
     public void periodic() {
         SmartDashboard.putBoolean("Outtake", shooterRunning);
-        leftHoodAngleServo.updateCurPos();
-        rightHoodAngleServo.updateCurPos();
+        System.out.println(leftHoodAngleServo.getPosition());
 
-        if (FightStick.fightStickJoystick.getThrottle() > 0) new AdjustHoodAngle(this, this.getHoodAngle() + 1);
-        if (FightStick.fightStickJoystick.getThrottle() < 0) new AdjustHoodAngle(this, this.getHoodAngle() - 1);
+        if (FightStick.fightStickJoystick.getY() < 0) {
+            leftHoodAngleServo.setAngle(leftHoodAngleServo.getAngle() + 1);
+            rightHoodAngleServo.setAngle(rightHoodAngleServo.getAngle() + 1);
+        } else if (FightStick.fightStickJoystick.getY() > 0) {
+            leftHoodAngleServo.setAngle(leftHoodAngleServo.getAngle() - 1);
+            rightHoodAngleServo.setAngle(rightHoodAngleServo.getAngle() - 1);
+        }
     }
 }
 

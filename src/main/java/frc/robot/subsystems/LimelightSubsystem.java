@@ -29,7 +29,7 @@ public class LimelightSubsystem extends SubsystemBase {
 
     public void periodic() {
         limelightOutputArray = limelight.getEntry("llpython").getDoubleArray(defaultLimelightOutputArray);
-        System.out.println(limelightOutputArray[1]);
+        //System.out.println(limelightOutputArray[1]);
         SmartDashboard.putNumber("xOffset", limelightOutputArray[1]);
     }
 
