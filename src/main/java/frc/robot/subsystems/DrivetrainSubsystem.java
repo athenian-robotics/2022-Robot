@@ -123,7 +123,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
             motor.configFactoryDefault(); // Initialize motor set up
             motor.configOpenloopRamp(0.2); // Ramp up (Trapezoid)
             motor.configClosedloopRamp(0.2); // Ramp down (Trapezoid)
-            motor.setNeutralMode(NeutralMode.Brake); // Default robot mode should be Coasting
+            motor.setNeutralMode(NeutralMode.Coast); // Default robot mode should be Coasting
             motor.configForwardSoftLimitEnable(false);
             motor.configReverseSoftLimitEnable(false);
         }

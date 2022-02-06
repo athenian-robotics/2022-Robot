@@ -2,8 +2,11 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.commands.outtake.AdjustHoodAngle;
 import frc.robot.lib.LinearServo;
+import frc.robot.lib.controllers.FightStick;
 
 import static frc.robot.Constants.MechanismConstants.*;
 
@@ -31,6 +34,7 @@ public class OuttakeSubsystem extends SubsystemBase {
         frontShooterPID = new PIDController(0, 0 ,0);
         backShooterPID = new PIDController(0, 0 ,0);
 
+        setHoodAngle(45);
         currentHoodAngle = getHoodAngle();
     }
 
@@ -44,9 +48,9 @@ public class OuttakeSubsystem extends SubsystemBase {
 
     public void setShooterBack(double power) { if (power>1.0 || power<0.0) return; currentBackShooterPower = power; }
 
-    public void setHoodAngle(double angle) { if (angle<=45.0 && angle>=9.0) { leftHoodAngleServo.setPosition(140*(angle-9)/36.0); rightHoodAngleServo.setPosition(140*(angle-9)/36.0); }}
+    public void setHoodAngle(double angle) { if (angle<=45.0 && angle>=9.0) { leftHoodAngleServo.setPosition(140*(angle-8)/36.0); rightHoodAngleServo.setPosition(140*(angle-8)/36.0); }}
 
-    public double getHoodAngle() { return (36*(leftHoodAngleServo.getPosition() + rightHoodAngleServo.getPosition())/280) + 9; } //DEGREES + DEFAULT 9
+    public double getHoodAngle() { return (36*(leftHoodAngleServo.getPosition() + rightHoodAngleServo.getPosition())/280) + 8; } //DEGREES + DEFAULT 9
 
     public double getTargetedHoodAngle() { return currentHoodAngle; }
 
@@ -67,8 +71,12 @@ public class OuttakeSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        SmartDashboard.putBoolean("Outtake", shooterRunning);
         leftHoodAngleServo.updateCurPos();
         rightHoodAngleServo.updateCurPos();
+
+        if (FightStick.fightStickJoystick.getThrottle() > 0) new AdjustHoodAngle(this, this.getHoodAngle() + 1);
+        if (FightStick.fightStickJoystick.getThrottle() < 0) new AdjustHoodAngle(this, this.getHoodAngle() - 1);
     }
 }
 
