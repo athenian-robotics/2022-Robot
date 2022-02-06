@@ -50,9 +50,9 @@ public class OuttakeSubsystem extends SubsystemBase {
 
     public void setShooterBack(double power) { if (power>1.0 || power<0.0) return; currentBackShooterPower = power; }
 
-    public void setHoodAngle(double angle) { if (angle<=45.0 && angle>=9.0) { leftHoodAngleServo.setPosition(140*(angle-8)/36.0); rightHoodAngleServo.setPosition(140*(angle-8)/36.0); }}
+    public void setHoodAngle(double angle) { if (angle>=minimumHoodAngle && angle<=maximumHoodAngle) { leftHoodAngleServo.setAngle(180*(angle-minimumHoodAngle)/(maximumHoodAngle-minimumHoodAngle)); rightHoodAngleServo.setAngle(180*(angle-minimumHoodAngle)/(maximumHoodAngle-minimumHoodAngle)); }}
 
-    public double getHoodAngle() { return (36*(leftHoodAngleServo.getPosition() + rightHoodAngleServo.getPosition())/280) + 8; } //DEGREES + DEFAULT 9
+    public double getHoodAngle() { return ((maximumHoodAngle-minimumHoodAngle)*(leftHoodAngleServo.getPosition() + rightHoodAngleServo.getPosition())/360) + minimumHoodAngle; } //DEGREES + DEFAULT 9
 
     public double getTargetedHoodAngle() { return currentHoodAngle; }
 
