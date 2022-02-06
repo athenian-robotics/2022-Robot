@@ -9,8 +9,8 @@ import frc.robot.commands.auto.components.GoalNotFoundException;
 
 public class LimelightSubsystem extends SubsystemBase {
     final NetworkTable limelight;
-    double[] limelightOutputArray;
-    double[] defaultLimelightOutputArray = {-1, -1, -1, -1, -1, -1, -1, -1};
+    Number[] limelightOutputArray;
+    Number[] defaultLimelightOutputArray = {-1, -1, -1, -1, -1, -1, -1, -1};
 
     public LimelightSubsystem(String tableName) {
         this.limelight = NetworkTableInstance.getDefault().getTable(tableName);
@@ -21,18 +21,16 @@ public class LimelightSubsystem extends SubsystemBase {
         if (index>8||index<0) {
             throw new IndexOutOfBoundsException();
         } else if (limelightOutputArray!=defaultLimelightOutputArray) {
-            return limelightOutputArray[index];
+            return (double) limelightOutputArray[index];
         } else {
             throw new GoalNotFoundException();
         }
     }
 
-    public void periodic() {
-        limelightOutputArray = limelight.getEntry("llpython").getDoubleArray(defaultLimelightOutputArray);
-        //System.out.println(limelightOutputArray[1]);
-        SmartDashboard.putNumber("xOffset", limelightOutputArray[1]);
-    }
+    public void disable() {}
 
-    public void disable() {
+    public void periodic() {
+        limelightOutputArray = limelight.getEntry("llpython").getNumberArray(defaultLimelightOutputArray);
+        try {SmartDashboard.putNumber("xOffset", getLimelightOutputAtIndex(1));} catch (GoalNotFoundException ignored) {}
     }
 }

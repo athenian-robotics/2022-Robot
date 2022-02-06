@@ -35,7 +35,7 @@ public class RobotContainer {
   public static DrivetrainSubsystem drivetrain = new DrivetrainSubsystem();
   public static IntakeSubsystem intake = new IntakeSubsystem();
   public static IndexerSubsystem indexer = new IndexerSubsystem();
-  public static LimelightSubsystem limelight = new LimelightSubsystem("limelight-two");
+  public static LimelightSubsystem limelight = new LimelightSubsystem("limelight-arc");
   public static OuttakeSubsystem outtake = new OuttakeSubsystem();
 
   // Sets up controllers, configures controllers, and sets the default drive mode (tank or arcade)

@@ -9,6 +9,7 @@ import frc.robot.Constants;
 import static frc.robot.Constants.MechanismConstants.indexerBeltMotorPort;
 import static frc.robot.Constants.MechanismConstants.indexerMecanumMotorPort;
 
+
 public class IndexerSubsystem extends SubsystemBase {
     // Configure motors and booleans
     private final TalonFX indexerMotor = new TalonFX(indexerMecanumMotorPort);

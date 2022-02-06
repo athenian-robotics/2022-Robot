@@ -75,7 +75,6 @@ public class OuttakeSubsystem extends SubsystemBase {
         colorWheel.updateColorsOnDashboard();
         colorWheel.currentColor();
         SmartDashboard.putBoolean("Outtake", shooterRunning);
-        System.out.println(leftHoodAngleServo.getPosition());
 
         if (FightStick.fightStickJoystick.getY() < 0) {
             leftHoodAngleServo.setAngle(leftHoodAngleServo.getAngle() + 1);
