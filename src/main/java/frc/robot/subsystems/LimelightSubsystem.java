@@ -1,25 +1,38 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.networktables.*;
-
-
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.commands.auto.GoalNotFoundException;
+
+// See http://docs.limelightvision.io/en/latest/networktables_api.html
+
 
 public class LimelightSubsystem extends SubsystemBase {
-    // Setup limelight network table
     final NetworkTable limelight;
+    double[] limelightOutputArray;
+    double[] defaultLimelightOutputArray = {-1, -1, -1, -1, -1, -1, -1, -1};
 
     public LimelightSubsystem(String tableName) {
         this.limelight = NetworkTableInstance.getDefault().getTable(tableName);
-        this.limelight.addEntryListener(new TableEntryListener() {
-            @Override
-            public void valueChanged(NetworkTable table, String key, NetworkTableEntry entry, NetworkTableValue value, int flags) {
-            }
-        }, EntryListenerFlags.kUpdate);
+        limelightOutputArray = defaultLimelightOutputArray;
     }
 
-    public void disable() {}
+    public double getLimelightOutputAtIndex(int index) throws GoalNotFoundException {
+        if (index>8||index<0) {
+            throw new IndexOutOfBoundsException();
+        } else if (limelightOutputArray!=defaultLimelightOutputArray) {
+            return limelightOutputArray[index];
+        } else {
+            throw new GoalNotFoundException();
+        }
+    }
 
-    public void periodic() { }
+    public void periodic() {
+        limelightOutputArray = limelight.getEntry("llpython").getDoubleArray(defaultLimelightOutputArray);
+        System.out.println(limelightOutputArray[1]);
+        SmartDashboard.putNumber("xOffset", limelightOutputArray[1]);
+    }
 }
 

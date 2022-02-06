@@ -83,7 +83,6 @@ public class RobotContainer {
     drivetrain.disable();
     indexer.disable();
     intake.disable();
-    limelight.disable();
     outtake.disable();
   }
 

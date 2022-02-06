@@ -3,12 +3,12 @@ package frc.robot.commands.auto;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DrivetrainSubsystem;
-import frc.robot.subsystems.LimeLightSubsystem;
+import frc.robot.subsystems.LimelightSubsystem;
 
 
 public class TurnToGoal extends CommandBase {
     DrivetrainSubsystem drivetrainSubsystem;
-    LimeLightSubsystem limelightSubsystem;
+    LimelightSubsystem limelightSubsystem;
     private double distance;
     private double angleToGoal;
     private double goalMissingStartTime = 0;
@@ -20,7 +20,7 @@ public class TurnToGoal extends CommandBase {
 
     PIDController turnToGoalPID;
 
-    public TurnToGoal(DrivetrainSubsystem drivetrainSubsystem, LimeLightSubsystem limelightSubsystem) {
+    public TurnToGoal(DrivetrainSubsystem drivetrainSubsystem, LimelightSubsystem limelightSubsystem) {
         this.drivetrainSubsystem = drivetrainSubsystem;
         this.limelightSubsystem = limelightSubsystem;
 

@@ -53,9 +53,8 @@ public class IndexerSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        ballInMagazine = magazineBallSensor.getValue() != 0;
-        SmartDashboard.putNumber("distance sensor raw value", magazineBallSensor.getValue());
-        SmartDashboard.putNumber("distance sensor average value", magazineBallSensor.getAverageValue());
+        ballInMagazine = magazineBallSensor.getValue() > 1000;
+        SmartDashboard.putBoolean("Ball in Indexer Slot", ballInMagazine);
     }
 }
 
