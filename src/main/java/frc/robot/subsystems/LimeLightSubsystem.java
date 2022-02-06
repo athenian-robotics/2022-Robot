@@ -7,12 +7,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.auto.components.GoalNotFoundException;
 
-public class LimelightSubsystem extends SubsystemBase {
+public class LimeLightSubsystem extends SubsystemBase {
     final NetworkTable limelight;
     double[] limelightOutputArray;
     double[] defaultLimelightOutputArray = {-1, -1, -1, -1, -1, -1, -1, -1};
 
-    public LimelightSubsystem(String tableName) {
+    public LimeLightSubsystem(String tableName) {
         this.limelight = NetworkTableInstance.getDefault().getTable(tableName);
         limelightOutputArray = defaultLimelightOutputArray;
     }

@@ -4,12 +4,23 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.util.Units;
 
 public final class Constants {
     
     public static final class AutoConstants {
 
+        public static double ksVolts = 0.0;
+        public static double kvVoltSecondsPerMeter = 0.0;
+        public static double kaVoltSecondsSquaredPerMeter = 0.0;
+        public static DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(DriveConstants.trackWidth);
+        public static double maxAutoSpeed = 3.0; // meters per second
+        public static double maxAutoAcceleration = 3.0; // meters per second per second
+        public static double kRamseteB = 2.0;
+        public static double kRamseteZeta = 0.7;
+        public static double kPDriveVel = 0.0;
+        public static double maxAutoTurn = 0.55;
     }
 
     public static final class DriveConstants {
@@ -32,7 +43,7 @@ public final class Constants {
         public static final double minDriveSpeed = 0.1;
         public static final double maxDriveSpeed = 0.95;
         public static final double maxAutoSpeed = 0.55;
-        public static final double maxAutoTurn = 0.3;
+
     }
 
     public static final class OIConstants {
@@ -70,8 +81,10 @@ public final class Constants {
         public static final int shifterRightSolenoidPortB = 4;
         public static final int shifterLeftSolenoidPortA = 7; // SOLENOID 1
         public static final int shifterLeftSolenoidPortB = 3;
-        public static final int pneumaticPortRightA = 0;
-        public static final int pneumaticPortRightB = 2;
+        public static final int pneumaticPortRightA = 6; // SOLENOID 4
+        public static final int pneumaticPortRightB = 5;
+        public static final int pneumaticPortLeftA = 0; // SOLENOID 3
+        public static final int pneumaticPortLeftB = 2;
 
         // Pneumatics constants ...
     }
