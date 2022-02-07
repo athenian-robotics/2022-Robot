@@ -11,15 +11,15 @@ public final class Constants {
     
     public static final class AutoConstants {
 
-        public static double ksVolts = 0.0;
-        public static double kvVoltSecondsPerMeter = 0.0;
-        public static double kaVoltSecondsSquaredPerMeter = 0.0;
+        public static double ksVolts = 0.2455; //0.49117
+        public static double kvVoltSecondsPerMeter = 1.3023; //3.4251
+        public static double kaVoltSecondsSquaredPerMeter = 0.091565; //0.0915650
         public static DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(DriveConstants.trackWidth);
         public static double maxAutoSpeed = 3.0; // meters per second
         public static double maxAutoAcceleration = 3.0; // meters per second per second
         public static double kRamseteB = 2.0;
         public static double kRamseteZeta = 0.7;
-        public static double kPDriveVel = 0.0;
+        public static double kPDriveVel = 0.0; //1.9736
         public static double maxAutoTurn = 0.55;
     }
 
@@ -35,8 +35,10 @@ public final class Constants {
         public static final int leftEncoderChannelA = 2;
         public static final int leftEncoderChannelB = 3;
 
-        /** MISC CONSTANTS **/
-        public static final double trackWidth = Units.inchesToMeters(27);
+        /**
+         * MISC CONSTANTS
+         **/
+        public static final double trackWidth = Units.inchesToMeters(28);
         public static final int driveGearRatio = 0;
         public static final int wheelDiameter = 0; // 6 in.
 
