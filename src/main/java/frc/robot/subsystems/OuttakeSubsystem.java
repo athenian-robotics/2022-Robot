@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Servo;
@@ -15,9 +16,9 @@ public class OuttakeSubsystem extends SubsystemBase {
     // Setup motors, pid controller, and booleans
     private final TalonFX shooterMotorFront = new TalonFX(shooterMotorPortA);
     private final TalonFX shooterMotorBack = new TalonFX(shooterMotorPortB);
-    private final Servo leftHoodAngleServo = new Servo(1);
+    private final Servo leftHoodAngleServo = new Servo(3);
     private final Servo rightHoodAngleServo = new Servo(2);
-    ColorWheelUtils colorWheel = new ColorWheelUtils();
+    //ColorWheelUtils colorWheel = new ColorWheelUtils();
     PIDController frontShooterPID;
     PIDController backShooterPID;
 
@@ -28,7 +29,7 @@ public class OuttakeSubsystem extends SubsystemBase {
 
 
     public OuttakeSubsystem() {
-        shooterMotorFront.setInverted(true);
+        shooterMotorFront.setInverted(false);
         shooterMotorBack.setInverted(false);
 
         frontShooterPID = new PIDController(0, 0 ,0);
@@ -46,9 +47,17 @@ public class OuttakeSubsystem extends SubsystemBase {
         shooterRunning = true;
     }
 
-    public void setShooterFront(double power) { if (power>1.0 || power<0.0) return; currentFrontShooterPower = power; }
+    public void setShooterFront(double power) {
+        if (power>1.0 || power<0.0) return;
+        currentFrontShooterPower = power;
+        shooterMotorFront.set(ControlMode.PercentOutput, currentFrontShooterPower);
+    }
 
-    public void setShooterBack(double power) { if (power>1.0 || power<0.0) return; currentBackShooterPower = power; }
+    public void setShooterBack(double power) {
+        if (power>1.0 || power<0.0) return;
+        currentBackShooterPower = power;
+        shooterMotorBack.set(ControlMode.PercentOutput, currentBackShooterPower);
+    }
 
     public void setHoodAngle(double angle) { if (angle>=minimumHoodAngle && angle<=maximumHoodAngle) { leftHoodAngleServo.setAngle(180*(angle-minimumHoodAngle)/(maximumHoodAngle-minimumHoodAngle)); rightHoodAngleServo.setAngle(180*(angle-minimumHoodAngle)/(maximumHoodAngle-minimumHoodAngle)); }}
 
@@ -72,8 +81,8 @@ public class OuttakeSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        colorWheel.updateColorsOnDashboard();
-        colorWheel.currentColor();
+        //colorWheel.updateColorsOnDashboard();
+        //colorWheel.currentColor();
         SmartDashboard.putBoolean("Outtake", shooterRunning);
 
         if (FightStick.fightStickJoystick.getY() < 0) {
