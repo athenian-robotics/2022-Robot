@@ -16,6 +16,7 @@ public class IntakeSubsystem extends SubsystemBase {
     private final TalonFX intakeMotor = new TalonFX(Constants.MechanismConstants.intakeMotorPort);
     private final DoubleSolenoid rightIntakePneumatic = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, pneumaticPortRightA, pneumaticPortRightB);
     private final DoubleSolenoid leftIntakePneumatic = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, pneumaticPortLeftA, pneumaticPortLeftB);
+
     public boolean isRunning = false;
     public boolean isExtended = false;
     public boolean isInverted = false;
@@ -71,8 +72,6 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     @Override
-    public void periodic() {
-        SmartDashboard.putBoolean("Intake", isRunning);
-    }
+    public void periodic() {SmartDashboard.putBoolean("Intake", isRunning);}
 }
 

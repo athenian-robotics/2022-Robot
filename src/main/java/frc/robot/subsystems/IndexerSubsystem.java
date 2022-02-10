@@ -4,6 +4,8 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.lib.colorwheel.ColorWheelUtils;
+import frc.robot.lib.colorwheel.WheelColors;
 import frc.robot.Constants;
 
 import static frc.robot.Constants.MechanismConstants.indexerBeltMotorPort;
@@ -13,6 +15,11 @@ public class IndexerSubsystem extends SubsystemBase {
     // Configure motors and booleans
     //private final TalonFX indexerMotor = new TalonFX(indexerMecanumMotorPort);
     private final CANSparkMax beltMotor = new CANSparkMax(indexerBeltMotorPort, CANSparkMaxLowLevel.MotorType.kBrushless);
+    private final ColorWheelUtils colorWheelUtils = new ColorWheelUtils();
+
+    public WheelColors currentColor = WheelColors.GREEN;
+    public double currentProximity = 2000;
+
     public boolean indexerRunning = false;
     public boolean beltRunning = false;
 
@@ -44,6 +51,11 @@ public class IndexerSubsystem extends SubsystemBase {
 
     public void toggleBelt() { if (beltRunning) stopBelt(); else startBelt(); } // Toggles belt
 
+    public boolean ballPrimed() { return currentProximity > 1800; }
+
+    public WheelColors primedBallColor() { return currentColor; }
+
+
     public void disable() { // Disables indexer and belt
         stopIndexer();
         stopBelt();
@@ -51,6 +63,9 @@ public class IndexerSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        currentColor = colorWheelUtils.currentColor();
+        currentProximity = colorWheelUtils.currentProximity();
+
         SmartDashboard.putBoolean("Indexer", indexerRunning);
     }
 }

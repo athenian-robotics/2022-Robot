@@ -15,9 +15,7 @@ public class ColorWheelUtils {
     private boolean isBlue;
     private boolean isRed;
 
-    public ColorWheelUtils() {
-
-    }
+    public ColorWheelUtils() {}
 
     private void updateString(String currentColor) { SmartDashboard.putString("Current Color", currentColor); }
 
@@ -68,4 +66,6 @@ public class ColorWheelUtils {
         SmartDashboard.putBoolean("YELLOW", isYellow);
         SmartDashboard.putBoolean("GREEN", isGreen);
     }
+
+    public double currentProximity() {return colorSensor.getProximity();}
 }
