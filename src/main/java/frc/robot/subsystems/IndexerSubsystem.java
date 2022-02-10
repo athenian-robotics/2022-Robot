@@ -4,9 +4,12 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.commands.indexer.EnsureResidualBeltCountdownIsNotRunning;
 import frc.robot.lib.colorwheel.ColorWheelUtils;
 import frc.robot.lib.colorwheel.WheelColors;
 import frc.robot.Constants;
+
+import java.util.function.BooleanSupplier;
 
 import static frc.robot.Constants.MechanismConstants.indexerBeltMotorPort;
 
@@ -22,6 +25,7 @@ public class IndexerSubsystem extends SubsystemBase {
 
     public boolean indexerRunning = false;
     public boolean beltRunning = false;
+    public boolean residualBeltFlag = false;
 
     public IndexerSubsystem() {
         beltMotor.setInverted(true);
@@ -41,12 +45,11 @@ public class IndexerSubsystem extends SubsystemBase {
 
     public void startBelt() { // Enables belt
         beltMotor.set(Constants.MechanismConstants.beltSpeed);
-        beltRunning = true;
+        beltRunning = true; new EnsureResidualBeltCountdownIsNotRunning(this).schedule();
     }
 
     public void stopBelt() { // Disables belt
-        beltMotor.set(0);
-        beltRunning = false;
+        beltMotor.set(0); beltRunning = false;
     }
 
     public void toggleBelt() { if (beltRunning) stopBelt(); else startBelt(); } // Toggles belt
@@ -55,6 +58,7 @@ public class IndexerSubsystem extends SubsystemBase {
 
     public WheelColors primedBallColor() { return currentColor; }
 
+    public BooleanSupplier getResidualBeltFlag() {return () -> residualBeltFlag;}
 
     public void disable() { // Disables indexer and belt
         stopIndexer();

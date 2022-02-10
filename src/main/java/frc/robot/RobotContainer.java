@@ -36,8 +36,8 @@ public class RobotContainer {
   public static XboxController xboxController = new XboxController(Constants.OIConstants.xboxControllerPort);
   // SUBSYSTEMS
   public static DrivetrainSubsystem drivetrain = new DrivetrainSubsystem();
-  public static IntakeSubsystem intake = new IntakeSubsystem();
   public static IndexerSubsystem indexer = new IndexerSubsystem();
+  public static IntakeSubsystem intake = new IntakeSubsystem(indexer);
   public static LimelightSubsystem limelight = new LimelightSubsystem("limelight-arc");
   public static OuttakeSubsystem outtake = new OuttakeSubsystem();
 
@@ -95,8 +95,9 @@ public class RobotContainer {
 
   // Returns the robot's main autonomous command
   public Command getAutonomousCommand() {
-
     return new AutoRoutine6(drivetrain);
   }
+
+  public IndexerSubsystem getIndexerSubsystem() {return indexer;}
 }
 

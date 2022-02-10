@@ -103,25 +103,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
     }
 
     /**
-     * Utilize both joystick values to tank drive a west-coast drivetrain
-     * @param leftVelocity Speed of the chassis' left side
-     * @param rightVelocity Speed of the chassis' right side
-     */
-    public void tankDrive(double leftVelocity, double rightVelocity) {
-        int leftSign = leftVelocity >= 0 ? 1 : -1; // Checks leftSpeed and gathers whether it is negative or positive
-        int rightSign = rightVelocity >= 0 ? 1 : -1; // Checks rightSpeed and gathers whether it is negative or positive
-
-        // Deadband
-        leftVelocity = Math.abs(leftVelocity) > maxDriveSpeed ? maxDriveSpeed * leftSign : leftVelocity;
-        rightVelocity = Math.abs(rightVelocity) > maxDriveSpeed ? maxDriveSpeed * rightSign : rightVelocity;
-
-        leftVelocity = Math.abs(leftVelocity) < minDriveSpeed ? 0 : leftVelocity;
-        rightVelocity = Math.abs(rightVelocity) < minDriveSpeed ? 0 : rightVelocity;
-
-        setMotorPercentOutput(-leftVelocity, rightVelocity);
-    }
-
-    /**
      * Set the front wheels to a desired output. Units: Percentage
      * @param leftOutput Left front wheel output percentage
      * @param rightOutput Right front wheel output percentage
