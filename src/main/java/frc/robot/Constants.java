@@ -45,7 +45,6 @@ public final class Constants {
         public static final double minDriveSpeed = 0.1;
         public static final double maxDriveSpeed = 0.95;
         public static final double maxAutoSpeed = 0.55;
-
     }
 
     public static final class OIConstants {
@@ -93,5 +92,9 @@ public final class Constants {
     public static final class EncoderConstants {
         public static final int hoodAngleEncoderPortA = 8;
         public static final int hoodAngleEncoderPortB = 9;
+    }
+
+    public static final class LEDConstants {
+        public static final int LEDPort = 0;
     }
 }
