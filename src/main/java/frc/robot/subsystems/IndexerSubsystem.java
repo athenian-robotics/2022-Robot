@@ -1,65 +1,57 @@
 package frc.robot.subsystems;
 
-
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 import static frc.robot.Constants.MechanismConstants.indexerBeltMotorPort;
-import static frc.robot.Constants.MechanismConstants.indexerMecanumMotorPort;
+
 
 public class IndexerSubsystem extends SubsystemBase {
-
-    private final TalonFX indexerMotor = new TalonFX(indexerMecanumMotorPort);
-    private final TalonFX beltMotor = new TalonFX(indexerBeltMotorPort);
-    public boolean isRunning = false;
+    // Configure motors and booleans
+    //private final TalonFX indexerMotor = new TalonFX(indexerMecanumMotorPort);
+    private final CANSparkMax beltMotor = new CANSparkMax(indexerBeltMotorPort, CANSparkMaxLowLevel.MotorType.kBrushless);
+    public boolean indexerRunning = false;
+    public boolean beltRunning = false;
 
     public IndexerSubsystem() {
-
+        beltMotor.setInverted(true);
     }
 
-    public void startIndexer() {
-        indexerMotor.set(ControlMode.PercentOutput, 0.7);
-        beltMotor.set(ControlMode.PercentOutput, 0.7);
-        System.out.println("start indexer");
-        isRunning = true;
+    public void startIndexer() { // Enables indexer
+        //indexerMotor.set(ControlMode.PercentOutput, Constants.MechanismConstants.indexerSpeed);
+        indexerRunning = true;
     }
 
-    public void stopIndexer() {
-        indexerMotor.set(ControlMode.PercentOutput, 0);
-        beltMotor.set(ControlMode.PercentOutput, 0);
-        System.out.println("stop indexer");
-        isRunning = false;
+    public void stopIndexer() { // Disables indexer
+        //indexerMotor.set(ControlMode.PercentOutput, 0);
+        indexerRunning = false;
     }
 
-    public void toggleIndexer() {
-        if (isRunning) {
-            stopIndexer();
-        } else {
-            startIndexer();
-        }
+    public void toggleIndexer() { if (indexerRunning) stopIndexer(); else startIndexer(); } // Toggles indexer
+
+    public void startBelt() { // Enables belt
+        beltMotor.set(Constants.MechanismConstants.beltSpeed);
+        beltRunning = true;
     }
 
-    public void startBelt() {
-        beltMotor.set(ControlMode.PercentOutput, 0.7);
-        isRunning = true;
+    public void stopBelt() { // Disables belt
+        beltMotor.set(0);
+        beltRunning = false;
     }
 
-    public void stopBelt() {
-        beltMotor.set(ControlMode.PercentOutput, 0);
-        isRunning = false;
-    }
+    public void toggleBelt() { if (beltRunning) stopBelt(); else startBelt(); } // Toggles belt
 
-    public void toggleBelt() {
-        if (isRunning) {
-            stopBelt();
-        } else {
-            startBelt();
-        }
+    public void disable() { // Disables indexer and belt
+        stopIndexer();
+        stopBelt();
     }
 
     @Override
     public void periodic() {
+        SmartDashboard.putBoolean("Indexer", indexerRunning);
     }
 }
 

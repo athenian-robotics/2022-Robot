@@ -1,16 +1,12 @@
 package frc.robot.commands.intake;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.commands.LED.SetAllLEDToBlack;
-import frc.robot.commands.LED.SetLEDToIntakeColor;
-import frc.robot.commands.indexer.StartBelt;
-import frc.robot.commands.indexer.StopBelt;
 import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LEDSubsystem;
 
-
 public class ToggleIntake extends CommandBase {
+    // Define necessary subsystems
     private final IntakeSubsystem intakeSubsystem;
     private final IndexerSubsystem indexerSubsystem;
     private final LEDSubsystem lEDSubsystem;
@@ -24,18 +20,12 @@ public class ToggleIntake extends CommandBase {
 
     @Override
     public void initialize() {
-        System.out.println("Toggling Intake.");
-        intakeSubsystem.toggleIntake();
-        if (intakeSubsystem.isRunning) {
-            new StartBelt(indexerSubsystem).schedule();
-            new SetLEDToIntakeColor(intakeSubsystem, lEDSubsystem, 255, 168, 0).schedule();
-        }
+        intakeSubsystem.toggleIntake(); // On initialize, toggle intake
+        intakeSubsystem.togglePneumatic();
     }
 
     @Override
-    public void execute() {
-
-    }
+    public void execute() {}
 
     @Override
     public boolean isFinished() {
@@ -43,9 +33,5 @@ public class ToggleIntake extends CommandBase {
     }
 
     @Override
-    public void end(boolean interrupted) {
-        if (!intakeSubsystem.isRunning)
-            new StopBelt(indexerSubsystem, 5).schedule();
-        new SetAllLEDToBlack(lEDSubsystem).schedule();
-    }
+    public void end(boolean interrupted) {}
 }

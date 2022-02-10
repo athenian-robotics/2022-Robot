@@ -3,8 +3,8 @@ package frc.robot.commands.indexer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.IndexerSubsystem;
 
-
 public class ToggleIndexer extends CommandBase {
+    // Setup indexer subsystem
     private final IndexerSubsystem indexerSubsystem;
 
     public ToggleIndexer(IndexerSubsystem indexerSubsystem) {
@@ -13,15 +13,13 @@ public class ToggleIndexer extends CommandBase {
     }
 
     @Override
-    public void initialize() {
+    public void initialize() { // On initialize, toggle the indexer and its belt
         indexerSubsystem.toggleIndexer();
         indexerSubsystem.toggleBelt();
     }
 
     @Override
-    public void execute() {
-
-    }
+    public void execute() {}
 
     @Override
     public boolean isFinished() {
@@ -29,7 +27,5 @@ public class ToggleIndexer extends CommandBase {
     }
 
     @Override
-    public void end(boolean interrupted) {
-
-    }
+    public void end(boolean interrupted) {}
 }
