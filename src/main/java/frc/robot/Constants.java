@@ -58,7 +58,7 @@ public final class Constants {
         public static final int intakeMotorPort = 6;
         public static final int indexerMecanumMotorPort = 0;  // CHANGE
         public static final int indexerBeltMotorPort = 2;  // CHANGE
-        public static final double indexerSpeed = 0.5;
+        public static final double indexerSpeed = 50;
         // TURRET
         public static final int turretMotorPort = 0;  // CHANGE
         // SHOOTER
@@ -71,7 +71,7 @@ public final class Constants {
         // MAX MECHANISM SPEEDS
         public static final double idleOuttakeSpeed = 0.25;
         public static final double intakeSpeed = 0.3; //0 to 1
-        public static final double beltSpeed = 0.5;
+        public static final double beltSpeed = 50;
         public static final double residualBeltRunTime = 5;
 
         // Climber motor ports ...
