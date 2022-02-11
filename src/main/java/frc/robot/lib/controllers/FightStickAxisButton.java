@@ -7,10 +7,10 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class FightStickAxisButton extends Trigger implements FightStickButton {
 
     private int axis;
-    private frc.robot.lib.controllers.FightStickInput.input button;
+    private FightStickInput.input button;
     private Joystick fightStick;
 
-    public FightStickAxisButton(Joystick fightStick, int axis, frc.robot.lib.controllers.FightStickInput.input button) {
+    public FightStickAxisButton(Joystick fightStick, int axis, FightStickInput.input button) {
         this.axis = axis;
         this.button = button;
         this.fightStick = fightStick;
@@ -23,7 +23,7 @@ public class FightStickAxisButton extends Trigger implements FightStickButton {
 
 
     @Override
-    public frc.robot.lib.controllers.FightStickInput.input getButtonInputType() {
+    public FightStickInput.input getButtonInputType() {
         return this.button;
     }
 }

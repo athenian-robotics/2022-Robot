@@ -23,6 +23,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     // Setup autonomous and sensor objects
     ChassisSpeeds chassisSpeeds;
     DifferentialDriveOdometry odometry;
+
     private final AHRS gyro = new AHRS(SerialPort.Port.kMXP);
 
     // Setup drive objects
@@ -45,6 +46,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
                 new WPI_TalonFX(Constants.DriveConstants.leftFrontDrivePort)
         };
         configureDriveMotors(driveMotors); // Initialize motors
+
         leftMotors = new MotorControllerGroup(driveMotors[0], driveMotors[1]);
         rightMotors = new MotorControllerGroup(driveMotors[2], driveMotors[3]);
         rightMotors.setInverted(true);
@@ -121,9 +123,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
     public void configureDriveMotors(TalonFX[] driveMotors) {
         for (TalonFX motor: driveMotors) {
             motor.configFactoryDefault(); // Initialize motor set up
-            motor.configOpenloopRamp(0.2); // Ramp up (Trapezoid)
-            motor.configClosedloopRamp(0.2); // Ramp down (Trapezoid)
-            motor.setNeutralMode(NeutralMode.Coast); // Default robot mode should be Coasting
+            motor.configOpenloopRamp(0.3); // Ramp up (Trapezoid)
+            motor.configClosedloopRamp(0.3); // Ramp down (Trapezoid)
+            motor.setNeutralMode(NeutralMode.Brake); // Default robot mode should be Coasting
             motor.configForwardSoftLimitEnable(false);
             motor.configReverseSoftLimitEnable(false);
         }
@@ -135,9 +137,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
      * @param rot Robot's rotation as a Rotation2d object
      */
     public void resetOdometry(Pose2d pose, Rotation2d rot) {
-        setGyroOffset(rot.getDegrees());
+        //setGyroOffset(rot.getDegrees());
         odometry.resetPosition(pose, rot);
-        resetEncoderCounts();
+        // resetEncoderCounts();
     }
 
     public int getLeftEncoderCount() { return this.leftEncoder.get(); } // Returns left encoder raw count

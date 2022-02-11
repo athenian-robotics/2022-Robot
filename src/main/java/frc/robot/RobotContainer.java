@@ -12,7 +12,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.auto.AutoRoutine6;
 import frc.robot.commands.drive.ArcadeDrive;
 import frc.robot.commands.drive.TankDrive;
+import frc.robot.commands.indexer.ToggleBelt;
 import frc.robot.commands.intake.ToggleIntake;
+import frc.robot.commands.outtake.DisableShooter;
+import frc.robot.commands.outtake.EnableShooter;
 import frc.robot.lib.controllers.FightStick;
 import frc.robot.subsystems.*;
 
@@ -33,9 +36,9 @@ public class RobotContainer {
   public static XboxController xboxController = new XboxController(Constants.OIConstants.xboxControllerPort);
   // SUBSYSTEMS
   public static DrivetrainSubsystem drivetrain = new DrivetrainSubsystem();
-  public static IntakeSubsystem intake = new IntakeSubsystem();
   public static IndexerSubsystem indexer = new IndexerSubsystem();
-  public static LimelightSubsystem limelight = new LimelightSubsystem("limelight-two");
+  public static IntakeSubsystem intake = new IntakeSubsystem(indexer);
+  public static LimelightSubsystem limelight = new LimelightSubsystem("limelight-arc");
   public static OuttakeSubsystem outtake = new OuttakeSubsystem();
 
   // Sets up controllers, configures controllers, and sets the default drive mode (tank or arcade)
@@ -50,6 +53,9 @@ public class RobotContainer {
   private void configureButtonBindings() {
     /*  SUBSYSTEM COMMANDS (Main, functional commands) */
     FightStick.fightStickA.whenPressed(new ToggleIntake(intake, indexer)); // Toggle intake wheels and pneumatics
+    FightStick.fightStickX.whenPressed(new ToggleBelt(indexer)); // Toggle indexer (tower portion)
+    FightStick.fightStickB.whenPressed(new EnableShooter(outtake)); // Enable shooter wheels
+    FightStick.fightStickY.whenPressed(new DisableShooter(outtake)); // Disable shooter wheels
 
     /* MISC COMMANDS (Random lib of commands. Written using functional commands because most are just one line ) */
     // have fun with this - jason and jacob '22
@@ -89,8 +95,9 @@ public class RobotContainer {
 
   // Returns the robot's main autonomous command
   public Command getAutonomousCommand() {
-
     return new AutoRoutine6(drivetrain);
   }
+
+  public IndexerSubsystem getIndexerSubsystem() {return indexer;}
 }
 
