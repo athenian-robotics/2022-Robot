@@ -4,7 +4,12 @@
 
 package frc.robot;
 
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -18,6 +23,9 @@ import frc.robot.commands.outtake.DisableShooter;
 import frc.robot.commands.outtake.EnableShooter;
 import frc.robot.lib.controllers.FightStick;
 import frc.robot.subsystems.*;
+
+import java.util.List;
+import java.util.Map;
 
 public class RobotContainer {
   // CONTROLLERS
@@ -58,7 +66,7 @@ public class RobotContainer {
     FightStick.fightStickY.whenPressed(new DisableShooter(outtake)); // Disable shooter wheels
 
     /* MISC COMMANDS (Random lib of commands. Written using functional commands because most are just one line ) */
-    // have fun with this - jason and jacob '22
+    // have fun with this - jason and jacob '22   ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ
     xboxSquares.whenPressed(new FunctionalCommand(  // Toggle drive mode
             () -> {
               if (drivetrain.getDefaultCommand() instanceof ArcadeDrive)

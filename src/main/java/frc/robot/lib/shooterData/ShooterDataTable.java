@@ -1,4 +1,4 @@
-package frc.robot.lib.shooter;
+package frc.robot.lib.shooterData;
 
 public class ShooterDataTable{
     private ShooterSpec[] dataTable;
