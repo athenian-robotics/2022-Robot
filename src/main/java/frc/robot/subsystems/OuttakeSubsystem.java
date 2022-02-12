@@ -64,12 +64,18 @@ public class OuttakeSubsystem extends SubsystemBase {
         shooterMotorBack.set(ControlMode.PercentOutput, currentBackShooterPower);
     }
 
+    public void manualAdjustHoodAngle(double theta) {
+        leftHoodAngleServo.setAngle(leftHoodAngleServo.getAngle() + theta);
+        rightHoodAngleServo.setAngle(rightHoodAngleServo.getAngle() + theta);
+    }
+    /*
     public void setHoodAngle(double angle) {
         if (angle >= minimumHoodAngle && angle <= maximumHoodAngle) {
             leftHoodAngleServo.setAngle(180 * (angle - minimumHoodAngle) / (maximumHoodAngle - minimumHoodAngle)); // 0 - 180 DEGREES
             rightHoodAngleServo.setAngle(180 * (angle - minimumHoodAngle) / (maximumHoodAngle - minimumHoodAngle)); // 0 - 180 DEGREES
         }
     }
+    */
 
     public double getHoodAngle() { //DEGREES + DEFAULT 9
         return ((maximumHoodAngle - minimumHoodAngle) * (leftHoodAngleServo.getPosition() + rightHoodAngleServo.getPosition()) / 360) + minimumHoodAngle; }
@@ -91,14 +97,6 @@ public class OuttakeSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         SmartDashboard.putBoolean("Outtake", shooterRunning);
-
-        if (FightStick.fightStickJoystick.getY() < 0) {
-            leftHoodAngleServo.setAngle(leftHoodAngleServo.getAngle() + 1);
-            rightHoodAngleServo.setAngle(rightHoodAngleServo.getAngle() + 1);
-        } else if (FightStick.fightStickJoystick.getY() > 0) {
-            leftHoodAngleServo.setAngle(leftHoodAngleServo.getAngle() - 1);
-            rightHoodAngleServo.setAngle(rightHoodAngleServo.getAngle() - 1);
-        }
     }
 }
 
