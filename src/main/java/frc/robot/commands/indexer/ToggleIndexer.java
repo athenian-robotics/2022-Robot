@@ -15,7 +15,6 @@ public class ToggleIndexer extends CommandBase {
     @Override
     public void initialize() { // On initialize, toggle the indexer and its belt
         indexerSubsystem.toggleIndexer();
-        indexerSubsystem.toggleBelt();
     }
 
     @Override

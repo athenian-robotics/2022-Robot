@@ -5,20 +5,17 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.commands.indexer.EnsureResidualBeltCountdownIsNotRunning;
 import frc.robot.lib.colorwheel.ColorWheelUtils;
 import frc.robot.lib.colorwheel.WheelColors;
 
 import java.util.function.BooleanSupplier;
 
-import static frc.robot.Constants.MechanismConstants.indexerBeltMotorPort;
-import static frc.robot.Constants.MechanismConstants.indexerMecanumMotorPort;
+import static frc.robot.Constants.MechanismConstants.indexerMotorPort;
 
 
 public class IndexerSubsystem extends SubsystemBase {
-    // Configure motors and booleans
-    private final TalonFX indexerMotor = new TalonFX(indexerMecanumMotorPort);
-    private final TalonFX beltMotor = new TalonFX(indexerBeltMotorPort);
+    // Configure motor and booleans
+    private final TalonFX indexerMotor = new TalonFX(indexerMotorPort);
     private final ColorWheelUtils colorWheelUtils = new ColorWheelUtils();
 
     public WheelColors currentColor = WheelColors.GREEN;
@@ -29,7 +26,7 @@ public class IndexerSubsystem extends SubsystemBase {
     public boolean residualBeltFlag = false;
 
     public IndexerSubsystem() {
-        beltMotor.setInverted(true);
+        indexerMotor.setInverted(true);
     }
 
     public void startIndexer() { // Enables indexer
@@ -44,18 +41,6 @@ public class IndexerSubsystem extends SubsystemBase {
 
     public void toggleIndexer() { if (indexerRunning) stopIndexer(); else startIndexer(); } // Toggles indexer
 
-    public void startBelt() { // Enables belt
-        beltMotor.set(ControlMode.PercentOutput, Constants.MechanismConstants.beltSpeed);
-        beltRunning = true; new EnsureResidualBeltCountdownIsNotRunning(this).schedule();
-    }
-
-    public void stopBelt() { // Disables belt
-        beltMotor.set(ControlMode.PercentOutput, 0);
-        beltRunning = false;
-    }
-
-    public void toggleBelt() { if (beltRunning) stopBelt(); else startBelt(); } // Toggles belt
-
     public boolean ballPrimed() { return currentProximity > 1800; }
 
     public WheelColors primedBallColor() { return currentColor; }
@@ -64,7 +49,6 @@ public class IndexerSubsystem extends SubsystemBase {
 
     public void disable() { // Disables indexer and belt
         stopIndexer();
-        stopBelt();
     }
 
     @Override

@@ -8,9 +8,6 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.commands.indexer.EnsureResidualBeltCountdownIsNotRunning;
-import frc.robot.commands.indexer.RunBeltResidually;
-import frc.robot.commands.indexer.StartBelt;
 
 import static frc.robot.Constants.PneumaticConstants.*;
 
@@ -37,34 +34,12 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public void startIntake() { // Enables intake
         intakeMotor.set(ControlMode.PercentOutput, Constants.MechanismConstants.intakeSpeed);
-        isRunning = true; if (indexer.beltRunning) new EnsureResidualBeltCountdownIsNotRunning(indexer).schedule();
-        new StartBelt(indexer).schedule(); //if the belt is already running when we start the intake there's a countdown going that's going to stop it if we don't interrupt it first
+        isRunning = true;
     }
-
-    /**
-     *
-     *
-     *
-     *
-     *
-     *
-     *
-     *
-     * I LOVE YOU SO MUCH JACOB
-     *
-     *
-     * UWU
-     *
-     *
-     *
-     *
-     * - SEBASTIAN
-     *
-     */
 
     public void stopIntake() { // Disables intake
         intakeMotor.set(ControlMode.PercentOutput, 0);
-        isRunning = false; new RunBeltResidually(indexer).withInterrupt(indexer.getResidualBeltFlag()).schedule();
+        isRunning = false;
     }
 
     public void toggleIntake() { if (isRunning) stopIntake(); else startIntake(); } // Toggles intake
