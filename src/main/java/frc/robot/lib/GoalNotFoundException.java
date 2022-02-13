@@ -1,4 +1,4 @@
-package frc.robot.commands.auto.components;
+package frc.robot.lib;
 
 public class GoalNotFoundException extends Exception {
 

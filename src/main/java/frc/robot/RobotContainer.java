@@ -5,10 +5,10 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.auto.AutoRoutine6;
 import frc.robot.commands.drive.ArcadeDrive;
 import frc.robot.commands.drive.TankDrive;
@@ -21,31 +21,31 @@ import frc.robot.lib.controllers.FightStick;
 import frc.robot.subsystems.*;
 
 public class RobotContainer {
-  // CONTROLLERS
-  public static JoystickButton xboxA;
-  public static JoystickButton xboxB;
-  public static JoystickButton xboxX;
-  public static JoystickButton xboxY;
-  public static JoystickButton xboxLB;
-  public static JoystickButton xboxRB;
-  public static JoystickButton xboxLP;
-  public static JoystickButton xboxRP;
-  public static JoystickButton xboxSquares;
-  public static JoystickButton xboxHamburger;
-  public static Trigger xboxLS;
-  public static XboxController.Axis xboxRS;
-  public static XboxController xboxController = new XboxController(Constants.OIConstants.xboxControllerPort);
-  // SUBSYSTEMS
-  public static DrivetrainSubsystem drivetrain = new DrivetrainSubsystem();
-  public static IndexerSubsystem indexer = new IndexerSubsystem();
-  public static IntakeSubsystem intake = new IntakeSubsystem(indexer);
-  public static LimelightSubsystem limelight = new LimelightSubsystem("limelight-arc");
-  public static OuttakeSubsystem outtake = new OuttakeSubsystem();
+    // CONTROLLERS
+    public static JoystickButton xboxA;
+    public static JoystickButton xboxB;
+    public static JoystickButton xboxX;
+    public static JoystickButton xboxY;
+    public static JoystickButton xboxLB;
+    public static JoystickButton xboxRB;
+    public static JoystickButton xboxLP;
+    public static JoystickButton xboxRP;
+    public static JoystickButton xboxSquares;
+    public static JoystickButton xboxHamburger;
+    public static Trigger xboxLS;
+    public static XboxController.Axis xboxRS;
+    public static XboxController xboxController = new XboxController(Constants.OIConstants.xboxControllerPort);
+    // SUBSYSTEMS
+    public static DrivetrainSubsystem drivetrain = new DrivetrainSubsystem();
+    public static IndexerSubsystem indexer = new IndexerSubsystem();
+    public static IntakeSubsystem intake = new IntakeSubsystem(indexer);
+    public static LimelightSubsystem limelight = new LimelightSubsystem("limelight-arc");
+    public static OuttakeSubsystem outtake = new OuttakeSubsystem(limelight);
 
-  // Sets up controllers, configures controllers, and sets the default drive mode (tank or arcade)
-  public RobotContainer() {
-    xboxButtonSetup();
-    configureButtonBindings();
+    // Sets up controllers, configures controllers, and sets the default drive mode (tank or arcade)
+    public RobotContainer() {
+        xboxButtonSetup();
+        configureButtonBindings();
 
     drivetrain.setDefaultCommand(new ArcadeDrive(drivetrain, xboxController)); // Check for Arcade or Tank
     outtake.setDefaultCommand(new ManualAdjustHoodAngle(outtake)); // Check fight stick y-axis for manual hood adjustment
@@ -58,48 +58,56 @@ public class RobotContainer {
     FightStick.fightStickX.whenPressed(new ToggleIndexer(indexer)); // Toggle indexer (tower portion)
     FightStick.fightStickB.whenPressed(new EnableShooter(outtake)); // Enable shooter wheels
     FightStick.fightStickY.whenPressed(new DisableShooter(outtake)); // Disable shooter wheels
+    
+        /* MISC COMMANDS (Random lib of commands. Written using functional commands because most are just one line ) */
+        // have fun with this - jason and jacob '22   ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ
+        xboxSquares.whenPressed(new FunctionalCommand(  // Toggle drive mode
+                () -> {
+                    if (drivetrain.getDefaultCommand() instanceof ArcadeDrive)
+                        drivetrain.setDefaultCommand(new TankDrive(drivetrain, xboxController));
+                    else drivetrain.setDefaultCommand(new ArcadeDrive(drivetrain, xboxController));
+                }, () -> {
+        }, interrupted -> {
+        }, () -> true, drivetrain));
+        xboxLP.whenPressed(new FunctionalCommand(() -> drivetrain.shiftDown(), () -> {
+        }, interrupted -> {
+        }, () -> true, drivetrain)); // Shift down
+        xboxRP.whenPressed(new FunctionalCommand(() -> drivetrain.shiftUp(), () -> {
+        }, interrupted -> {
+        }, () -> true, drivetrain)); // Shift up
+    }
 
-    /* MISC COMMANDS (Random lib of commands. Written using functional commands because most are just one line ) */
-    // have fun with this - jason and jacob '22   ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ
-    xboxSquares.whenPressed(new FunctionalCommand(  // Toggle drive mode
-            () -> {
-              if (drivetrain.getDefaultCommand() instanceof ArcadeDrive)
-                drivetrain.setDefaultCommand(new TankDrive(drivetrain, xboxController));
-              else drivetrain.setDefaultCommand(new ArcadeDrive(drivetrain, xboxController));
-            }, () -> {}, interrupted -> {}, () -> true, drivetrain));
-    xboxLP.whenPressed(new FunctionalCommand( () -> drivetrain.shiftDown(), () -> {}, interrupted -> {}, () -> true, drivetrain)); // Shift down
-    xboxRP.whenPressed(new FunctionalCommand( () -> drivetrain.shiftUp(), () -> {}, interrupted -> {}, () -> true, drivetrain)); // Shift up
-  }
+    // Connects xbox buttons to button #'s for the driver station
+    private void xboxButtonSetup() {
+        xboxA = new JoystickButton(xboxController, 1);
+        xboxB = new JoystickButton(xboxController, 2);
+        xboxX = new JoystickButton(xboxController, 3);
+        xboxY = new JoystickButton(xboxController, 4);
+        xboxLB = new JoystickButton(xboxController, 5);
+        xboxRB = new JoystickButton(xboxController, 6);
+        xboxLP = new JoystickButton(xboxController, 9);
+        xboxRP = new JoystickButton(xboxController, 10);
+        xboxSquares = new JoystickButton(xboxController, 7);
+        xboxHamburger = new JoystickButton(xboxController, 8);
+        xboxLS = new Trigger();
+    }
 
-  // Connects xbox buttons to button #'s for the driver station
-  private void xboxButtonSetup() {
-    xboxA = new JoystickButton(xboxController, 1);
-    xboxB = new JoystickButton(xboxController, 2);
-    xboxX = new JoystickButton(xboxController, 3);
-    xboxY = new JoystickButton(xboxController, 4);
-    xboxLB = new JoystickButton(xboxController, 5);
-    xboxRB = new JoystickButton(xboxController, 6);
-    xboxLP = new JoystickButton(xboxController, 9);
-    xboxRP = new JoystickButton(xboxController, 10);
-    xboxSquares = new JoystickButton(xboxController, 7);
-    xboxHamburger = new JoystickButton(xboxController, 8);
-    xboxLS = new Trigger();
-  }
+    // Disables all robot subsystems (Emergency only)
+    public void disableAll() {
+        drivetrain.disable();
+        indexer.disable();
+        intake.disable();
+        limelight.disable();
+        outtake.disable();
+    }
 
-  // Disables all robot subsystems (Emergency only)
-  public void disableAll() {
-    drivetrain.disable();
-    indexer.disable();
-    intake.disable();
-    limelight.disable();
-    outtake.disable();
-  }
+    // Returns the robot's main autonomous command
+    public Command getAutonomousCommand() {
+        return new AutoRoutine6(drivetrain);
+    }
 
-  // Returns the robot's main autonomous command
-  public Command getAutonomousCommand() {
-    return new AutoRoutine6(drivetrain);
-  }
-
-  public IndexerSubsystem getIndexerSubsystem() {return indexer;}
+    public IndexerSubsystem getIndexerSubsystem() {
+        return indexer;
+    }
 }
 

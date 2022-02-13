@@ -9,34 +9,41 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.lib.GoalNotFoundException;
 import frc.robot.lib.controllers.FightStick;
 
 import java.util.Map;
 
 import static frc.robot.Constants.MechanismConstants.*;
 
-
 public class OuttakeSubsystem extends SubsystemBase {
     // Setup motors, pid controller, and booleans
     private final TalonFX shooterMotorFront = new TalonFX(shooterMotorPortA);
     private final TalonFX shooterMotorBack = new TalonFX(shooterMotorPortB);
+    private final TalonFX turretMotor = new TalonFX(turretMotorPort);
     private final Servo leftHoodAngleServo = new Servo(2);
     private final Servo rightHoodAngleServo = new Servo(3);
     //ColorWheelUtils colorWheel = new ColorWheelUtils();
-    PIDController frontShooterPID;
-    PIDController backShooterPID;
     NetworkTableEntry shooterNTE;
 
+    PIDController turretAnglePID;
+
     public boolean shooterRunning = false;
+    public boolean turretActive = false;
     private double currentFrontShooterPower = 0.0;
     private double currentBackShooterPower = 0.0;
 
-    public OuttakeSubsystem() {
+    LimelightSubsystem limelight;
+
+    public OuttakeSubsystem(LimelightSubsystem ll) {
+        limelight = ll;
+
         shooterMotorFront.setInverted(false);
         shooterMotorBack.setInverted(false);
 
-        frontShooterPID = new PIDController(0, 0 ,0);
-        backShooterPID = new PIDController(0, 0 ,0);
+        turretAnglePID = new PIDController(0, 0, 0);
+        turretAnglePID.setSetpoint(0);
+        turretAnglePID.setTolerance(1);
 
         leftHoodAngleServo.setBounds(2.0, 1.8, 1.5, 1.2, 1.0);
         rightHoodAngleServo.setBounds(2.0, 1.8, 1.5, 1.2, 1.0);
@@ -53,13 +60,13 @@ public class OuttakeSubsystem extends SubsystemBase {
     }
 
     public void setShooterFront(double power) {
-        if ( power > 1.0 || power < 0.0) return;
+        if (power > 1.0 || power < 0.0) return;
         currentFrontShooterPower = power;
         shooterMotorFront.set(ControlMode.PercentOutput, currentFrontShooterPower);
     }
 
     public void setShooterBack(double power) {
-        if (power>1.0 || power<0.0) return;
+        if (power > 1.0 || power < 0.0) return;
         currentBackShooterPower = power;
         shooterMotorBack.set(ControlMode.PercentOutput, currentBackShooterPower);
     }
@@ -78,7 +85,8 @@ public class OuttakeSubsystem extends SubsystemBase {
     */
 
     public double getHoodAngle() { //DEGREES + DEFAULT 9
-        return ((maximumHoodAngle - minimumHoodAngle) * (leftHoodAngleServo.getPosition() + rightHoodAngleServo.getPosition()) / 360) + minimumHoodAngle; }
+        return ((maximumHoodAngle - minimumHoodAngle) * (leftHoodAngleServo.getPosition() + rightHoodAngleServo.getPosition()) / 360) + minimumHoodAngle;
+    }
 
     public void stopShooter() { // Disables shooter
         setShooterFront(0);
@@ -86,7 +94,10 @@ public class OuttakeSubsystem extends SubsystemBase {
         shooterRunning = false;
     }
 
-    public void stopHood() { leftHoodAngleServo.setSpeed(0); rightHoodAngleServo.setSpeed(0); }
+    public void stopHood() {
+        leftHoodAngleServo.setSpeed(0);
+        rightHoodAngleServo.setSpeed(0);
+    }
 
     public void disable() {
         stopShooter();
@@ -94,9 +105,27 @@ public class OuttakeSubsystem extends SubsystemBase {
         //stopTurret();
     }
 
+    public void setTurretActive(boolean active) {
+        turretActive = active;
+    }
+
     @Override
     public void periodic() {
         SmartDashboard.putBoolean("Outtake", shooterRunning);
+
+        if (FightStick.fightStickJoystick.getY() < 0) {
+            leftHoodAngleServo.setAngle(leftHoodAngleServo.getAngle() + 1);
+            rightHoodAngleServo.setAngle(rightHoodAngleServo.getAngle() + 1);
+        } else if (FightStick.fightStickJoystick.getY() > 0) {
+            leftHoodAngleServo.setAngle(leftHoodAngleServo.getAngle() - 1);
+            rightHoodAngleServo.setAngle(rightHoodAngleServo.getAngle() - 1);
+        }
+
+        if (turretActive) {
+            try {
+                turretMotor.set(ControlMode.PercentOutput, -limelight.getLimelightOutputAtIndex(1));
+            } catch (GoalNotFoundException e) { }
+        }
     }
 }
 
