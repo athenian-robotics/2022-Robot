@@ -37,9 +37,6 @@ public class AutoRoutine6 extends CommandBase {
                         Constants.AutoConstants.kDriveKinematics,
                         12);
 
-
-
-
         // Create config for trajectory
         TrajectoryConfig config =
                 new TrajectoryConfig(
@@ -49,7 +46,6 @@ public class AutoRoutine6 extends CommandBase {
                         .setKinematics(Constants.AutoConstants.kDriveKinematics)
                         // Apply the voltage constraint
                         .addConstraint(autoVoltageConstraint);
-
 
         // An example trajectory to follow.  All units in meters.
         // create a new trajectory 1 meter forward
