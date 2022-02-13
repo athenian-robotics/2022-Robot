@@ -113,11 +113,11 @@ public class OuttakeSubsystem extends SubsystemBase {
         SmartDashboard.putBoolean("Outtake", shooterRunning);
         shuffleboardShooterPower = shooterNTE.getDouble(0);
 
-        if (turretActive) {
+        if (turretActive) { //Sets turret with limelight to PID to aim at the center of the goal
             try {
-                turretMotor.set(ControlMode.PercentOutput, -turretAnglePID.calculate(limelight.getLimelightOutputAtIndex(1)));
-            } catch (GoalNotFoundException ignored) {}
-        } else {
+                turretMotor.set(ControlMode.PercentOutput, -limelight.getLimelightOutputAtIndex(1));
+            } catch (GoalNotFoundException e) {}
+        } else { //Checks Fight Stick X Axis for Moving the Turret
             if (FightStick.fightStickJoystick.getX() < 0) {
                 manualAdjustTurret(-idleTurretSpeed);
             } else if (FightStick.fightStickJoystick.getX() > 0) {
