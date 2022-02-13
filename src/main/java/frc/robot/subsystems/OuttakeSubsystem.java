@@ -117,18 +117,18 @@ public class OuttakeSubsystem extends SubsystemBase {
     public void periodic() {
         SmartDashboard.putBoolean("Outtake", shooterRunning);
 
-        if (FightStick.fightStickJoystick.getX() < 0) {
-            manualAdjustTurret(-idleTurretSpeed);
-        } else if (FightStick.fightStickJoystick.getX() > 0) {
-            manualAdjustTurret(idleTurretSpeed);
-        } else {
-            manualAdjustTurret(0);
-        }
-
         if (turretActive) {
             try {
                 turretMotor.set(ControlMode.PercentOutput, -limelight.getLimelightOutputAtIndex(1));
             } catch (GoalNotFoundException e) {
+            }
+        } else {
+            if (FightStick.fightStickJoystick.getX() < 0) {
+                manualAdjustTurret(-idleTurretSpeed);
+            } else if (FightStick.fightStickJoystick.getX() > 0) {
+                manualAdjustTurret(idleTurretSpeed);
+            } else {
+                manualAdjustTurret(0);
             }
         }
     }
