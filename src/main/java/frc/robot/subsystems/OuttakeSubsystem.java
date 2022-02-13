@@ -48,6 +48,9 @@ public class OuttakeSubsystem extends SubsystemBase {
         leftHoodAngleServo.setBounds(2.0, 1.8, 1.5, 1.2, 1.0);
         rightHoodAngleServo.setBounds(2.0, 1.8, 1.5, 1.2, 1.0);
 
+        leftHoodAngleServo.setAngle(8);
+        rightHoodAngleServo.setAngle(8);
+
         Shuffleboard.getTab("852-Dashboard")
                 .add("Shooter Power", 1).withWidget(BuiltInWidgets.kNumberSlider)
                 .withProperties(Map.of("min", 0, "max", 100));
