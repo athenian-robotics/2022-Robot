@@ -75,6 +75,10 @@ public class OuttakeSubsystem extends SubsystemBase {
         leftHoodAngleServo.setAngle(leftHoodAngleServo.getAngle() + theta);
         rightHoodAngleServo.setAngle(rightHoodAngleServo.getAngle() + theta);
     }
+
+    public void manualAdjustTurret(double power) {
+        turretMotor.set(ControlMode.PercentOutput, power);
+    }
     /*
     public void setHoodAngle(double angle) {
         if (angle >= minimumHoodAngle && angle <= maximumHoodAngle) {
@@ -113,18 +117,19 @@ public class OuttakeSubsystem extends SubsystemBase {
     public void periodic() {
         SmartDashboard.putBoolean("Outtake", shooterRunning);
 
-        if (FightStick.fightStickJoystick.getY() < 0) {
-            leftHoodAngleServo.setAngle(leftHoodAngleServo.getAngle() + 1);
-            rightHoodAngleServo.setAngle(rightHoodAngleServo.getAngle() + 1);
-        } else if (FightStick.fightStickJoystick.getY() > 0) {
-            leftHoodAngleServo.setAngle(leftHoodAngleServo.getAngle() - 1);
-            rightHoodAngleServo.setAngle(rightHoodAngleServo.getAngle() - 1);
+        if (FightStick.fightStickJoystick.getX() < 0) {
+            manualAdjustTurret(-idleTurretSpeed);
+        } else if (FightStick.fightStickJoystick.getX() > 0) {
+            manualAdjustTurret(idleTurretSpeed);
+        } else {
+            manualAdjustTurret(0);
         }
 
         if (turretActive) {
             try {
                 turretMotor.set(ControlMode.PercentOutput, -limelight.getLimelightOutputAtIndex(1));
-            } catch (GoalNotFoundException e) { }
+            } catch (GoalNotFoundException e) {
+            }
         }
     }
 }
