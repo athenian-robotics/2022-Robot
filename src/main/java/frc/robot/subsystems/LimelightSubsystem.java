@@ -9,7 +9,7 @@ import frc.robot.lib.GoalNotFoundException;
 public class LimelightSubsystem extends SubsystemBase {
     final NetworkTable limelight;
     Number[] limelightOutputArray;
-    Number[] defaultLimelightOutputArray = {-1, -1, -1, -1, -1, -1, -1, -1};
+    Number[] defaultLimelightOutputArray = {-1, -1, -1, -1, -1, -1, -1, -1}; //TODO check with Harry to see if this is actually the default
 
     public LimelightSubsystem(String tableName) {
         this.limelight = NetworkTableInstance.getDefault().getTable(tableName);
@@ -26,14 +26,12 @@ public class LimelightSubsystem extends SubsystemBase {
         }
     }
 
-    public void disable() {
-    }
+    public void disable() {}
 
     public void periodic() {
         limelightOutputArray = limelight.getEntry("llpython").getNumberArray(defaultLimelightOutputArray);
         try {
             SmartDashboard.putNumber("xOffset", getLimelightOutputAtIndex(1));
-        } catch (GoalNotFoundException ignored) {
-        }
+        } catch (GoalNotFoundException ignored) {}
     }
 }

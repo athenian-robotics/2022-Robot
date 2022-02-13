@@ -21,6 +21,7 @@ import frc.robot.commands.outtake.ManualAdjustHoodAngle;
 import frc.robot.lib.controllers.FightStick;
 import frc.robot.subsystems.*;
 
+
 public class RobotContainer {
     // CONTROLLERS
     public static JoystickButton xboxA;
@@ -39,7 +40,7 @@ public class RobotContainer {
     // SUBSYSTEMS
     public static DrivetrainSubsystem drivetrain = new DrivetrainSubsystem();
     public static IndexerSubsystem indexer = new IndexerSubsystem();
-    public static IntakeSubsystem intake = new IntakeSubsystem(indexer);
+    public static IntakeSubsystem intake = new IntakeSubsystem();
     public static LimelightSubsystem limelight = new LimelightSubsystem("limelight-arc");
     public static OuttakeSubsystem outtake = new OuttakeSubsystem(limelight);
 
@@ -56,7 +57,7 @@ public class RobotContainer {
   // Configures xbox buttons to commands
   private void configureButtonBindings() {
     /*  SUBSYSTEM COMMANDS (Main, functional commands) */
-    FightStick.fightStickA.whenPressed(new ToggleIntake(intake, indexer)); // Toggle intake wheels and pneumatics
+    FightStick.fightStickA.whenPressed(new ToggleIntake(intake)); // Toggle intake wheels and pneumatics
     FightStick.fightStickX.whenPressed(new ToggleIndexer(indexer)); // Toggle indexer (tower portion)
     FightStick.fightStickB.whenPressed(new EnableShooter(outtake)); // Enable shooter wheels
     FightStick.fightStickY.whenPressed(new DisableShooter(outtake)); // Disable shooter wheels
@@ -106,10 +107,6 @@ public class RobotContainer {
     // Returns the robot's main autonomous command
     public Command getAutonomousCommand() {
         return new AutoRoutine6(drivetrain);
-    }
-
-    public IndexerSubsystem getIndexerSubsystem() {
-        return indexer;
     }
 }
 

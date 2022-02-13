@@ -5,10 +5,11 @@ import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import static frc.robot.Constants.LEDConstants.LEDPort;
+import static frc.robot.Constants.LEDConstants.LEDStripLength;
 
 public class LEDSubsystem extends SubsystemBase {
     private AddressableLED ledStrip = new AddressableLED(LEDPort);
-    private AddressableLEDBuffer ledStripBuffer = new AddressableLEDBuffer(60);
+    private final AddressableLEDBuffer ledStripBuffer = new AddressableLEDBuffer(LEDStripLength);
 
     public LEDSubsystem() {
         ledStrip.setLength(ledStripBuffer.getLength());

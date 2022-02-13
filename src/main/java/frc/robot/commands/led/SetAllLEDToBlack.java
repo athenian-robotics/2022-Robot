@@ -1,10 +1,10 @@
 package frc.robot.commands.led;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.LEDSubsystem;
 
 
-public class SetAllLEDToBlack extends CommandBase {
+public class SetAllLEDToBlack extends InstantCommand {
     private final LEDSubsystem lEDSubsystem;
 
     public SetAllLEDToBlack(LEDSubsystem lEDSubsystem) {
@@ -15,20 +15,5 @@ public class SetAllLEDToBlack extends CommandBase {
     @Override
     public void initialize() {
         lEDSubsystem.setAllColor(0, 0, 0);
-    }
-
-    @Override
-    public void execute() {
-
-    }
-
-    @Override
-    public boolean isFinished() {
-        return true;
-    }
-
-    @Override
-    public void end(boolean interrupted) {
-
     }
 }

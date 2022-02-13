@@ -17,19 +17,15 @@ public class IntakeSubsystem extends SubsystemBase {
     private final DoubleSolenoid rightIntakePneumatic = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, pneumaticPortRightA, pneumaticPortRightB);
     private final DoubleSolenoid leftIntakePneumatic = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, pneumaticPortLeftA, pneumaticPortLeftB);
 
-    private final IndexerSubsystem indexer;
-
     public boolean isRunning = false;
     public boolean isExtended = false;
     public boolean isInverted = false;
 
-    public IntakeSubsystem(IndexerSubsystem indexer) {
+    public IntakeSubsystem() {
         intakeMotor.configFactoryDefault(); // Initialize motor set up
         intakeMotor.setNeutralMode(NeutralMode.Coast);
         intakeMotor.configOpenloopRamp(0.1); // Ramp up (Trapezoid)
         intakeMotor.configClosedloopRamp(0.1); // Ramp down (Trapezoid)
-
-        this.indexer = indexer;
     }
 
     public void startIntake() { // Enables intake

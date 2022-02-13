@@ -1,12 +1,12 @@
 package frc.robot.commands.outtake;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.OuttakeSubsystem;
 
 import static frc.robot.Constants.MechanismConstants.idleOuttakeSpeed;
 
 
-public class EnableShooter extends CommandBase {
+public class EnableShooter extends InstantCommand {
     private final OuttakeSubsystem outtakeSubsystem;
 
     public EnableShooter(OuttakeSubsystem outtakeSubsystem) {
@@ -16,7 +16,4 @@ public class EnableShooter extends CommandBase {
 
     @Override
     public void initialize() { outtakeSubsystem.setShooterPower(idleOuttakeSpeed); }
-
-    @Override
-    public boolean isFinished() { return true; }
 }

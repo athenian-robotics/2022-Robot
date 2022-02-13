@@ -38,25 +38,25 @@ public class DrivetrainSubsystem extends SubsystemBase {
     private final DifferentialDrive drive;
 
     public DrivetrainSubsystem() {
-        // Configure motors
+        // Initialize motors
         WPI_TalonFX[] driveMotors = {
                 new WPI_TalonFX(Constants.DriveConstants.rightRearDrivePort),
                 new WPI_TalonFX(Constants.DriveConstants.rightFrontDrivePort),
                 new WPI_TalonFX(Constants.DriveConstants.leftRearDrivePort),
                 new WPI_TalonFX(Constants.DriveConstants.leftFrontDrivePort)
-        };
-        configureDriveMotors(driveMotors); // Initialize motors
+        }; configureDriveMotors(driveMotors); // Configure motors
 
         leftMotors = new MotorControllerGroup(driveMotors[0], driveMotors[1]);
         rightMotors = new MotorControllerGroup(driveMotors[2], driveMotors[3]);
         rightMotors.setInverted(true);
+
         drive = new DifferentialDrive(leftMotors, rightMotors); // Initialize Differential Drive
 
         // Configure encoders
         rightEncoder = new Encoder(rightEncoderChannelA, rightEncoderchannelB, true, Encoder.EncodingType.k2X);
         leftEncoder = new Encoder(leftEncoderChannelA, leftEncoderChannelB, false, Encoder.EncodingType.k2X);
-        leftEncoder.setDistancePerPulse(6.0 * 0.0254 * Math.PI / 2048 * 4/3); // 6 inch wheel, to meters, 2048 ticks //0.0254
-        rightEncoder.setDistancePerPulse(6.0 * 0.0254 * Math.PI / 2048 * 4/3);// 6 inch wheel, to meters, 2048 ticks
+        leftEncoder.setDistancePerPulse(wheelDiameter * 0.0254 * Math.PI * driveGearRatio / 2048); // 6-inch wheel, to meters, PI for circumference, gear conversion, 2048 ticks per rotation
+        rightEncoder.setDistancePerPulse(wheelDiameter * 0.0254 * Math.PI * driveGearRatio / 2048); // 6-inch wheel, to meters, PI for circumference, gear conversion, 2048 ticks per rotation
 
         //Configure solenoids
         driveShifterRight.set(DoubleSolenoid.Value.kReverse);
@@ -146,11 +146,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     public int getRightEncoderCount() { return this.rightEncoder.get(); } // Returns right encoder raw count
 
-    public void resetEncoderCounts() { // Resets the encoders
-        this.leftEncoder.reset();
-        this.rightEncoder.reset();
-    }
-
     public double getRightDistanceDriven() { return rightEncoder.getDistance(); } // Returns the distance the right side has driven
 
     public double getLeftDistanceDriven() { return leftEncoder.getDistance(); } // Returns the distance the left side has driven
@@ -219,6 +214,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Right Drive Encoder: ", getRightEncoderCount());
         SmartDashboard.putNumber("Left Drive Distance: ", getLeftDistanceDriven());
         SmartDashboard.putNumber("Right Drive Distance: ", getRightDistanceDriven());
+
+        odometry.update(Rotation2d.fromDegrees(gyro.getAngle()), leftEncoder.getDistance(), rightEncoder.getDistance());
     }
 }
 

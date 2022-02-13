@@ -8,12 +8,10 @@ import frc.robot.subsystems.LEDSubsystem;
 public class ToggleIntake extends CommandBase {
     // Define necessary subsystems
     private final IntakeSubsystem intakeSubsystem;
-    private final IndexerSubsystem indexerSubsystem;
 
-    public ToggleIntake(IntakeSubsystem intakeSubsystem, IndexerSubsystem indexerSubsystem) {
+    public ToggleIntake(IntakeSubsystem intakeSubsystem) {
         this.intakeSubsystem = intakeSubsystem;
-        this.indexerSubsystem = indexerSubsystem;
-        addRequirements(this.intakeSubsystem, this.indexerSubsystem);
+        addRequirements(this.intakeSubsystem);
     }
 
     @Override

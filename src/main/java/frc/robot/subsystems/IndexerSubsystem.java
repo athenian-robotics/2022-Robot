@@ -8,8 +8,6 @@ import frc.robot.Constants;
 import frc.robot.lib.colorwheel.ColorWheelUtils;
 import frc.robot.lib.colorwheel.WheelColors;
 
-import java.util.function.BooleanSupplier;
-
 import static frc.robot.Constants.MechanismConstants.indexerMotorPort;
 
 
@@ -19,11 +17,9 @@ public class IndexerSubsystem extends SubsystemBase {
     private final ColorWheelUtils colorWheelUtils = new ColorWheelUtils();
 
     public WheelColors currentColor = WheelColors.GREEN;
-    public double currentProximity = 2000;
+    public double currentProximity = 0;
 
     public boolean indexerRunning = false;
-    public boolean beltRunning = false;
-    public boolean residualBeltFlag = false;
 
     public IndexerSubsystem() {
         indexerMotor.setInverted(true);
@@ -44,8 +40,6 @@ public class IndexerSubsystem extends SubsystemBase {
     public boolean ballPrimed() { return currentProximity > 1800; }
 
     public WheelColors primedBallColor() { return currentColor; }
-
-    public BooleanSupplier getResidualBeltFlag() {return () -> residualBeltFlag;}
 
     public void disable() { // Disables indexer and belt
         stopIndexer();
