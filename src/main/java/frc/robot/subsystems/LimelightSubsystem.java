@@ -26,14 +26,12 @@ public class LimelightSubsystem extends SubsystemBase {
         }
     }
 
-    public void disable() {
-    }
+    public void disable() {}
 
     public void periodic() {
         limelightOutputArray = limelight.getEntry("llpython").getNumberArray(defaultLimelightOutputArray);
         try {
             SmartDashboard.putNumber("xOffset", getLimelightOutputAtIndex(1));
-        } catch (GoalNotFoundException ignored) {
-        }
+        } catch (GoalNotFoundException ignored) {}
     }
 }
