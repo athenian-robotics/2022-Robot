@@ -4,6 +4,8 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.lib.controllers.FightStick;
 import frc.robot.subsystems.OuttakeSubsystem;
 
+import static frc.robot.Constants.MechanismConstants.idleTurretSpeed;
+
 
 public class ManualAdjustTurret extends CommandBase {
     private final OuttakeSubsystem outtakeSubsystem;
@@ -19,10 +21,12 @@ public class ManualAdjustTurret extends CommandBase {
 
     @Override
     public void execute() {
-        if (FightStick.fightStickJoystick.getX() < 0) { // Inverted
-            outtakeSubsystem.manualAdjustHoodAngle(1);
+        if (FightStick.fightStickJoystick.getX() < 0) {
+            outtakeSubsystem.manualAdjustTurret(-idleTurretSpeed);
         } else if (FightStick.fightStickJoystick.getX() > 0) {
-            outtakeSubsystem.manualAdjustHoodAngle(-1);
+            outtakeSubsystem.manualAdjustTurret(idleTurretSpeed);
+        } else {
+            outtakeSubsystem.manualAdjustTurret(0);
         }
     }
 

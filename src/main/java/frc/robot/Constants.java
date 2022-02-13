@@ -60,6 +60,7 @@ public final class Constants {
         public static final double indexerSpeed = 0.40;
         // TURRET
         public static final int turretMotorPort = 0;  // CHANGE
+        public static final double idleTurretSpeed = 0.02;
         // SHOOTER
         public static final int shooterMotorPortA = 7;
         public static final int shooterMotorPortB = 8;
