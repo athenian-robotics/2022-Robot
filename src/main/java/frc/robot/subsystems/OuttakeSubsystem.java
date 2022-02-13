@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.networktables.NetworkTableEntry;
@@ -21,19 +22,18 @@ public class OuttakeSubsystem extends SubsystemBase {
     private final TalonFX shooterMotorFront = new TalonFX(shooterMotorPortA);
     private final TalonFX shooterMotorBack = new TalonFX(shooterMotorPortB);
     private final TalonFX turretMotor = new TalonFX(turretMotorPort);
+
     private final Servo leftHoodAngleServo = new Servo(2);
     private final Servo rightHoodAngleServo = new Servo(3);
-    //ColorWheelUtils colorWheel = new ColorWheelUtils();
-    NetworkTableEntry shooterNTE;
 
-    PIDController turretAnglePID;
+    private final NetworkTableEntry shooterNTE;
+    private final PIDController turretAnglePID;
+    private final LimelightSubsystem limelight;
 
     public boolean shooterRunning = false;
     public boolean turretActive = false;
-    private double currentFrontShooterPower = 0.0;
-    private double currentBackShooterPower = 0.0;
+    private double shuffleboardShooterPower = 0;
 
-    LimelightSubsystem limelight;
 
     public OuttakeSubsystem(LimelightSubsystem ll) {
         limelight = ll;
@@ -42,15 +42,16 @@ public class OuttakeSubsystem extends SubsystemBase {
         shooterMotorBack.setInverted(false);
 
         turretAnglePID = new PIDController(0, 0, 0);
-        turretAnglePID.setSetpoint(0);
-        turretAnglePID.setTolerance(1);
+        turretAnglePID.setSetpoint(0); //Always trying to minimize our offset
 
-        leftHoodAngleServo.setBounds(2.0, 1.8, 1.5, 1.2, 1.0);
-        rightHoodAngleServo.setBounds(2.0, 1.8, 1.5, 1.2, 1.0);
+        leftHoodAngleServo.setBounds(2.0, 1.8, 1.5, 1.2, 1.0); //Manufacturer specified for Actuonix linear servos
+        rightHoodAngleServo.setBounds(2.0, 1.8, 1.5, 1.2, 1.0); //Manufacturer specified for Actuonix linear servos
 
-        Shuffleboard.getTab("852-Dashboard")
-                .add("Shooter Power", 1).withWidget(BuiltInWidgets.kNumberSlider)
-                .withProperties(Map.of("min", 0, "max", 100));
+        shooterNTE = Shuffleboard.getTab("852-Dashboard")
+                .add("Shooter Power", 0)
+                .withWidget(BuiltInWidgets.kNumberSlider)
+                .withProperties(Map.of("min", 0, "max", 100))
+                .getEntry();
     }
 
     public void setShooterPower(double power) { // Enables both wheels
@@ -61,14 +62,12 @@ public class OuttakeSubsystem extends SubsystemBase {
 
     public void setShooterFront(double power) {
         if (power > 1.0 || power < 0.0) return;
-        currentFrontShooterPower = power;
-        shooterMotorFront.set(ControlMode.PercentOutput, currentFrontShooterPower);
+        shooterMotorFront.set(ControlMode.PercentOutput, power);
     }
 
     public void setShooterBack(double power) {
         if (power > 1.0 || power < 0.0) return;
-        currentBackShooterPower = power;
-        shooterMotorBack.set(ControlMode.PercentOutput, currentBackShooterPower);
+        shooterMotorBack.set(ControlMode.PercentOutput, power);
     }
 
     public void manualAdjustHoodAngle(double theta) {
@@ -77,20 +76,17 @@ public class OuttakeSubsystem extends SubsystemBase {
     }
 
     public void manualAdjustTurret(double power) {
-        turretMotor.set(ControlMode.PercentOutput, power);
-    }
-    /*
+        turretMotor.set(ControlMode.PercentOutput, power);}
+
     public void setHoodAngle(double angle) {
         if (angle >= minimumHoodAngle && angle <= maximumHoodAngle) {
             leftHoodAngleServo.setAngle(180 * (angle - minimumHoodAngle) / (maximumHoodAngle - minimumHoodAngle)); // 0 - 180 DEGREES
             rightHoodAngleServo.setAngle(180 * (angle - minimumHoodAngle) / (maximumHoodAngle - minimumHoodAngle)); // 0 - 180 DEGREES
         }
     }
-    */
 
-    public double getHoodAngle() { //DEGREES + DEFAULT 9
-        return ((maximumHoodAngle - minimumHoodAngle) * (leftHoodAngleServo.getPosition() + rightHoodAngleServo.getPosition()) / 360) + minimumHoodAngle;
-    }
+    public double getHoodAngle() { //Takes the average of the angles (0-1) and scales it into a degree measurement
+        return ((maximumHoodAngle - minimumHoodAngle) * (leftHoodAngleServo.getAngle() + rightHoodAngleServo.getAngle()) / 360) + minimumHoodAngle;}
 
     public void stopShooter() { // Disables shooter
         setShooterFront(0);
@@ -99,36 +95,35 @@ public class OuttakeSubsystem extends SubsystemBase {
     }
 
     public void stopHood() {
-        leftHoodAngleServo.setSpeed(0);
-        rightHoodAngleServo.setSpeed(0);
-    }
+        leftHoodAngleServo.setSpeed(0); rightHoodAngleServo.setSpeed(0);}
+
+    public void stopTurret() {
+        turretMotor.set(TalonFXControlMode.PercentOutput, 0);}
 
     public void disable() {
         stopShooter();
         stopHood();
-        //stopTurret();
+        stopTurret();
     }
 
-    public void setTurretActive(boolean active) {
-        turretActive = active;
-    }
+    public void setTurretActive(boolean active) {turretActive = active;}
 
     @Override
     public void periodic() {
         SmartDashboard.putBoolean("Outtake", shooterRunning);
-
-        if (FightStick.fightStickJoystick.getX() < 0) {
-            manualAdjustTurret(-idleTurretSpeed);
-        } else if (FightStick.fightStickJoystick.getX() > 0) {
-            manualAdjustTurret(idleTurretSpeed);
-        } else {
-            manualAdjustTurret(0);
-        }
+        shuffleboardShooterPower = shooterNTE.getDouble(0);
 
         if (turretActive) {
             try {
-                turretMotor.set(ControlMode.PercentOutput, -limelight.getLimelightOutputAtIndex(1));
-            } catch (GoalNotFoundException e) {
+                turretMotor.set(ControlMode.PercentOutput, -turretAnglePID.calculate(limelight.getLimelightOutputAtIndex(1)));
+            } catch (GoalNotFoundException ignored) {}
+        } else {
+            if (FightStick.fightStickJoystick.getX() < 0) {
+                manualAdjustTurret(-idleTurretSpeed);
+            } else if (FightStick.fightStickJoystick.getX() > 0) {
+                manualAdjustTurret(idleTurretSpeed);
+            } else {
+                manualAdjustTurret(0);
             }
         }
     }

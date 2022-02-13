@@ -9,7 +9,7 @@ import frc.robot.lib.GoalNotFoundException;
 public class LimelightSubsystem extends SubsystemBase {
     final NetworkTable limelight;
     Number[] limelightOutputArray;
-    Number[] defaultLimelightOutputArray = {-1, -1, -1, -1, -1, -1, -1, -1};
+    Number[] defaultLimelightOutputArray = {-1, -1, -1, -1, -1, -1, -1, -1}; //TODO check with Harry to see if this is actually the default
 
     public LimelightSubsystem(String tableName) {
         this.limelight = NetworkTableInstance.getDefault().getTable(tableName);
