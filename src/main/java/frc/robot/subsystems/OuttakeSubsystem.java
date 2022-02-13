@@ -21,7 +21,7 @@ public class OuttakeSubsystem extends SubsystemBase {
     // Setup motors, pid controller, and booleans
     private final TalonFX shooterMotorFront = new TalonFX(shooterMotorPortA);
     private final TalonFX shooterMotorBack = new TalonFX(shooterMotorPortB);
-    private final TalonFX turretMotor = new TalonFX(turretMotorPort);
+    //private final TalonFX turretMotor = new TalonFX(turretMotorPort);
 
     private final Servo leftHoodAngleServo = new Servo(2);
     private final Servo rightHoodAngleServo = new Servo(3);
@@ -76,7 +76,8 @@ public class OuttakeSubsystem extends SubsystemBase {
     }
 
     public void manualAdjustTurret(double power) {
-        turretMotor.set(ControlMode.PercentOutput, power);}
+        //turretMotor.set(ControlMode.PercentOutput, power);}
+    }
 
     public void setHoodAngle(double angle) {
         if (angle >= minimumHoodAngle && angle <= maximumHoodAngle) {
@@ -86,7 +87,8 @@ public class OuttakeSubsystem extends SubsystemBase {
     }
 
     public double getHoodAngle() { //Takes the average of the angles (0-1) and scales it into a degree measurement
-        return ((maximumHoodAngle - minimumHoodAngle) * (leftHoodAngleServo.getAngle() + rightHoodAngleServo.getAngle()) / 360) + minimumHoodAngle;}
+        return ((maximumHoodAngle - minimumHoodAngle) * (leftHoodAngleServo.getAngle() + rightHoodAngleServo.getAngle()) / 360) + minimumHoodAngle;
+    }
 
     public void stopShooter() { // Disables shooter
         setShooterFront(0);
@@ -95,10 +97,13 @@ public class OuttakeSubsystem extends SubsystemBase {
     }
 
     public void stopHood() {
-        leftHoodAngleServo.setSpeed(0); rightHoodAngleServo.setSpeed(0);}
+        leftHoodAngleServo.setSpeed(0);
+        rightHoodAngleServo.setSpeed(0);
+    }
 
     public void stopTurret() {
-        turretMotor.set(TalonFXControlMode.PercentOutput, 0);}
+        //turretMotor.set(TalonFXControlMode.PercentOutput, 0);
+    }
 
     public void disable() {
         stopShooter();
@@ -106,14 +111,16 @@ public class OuttakeSubsystem extends SubsystemBase {
         stopTurret();
     }
 
-    public void setTurretActive(boolean active) {turretActive = active;}
+    public void setTurretActive(boolean active) {
+        turretActive = active;
+    }
 
     @Override
     public void periodic() {
         SmartDashboard.putBoolean("Outtake", shooterRunning);
         shuffleboardShooterPower = shooterNTE.getDouble(0);
 
-        if (turretActive) { //Sets turret with limelight to PID to aim at the center of the goal
+        /*if (turretActive) { //Sets turret with limelight to PID to aim at the center of the goal
             try {
                 turretMotor.set(ControlMode.PercentOutput, -limelight.getLimelightOutputAtIndex(1));
             } catch (GoalNotFoundException e) {}
@@ -124,8 +131,7 @@ public class OuttakeSubsystem extends SubsystemBase {
                 manualAdjustTurret(idleTurretSpeed);
             } else {
                 manualAdjustTurret(0);
-            }
-        }
+            }*/
     }
 }
 
