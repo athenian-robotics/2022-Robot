@@ -25,8 +25,15 @@ public class IndexerSubsystem extends SubsystemBase {
         indexerMotor.setInverted(true);
     }
 
-    public void startIndexer() { // Enables indexer
+    public void startIndexer() {
+        System.out.println("forward");// Enables indexer
         indexerMotor.set(ControlMode.PercentOutput, Constants.MechanismConstants.indexerSpeed);
+        indexerRunning = true;
+    }
+
+    public void reverseIndexer() {
+        System.out.println("revers");
+        indexerMotor.set(ControlMode.PercentOutput, -Constants.MechanismConstants.indexerSpeed);
         indexerRunning = true;
     }
 
@@ -35,11 +42,22 @@ public class IndexerSubsystem extends SubsystemBase {
         indexerRunning = false;
     }
 
-    public void toggleIndexer() { if (indexerRunning) stopIndexer(); else startIndexer(); } // Toggles indexer
+    public void setIndexer(int power) {
+        indexerMotor.set(ControlMode.PercentOutput, power);
+    }
 
-    public boolean ballPrimed() { return currentProximity > 1800; }
+    public void toggleIndexer() {
+        if (indexerRunning) stopIndexer();
+        else startIndexer();
+    } // Toggles indexer
 
-    public WheelColors primedBallColor() { return currentColor; }
+    public boolean ballPrimed() {
+        return currentProximity > 10;
+    }
+
+    public WheelColors primedBallColor() {
+        return currentColor;
+    }
 
     public void disable() { // Disables indexer and belt
         stopIndexer();
@@ -51,6 +69,7 @@ public class IndexerSubsystem extends SubsystemBase {
         currentProximity = colorWheelUtils.currentProximity();
 
         SmartDashboard.putBoolean("Indexer", indexerRunning);
+        SmartDashboard.putNumber("Proximity", currentProximity);
     }
 }
 

@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.auto.AutoRoutine6;
 import frc.robot.commands.drive.ArcadeDrive;
 import frc.robot.commands.drive.TankDrive;
+import frc.robot.commands.indexer.EnterShooterMode;
 import frc.robot.commands.indexer.QueueBalls;
 import frc.robot.commands.indexer.ToggleIndexer;
 import frc.robot.commands.intake.ToggleIntake;
@@ -49,7 +50,7 @@ public class RobotContainer {
         xboxButtonSetup();
         configureButtonBindings();
 
-    drivetrain.setDefaultCommand(new ArcadeDrive(drivetrain, xboxController)); // Check for Arcade or Tank
+        drivetrain.setDefaultCommand(new ArcadeDrive(drivetrain, xboxController)); // Check for Arcade or Tank
         outtake.setDefaultCommand(new ManualAdjustHoodAngle(outtake)); // Check fight stick y-axis for manual hood adjustment
         indexer.setDefaultCommand(new QueueBalls(indexer)); //Turns on indexer when sees a ball, sets it to off when there are no balls in sight
   }
@@ -57,7 +58,8 @@ public class RobotContainer {
   // Configures xbox buttons to commands
   private void configureButtonBindings() {
     /*  SUBSYSTEM COMMANDS (Main, functional commands) */
-    FightStick.fightStickA.whenPressed(new ToggleIntake(intake)); // Toggle intake wheels and pneumatics
+      xboxHamburger.whenPressed(new EnterShooterMode(indexer));
+      FightStick.fightStickA.whenPressed(new ToggleIntake(intake)); // Toggle intake wheels and pneumatics
     FightStick.fightStickX.whenPressed(new ToggleIndexer(indexer)); // Toggle indexer (tower portion)
     FightStick.fightStickB.whenPressed(new EnableShooter(outtake)); // Enable shooter wheels
     FightStick.fightStickY.whenPressed(new DisableShooter(outtake)); // Disable shooter wheels
