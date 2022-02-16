@@ -60,7 +60,7 @@ public class RobotContainer {
     /*  SUBSYSTEM COMMANDS (Main, functional commands) */
       xboxHamburger.whenPressed(new EnterShooterMode(indexer));
       FightStick.fightStickA.whenPressed(new ToggleIntake(intake)); // Toggle intake wheels and pneumatics
-    FightStick.fightStickX.whenPressed(new ToggleIndexer(indexer)); // Toggle indexer (tower portion)
+    FightStick.fightStickX.whenPressed(new ToggleIndexer(indexer).withTimeout(1)); // Toggle indexer (tower portion)
     FightStick.fightStickB.whenPressed(new EnableShooter(outtake)); // Enable shooter wheels
     FightStick.fightStickY.whenPressed(new DisableShooter(outtake)); // Disable shooter wheels
     
