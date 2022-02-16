@@ -56,7 +56,7 @@ public final class Constants {
         // INDEXER
         public static final int intakeMotorPort = 6;
         public static final int indexerMotorPort = 12;
-        public static final double indexerSpeed = 0.40;
+        public static final double indexerSpeed = 0.45;
         // TURRET
         public static final int turretMotorPort = 0;  // CHANGE
         public static final double idleTurretSpeed = 0.02;
@@ -67,7 +67,7 @@ public final class Constants {
         public static final double minimumHoodAngle = 8;
         public static final double maximumHoodAngle = 41;
         // MAX MECHANISM SPEEDS
-        public static final double idleOuttakeSpeed = 0.35;
+        public static final double idleOuttakeSpeed = 0.4;
         public static final double intakeSpeed = 0.3; //0 to 1
 
         // Climber motor ports ...
