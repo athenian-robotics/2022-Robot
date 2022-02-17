@@ -17,6 +17,7 @@ import frc.robot.commands.indexer.ToggleIndexer;
 import frc.robot.commands.intake.ToggleIntake;
 import frc.robot.commands.outtake.DisableShooter;
 import frc.robot.commands.outtake.EnableShooter;
+import frc.robot.commands.outtake.EnableShooterShuffleboard;
 import frc.robot.commands.outtake.ManualAdjustHoodAngle;
 import frc.robot.lib.controllers.FightStick;
 import frc.robot.subsystems.*;
@@ -49,8 +50,8 @@ public class RobotContainer {
         xboxButtonSetup();
         configureButtonBindings();
 
-    drivetrain.setDefaultCommand(new ArcadeDrive(drivetrain, xboxController)); // Check for Arcade or Tank
-        outtake.setDefaultCommand(new ManualAdjustHoodAngle(outtake)); // Check fight stick y-axis for manual hood adjustment
+        drivetrain.setDefaultCommand(new ArcadeDrive(drivetrain, xboxController)); // Check for Arcade or Tank
+        //outtake.setDefaultCommand(new EnableShooterShuffleboard(outtake)); // Check fight stick y-axis for manual hood adjustment
         indexer.setDefaultCommand(new QueueBalls(indexer)); //Turns on indexer when sees a ball, sets it to off when there are no balls in sight
   }
 
