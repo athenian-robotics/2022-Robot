@@ -57,6 +57,9 @@ public final class Constants {
         public static final int intakeMotorPort = 6;
         public static final int indexerMotorPort = 12;
         public static final double indexerSpeed = 0.45;
+        //CLIMBER
+        public static final int leftClimberMotorPort = 0;
+        public static final int rightClimberMotorPort = 0;
         // TURRET
         public static final int turretMotorPort = 0;  // CHANGE
         public static final double idleTurretSpeed = 0.02;
