@@ -44,7 +44,7 @@ public class OuttakeSubsystem extends SubsystemBase {
         leftHoodAngleServo.setBounds(2.0, 1.8, 1.5, 1.2, 1.0); //Manufacturer specified for Actuonix linear servos
         rightHoodAngleServo.setBounds(2.0, 1.8, 1.5, 1.2, 1.0); //Manufacturer specified for Actuonix linear servos
 
-        shooterNTE = Shuffleboard.getTab("852-Dashboard")
+        shooterNTE = Shuffleboard.getTab("852 - Dashboard")
                 .add("Shooter Power", 0)
                 .withWidget(BuiltInWidgets.kNumberSlider)
                 .withProperties(Map.of("min", 0, "max", 100))
