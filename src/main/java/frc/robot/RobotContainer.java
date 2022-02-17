@@ -19,6 +19,7 @@ import frc.robot.commands.intake.ToggleIntake;
 import frc.robot.commands.outtake.DisableShooter;
 import frc.robot.commands.outtake.EnableShooter;
 import frc.robot.commands.outtake.ManualAdjustHoodAngle;
+import frc.robot.commands.outtake.ShootOneBall;
 import frc.robot.lib.controllers.FightStick;
 import frc.robot.subsystems.*;
 
@@ -58,7 +59,7 @@ public class RobotContainer {
   // Configures xbox buttons to commands
   private void configureButtonBindings() {
     /*  SUBSYSTEM COMMANDS (Main, functional commands) */
-      xboxHamburger.whenPressed(new ShootTopBall(indexer));
+      xboxHamburger.whenPressed(new ShootOneBall(drivetrain, indexer, intake, limelight, outtake));
       FightStick.fightStickA.whenPressed(new ToggleIntake(intake)); // Toggle intake wheels and pneumatics
       // FightStick.fightStickX.whenPressed(new ToggleIndexer(indexer));
       FightStick.fightStickL3.whenHeld(new PulseIndexer(indexer, true)); // Toggle indexer (tower portion)
