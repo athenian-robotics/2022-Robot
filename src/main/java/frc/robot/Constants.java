@@ -10,7 +10,6 @@ import edu.wpi.first.math.util.Units;
 public final class Constants {
     
     public static final class AutoConstants {
-
         public static double ksVolts = 0.2455; //0.49117
         public static double kvVoltSecondsPerMeter = 1.3023; //3.4251
         public static double kaVoltSecondsSquaredPerMeter = 0.091565; //0.0915650
@@ -39,8 +38,8 @@ public final class Constants {
          * MISC CONSTANTS
          **/
         public static final double trackWidth = Units.inchesToMeters(28);
-        public static final int driveGearRatio = 0;
-        public static final int wheelDiameter = 0; // 6 in.
+        public static final double driveGearRatio = 4/3.0;
+        public static final double wheelDiameter = 6.0; // 6 in.
 
         public static final double minDriveSpeed = 0.1;
         public static final double maxDriveSpeed = 0.95;
@@ -56,22 +55,20 @@ public final class Constants {
     public static final class MechanismConstants {
         // INDEXER
         public static final int intakeMotorPort = 6;
-        public static final int indexerMecanumMotorPort = 0;  // CHANGE
-        public static final int indexerBeltMotorPort = 2;  // CHANGE
-        public static final double indexerSpeed = 0.5;
+        public static final int indexerMotorPort = 12;
+        public static final double indexerSpeed = 0.45;
         // TURRET
         public static final int turretMotorPort = 0;  // CHANGE
+        public static final double idleTurretSpeed = 0.02;
         // SHOOTER
-        public static final int shooterMotorPortA = 7;  // CHANGE
-        public static final int shooterMotorPortB = 8;  // CHANGE
+        public static final int shooterMotorPortA = 7;
+        public static final int shooterMotorPortB = 8;
         // SHOOTER HOOD
-        public static final double defaultHoodAngle = 30; //CHANGE
         public static final double minimumHoodAngle = 8;
-        public static final double maximumHoodAngle = 45; //CHANGE
+        public static final double maximumHoodAngle = 41;
         // MAX MECHANISM SPEEDS
-        public static final double idleOuttakeSpeed = 0.25;
+        public static final double idleOuttakeSpeed = 0.4;
         public static final double intakeSpeed = 0.3; //0 to 1
-        public static final double beltSpeed = 0.5;
 
         // Climber motor ports ...
     }
@@ -89,12 +86,8 @@ public final class Constants {
         // Pneumatics constants ...
     }
 
-    public static final class EncoderConstants {
-        public static final int hoodAngleEncoderPortA = 8;
-        public static final int hoodAngleEncoderPortB = 9;
-    }
-
     public static final class LEDConstants {
         public static final int LEDPort = 0;
+        public static final int LEDStripLength = 40;
     }
 }

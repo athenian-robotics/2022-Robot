@@ -4,22 +4,22 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.commands.auto.components.GoalNotFoundException;
+import frc.robot.lib.GoalNotFoundException;
+
+import java.util.Objects;
 
 public class LimelightSubsystem extends SubsystemBase {
     final NetworkTable limelight;
-    Number[] limelightOutputArray;
-    Number[] defaultLimelightOutputArray = {-1, -1, -1, -1, -1, -1, -1, -1};
+    Number[] limelightOutputArray = {-1, -1, -1, -1, -1, -1, -1, -1};
 
     public LimelightSubsystem(String tableName) {
         this.limelight = NetworkTableInstance.getDefault().getTable(tableName);
-        limelightOutputArray = defaultLimelightOutputArray;
     }
 
     public double getLimelightOutputAtIndex(int index) throws GoalNotFoundException {
-        if (index>8||index<0) {
+        if (index > 8 || index < 0) {
             throw new IndexOutOfBoundsException();
-        } else if (limelightOutputArray!=defaultLimelightOutputArray) {
+        } else if ((int) limelightOutputArray[7] == 1) {
             return (double) limelightOutputArray[index];
         } else {
             throw new GoalNotFoundException();
@@ -29,7 +29,12 @@ public class LimelightSubsystem extends SubsystemBase {
     public void disable() {}
 
     public void periodic() {
-        limelightOutputArray = limelight.getEntry("llpython").getNumberArray(defaultLimelightOutputArray);
-        try {SmartDashboard.putNumber("xOffset", getLimelightOutputAtIndex(1));} catch (GoalNotFoundException ignored) {}
+        try {
+            Number[] temp = limelight.getEntry("llpython").getNumberArray(new Number[]{-1, -1, -1, -1, -1, -1, -1, -1});
+            if (Objects.equals(temp[7], 1) || Objects.equals(temp[7], 0)) limelightOutputArray = temp;
+        } catch (ArrayIndexOutOfBoundsException ignored) {}
+        try {
+            SmartDashboard.putNumber("xOffset", getLimelightOutputAtIndex(1));
+        } catch (GoalNotFoundException ignored) {}
     }
 }

@@ -4,16 +4,17 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.OuttakeSubsystem;
 
 
-public class DisableShooter extends InstantCommand {
+public class SetHoodAngle extends InstantCommand {
     private final OuttakeSubsystem outtakeSubsystem;
+    private final double angle;
 
-    public DisableShooter(OuttakeSubsystem outtakeSubsystem) {
-        this.outtakeSubsystem = outtakeSubsystem;
+    public SetHoodAngle(OuttakeSubsystem outtakeSubsystem, double angle) {
+        this.outtakeSubsystem = outtakeSubsystem; this.angle = angle;
         addRequirements(this.outtakeSubsystem);
     }
 
     @Override
     public void initialize() {
-        outtakeSubsystem.setShooterPower(0.0);
+        outtakeSubsystem.setHoodAngle(angle);
     }
 }

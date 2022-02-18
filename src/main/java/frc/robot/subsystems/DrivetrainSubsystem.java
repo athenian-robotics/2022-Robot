@@ -9,7 +9,10 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
-import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -38,25 +41,25 @@ public class DrivetrainSubsystem extends SubsystemBase {
     private final DifferentialDrive drive;
 
     public DrivetrainSubsystem() {
-        // Configure motors
+        // Initialize motors
         WPI_TalonFX[] driveMotors = {
                 new WPI_TalonFX(Constants.DriveConstants.rightRearDrivePort),
                 new WPI_TalonFX(Constants.DriveConstants.rightFrontDrivePort),
                 new WPI_TalonFX(Constants.DriveConstants.leftRearDrivePort),
                 new WPI_TalonFX(Constants.DriveConstants.leftFrontDrivePort)
-        };
-        configureDriveMotors(driveMotors); // Initialize motors
+        }; configureDriveMotors(driveMotors); // Configure motors
 
         leftMotors = new MotorControllerGroup(driveMotors[0], driveMotors[1]);
         rightMotors = new MotorControllerGroup(driveMotors[2], driveMotors[3]);
         rightMotors.setInverted(true);
+
         drive = new DifferentialDrive(leftMotors, rightMotors); // Initialize Differential Drive
 
         // Configure encoders
         rightEncoder = new Encoder(rightEncoderChannelA, rightEncoderchannelB, true, Encoder.EncodingType.k2X);
         leftEncoder = new Encoder(leftEncoderChannelA, leftEncoderChannelB, false, Encoder.EncodingType.k2X);
-        leftEncoder.setDistancePerPulse(6.0 * 0.0254 * Math.PI / 2048 * 4/3); // 6 inch wheel, to meters, 2048 ticks //0.0254
-        rightEncoder.setDistancePerPulse(6.0 * 0.0254 * Math.PI / 2048 * 4/3);// 6 inch wheel, to meters, 2048 ticks
+        leftEncoder.setDistancePerPulse(wheelDiameter * 0.0254 * Math.PI * driveGearRatio / 2048); // 6-inch wheel, to meters, PI for circumference, gear conversion, 2048 ticks per rotation
+        rightEncoder.setDistancePerPulse(wheelDiameter * 0.0254 * Math.PI * driveGearRatio / 2048); // 6-inch wheel, to meters, PI for circumference, gear conversion, 2048 ticks per rotation
 
         //Configure solenoids
         driveShifterRight.set(DoubleSolenoid.Value.kReverse);
@@ -103,25 +106,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
     }
 
     /**
-     * Utilize both joystick values to tank drive a west-coast drivetrain
-     * @param leftVelocity Speed of the chassis' left side
-     * @param rightVelocity Speed of the chassis' right side
-     */
-    public void tankDrive(double leftVelocity, double rightVelocity) {
-        int leftSign = leftVelocity >= 0 ? 1 : -1; // Checks leftSpeed and gathers whether it is negative or positive
-        int rightSign = rightVelocity >= 0 ? 1 : -1; // Checks rightSpeed and gathers whether it is negative or positive
-
-        // Deadband
-        leftVelocity = Math.abs(leftVelocity) > maxDriveSpeed ? maxDriveSpeed * leftSign : leftVelocity;
-        rightVelocity = Math.abs(rightVelocity) > maxDriveSpeed ? maxDriveSpeed * rightSign : rightVelocity;
-
-        leftVelocity = Math.abs(leftVelocity) < minDriveSpeed ? 0 : leftVelocity;
-        rightVelocity = Math.abs(rightVelocity) < minDriveSpeed ? 0 : rightVelocity;
-
-        setMotorPercentOutput(-leftVelocity, rightVelocity);
-    }
-
-    /**
      * Set the front wheels to a desired output. Units: Percentage
      * @param leftOutput Left front wheel output percentage
      * @param rightOutput Right front wheel output percentage
@@ -164,11 +148,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
     public int getLeftEncoderCount() { return this.leftEncoder.get(); } // Returns left encoder raw count
 
     public int getRightEncoderCount() { return this.rightEncoder.get(); } // Returns right encoder raw count
-
-    public void resetEncoderCounts() { // Resets the encoders
-        this.leftEncoder.reset();
-        this.rightEncoder.reset();
-    }
 
     public double getRightDistanceDriven() { return rightEncoder.getDistance(); } // Returns the distance the right side has driven
 
@@ -238,6 +217,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Right Drive Encoder: ", getRightEncoderCount());
         SmartDashboard.putNumber("Left Drive Distance: ", getLeftDistanceDriven());
         SmartDashboard.putNumber("Right Drive Distance: ", getRightDistanceDriven());
+
+        //odometry.update(Rotation2d.fromDegrees(gyro.getAngle()), leftEncoder.getDistance(), rightEncoder.getDistance());
     }
 }
 
