@@ -34,7 +34,7 @@ public class OuttakeSubsystem extends SubsystemBase {
     private ShooterDataTable table =  new ShooterDataTable();
     public boolean shooterRunning = false;
     public boolean turretActive = false;
-    private double shuffleboardShooterPower = 0;
+    public double shuffleboardShooterPower = 0;
 
 
     public OuttakeSubsystem(LimelightSubsystem ll) {
