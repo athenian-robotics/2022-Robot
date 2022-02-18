@@ -34,7 +34,7 @@ public class OuttakeSubsystem extends SubsystemBase {
     private ShooterDataTable table =  new ShooterDataTable();
     public boolean shooterRunning = false;
     public boolean turretActive = false;
-    public double shuffleboardShooterPower;
+    private double shuffleboardShooterPower = 0;
 
 
     public OuttakeSubsystem(LimelightSubsystem ll) {
@@ -54,12 +54,16 @@ public class OuttakeSubsystem extends SubsystemBase {
                 .withWidget(BuiltInWidgets.kNumberSlider)
                 .withProperties(Map.of("min", 0, "max", 100))
                 .getEntry();
-        shuffleboardShooterPower = 0;
+
+        shooterMotorFront.configVoltageCompSaturation(12);
+        shooterMotorBack.configVoltageCompSaturation(12);
+        shooterMotorFront.enableVoltageCompensation(true);
+        shooterMotorBack.enableVoltageCompensation(true);
     }
 
     public void setShooterPower(double power) { // Enables both wheels
         setShooterFront(power);
-        //setShooterBack(power);
+        setShooterBack(power);
         shooterRunning = true;
     }
 
@@ -79,7 +83,7 @@ public class OuttakeSubsystem extends SubsystemBase {
     }
 
     public void manualAdjustTurret(double power) {
-        turretMotor.set(ControlMode.PercentOutput, power);
+        //turretMotor.set(ControlMode.PercentOutput, power);}
     }
 
     public void setHoodAngle(double angle) {
@@ -128,6 +132,8 @@ public class OuttakeSubsystem extends SubsystemBase {
     public void periodic() {
         SmartDashboard.putBoolean("Outtake", shooterRunning);
         shuffleboardShooterPower = shooterNTE.getDouble(0);
+        System.out.println(shuffleboardShooterPower);
+        System.out.println(shooterNTE);
 
         if (turretActive) { //Sets turret with limelight to PID to aim at the center of the goal
             try {

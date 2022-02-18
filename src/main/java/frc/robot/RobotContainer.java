@@ -10,6 +10,8 @@ import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.auto.AutoRoutine6;
+import frc.robot.commands.climb.LeftTelescopeSetSpeed;
+import frc.robot.commands.climb.RightTelescopeSetSpeed;
 import frc.robot.commands.drive.ArcadeDrive;
 import frc.robot.commands.drive.TankDrive;
 import frc.robot.commands.indexer.PulseIndexer;
@@ -22,6 +24,9 @@ import frc.robot.commands.outtake.ShootOneBall;
 import frc.robot.lib.controllers.FightStick;
 import frc.robot.lib.shooterData.ShooterDataTable;
 import frc.robot.subsystems.*;
+
+import java.io.FileInputStream;
+import java.io.ObjectInputStream;
 
 import static frc.robot.Constants.MechanismConstants.telescopeSpeed;
 
@@ -58,7 +63,17 @@ public class RobotContainer {
         drivetrain.setDefaultCommand(new ArcadeDrive(drivetrain, xboxController)); // Check for Arcade or Tank
         outtake.setDefaultCommand(new ManualAdjustHoodAngle(outtake)); // Check fight stick y-axis for manual hood adjustment
         indexer.setDefaultCommand(new QueueBalls(indexer)); //Turns on indexer when sees a ball, sets it to off when there are no balls in sight
-  }
+        try{
+            ObjectInputStream fin = new ObjectInputStream(new FileInputStream(    "/home/lvuser/deploy/dt.ser"));
+            Object obj = fin.readObject();
+            if(obj instanceof ShooterDataTable) {
+                shooterDataTable = (ShooterDataTable) obj;
+                System.out.println("Checking 1.1m data in shooterDataTable: " + shooterDataTable.getSpecs(1.1));
+            }
+        }catch(Exception e){
+            System.out.println("file not found, or class not found");
+        }
+    }
 
   // Configures xbox buttons to commands
   private void configureButtonBindings() {
@@ -69,34 +84,10 @@ public class RobotContainer {
       FightStick.fightStickL3.whenHeld(new PulseIndexer(indexer, true)); // Toggle indexer (tower portion)
       FightStick.fightStickB.whenPressed(new EnableShooter(outtake)); // Enable shooter wheels
       FightStick.fightStickY.whenPressed(new DisableShooter(outtake)); // Disable shooter wheels
-      FightStick.fightStickLB.whenHeld(new FunctionalCommand(
-              () -> climb.setLeftMotor(telescopeSpeed),
-              () -> {
-              },
-              interrupted -> climb.setLeftMotor(0),
-              () -> false,
-              climb)); // Left Cots Climb Up
-      FightStick.fightStickLT.whenActive(new FunctionalCommand(
-              () -> climb.setLeftMotor(-telescopeSpeed),
-              () -> {
-              },
-              interrupted -> climb.setLeftMotor(0),
-              () -> false,
-              climb)); // Left Cots Climb Down
-      FightStick.fightStickRB.whenHeld(new FunctionalCommand(
-              () -> climb.setLeftMotor(telescopeSpeed),
-              () -> {
-              },
-              interrupted -> climb.setLeftMotor(0),
-              () -> false,
-              climb)); // Right Cots Climb Up
-      FightStick.fightStickRT.whenActive(new FunctionalCommand(
-              () -> climb.setLeftMotor(-telescopeSpeed),
-              () -> {
-              },
-              interrupted -> climb.setLeftMotor(0),
-              () -> false,
-              climb)); // Right Cots Climb Down
+      FightStick.fightStickLB.whenHeld(new LeftTelescopeSetSpeed(climb, telescopeSpeed)); // Left Cots Climb Up
+      FightStick.fightStickLT.whenActive(new LeftTelescopeSetSpeed(climb, -telescopeSpeed)); //Left Cots Climb Down
+      FightStick.fightStickRB.whenHeld(new RightTelescopeSetSpeed(climb, telescopeSpeed)); // Right Cots Climb Up
+      FightStick.fightStickRT.whenActive(new RightTelescopeSetSpeed(climb, -telescopeSpeed)); // Right Cots Climb Down
 
       /* MISC COMMANDS (Random lib of commands. Written using functional commands because most are just one line ) */
       // have fun with this - jason and jacob '22   ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ
