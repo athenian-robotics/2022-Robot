@@ -10,6 +10,8 @@ import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.auto.AutoRoutine6;
+import frc.robot.commands.climb.LeftTelescopeSetSpeed;
+import frc.robot.commands.climb.RightTelescopeSetSpeed;
 import frc.robot.commands.drive.ArcadeDrive;
 import frc.robot.commands.drive.TankDrive;
 import frc.robot.commands.indexer.PulseIndexer;
@@ -82,34 +84,10 @@ public class RobotContainer {
       FightStick.fightStickL3.whenHeld(new PulseIndexer(indexer, true)); // Toggle indexer (tower portion)
       FightStick.fightStickB.whenPressed(new EnableShooter(outtake)); // Enable shooter wheels
       FightStick.fightStickY.whenPressed(new DisableShooter(outtake)); // Disable shooter wheels
-      FightStick.fightStickLB.whenHeld(new FunctionalCommand(
-              () -> climb.setLeftMotor(telescopeSpeed),
-              () -> {
-              },
-              interrupted -> climb.setLeftMotor(0),
-              () -> false,
-              climb)); // Left Cots Climb Up
-      FightStick.fightStickLT.whenActive(new FunctionalCommand(
-              () -> climb.setLeftMotor(-telescopeSpeed),
-              () -> {
-              },
-              interrupted -> climb.setLeftMotor(0),
-              () -> false,
-              climb)); // Left Cots Climb Down
-      FightStick.fightStickRB.whenHeld(new FunctionalCommand(
-              () -> climb.setLeftMotor(telescopeSpeed),
-              () -> {
-              },
-              interrupted -> climb.setLeftMotor(0),
-              () -> false,
-              climb)); // Right Cots Climb Up
-      FightStick.fightStickRT.whenActive(new FunctionalCommand(
-              () -> climb.setLeftMotor(-telescopeSpeed),
-              () -> {
-              },
-              interrupted -> climb.setLeftMotor(0),
-              () -> false,
-              climb)); // Right Cots Climb Down
+      FightStick.fightStickLB.whenHeld(new LeftTelescopeSetSpeed(climb, telescopeSpeed)); // Left Cots Climb Up
+      FightStick.fightStickLT.whenActive(new LeftTelescopeSetSpeed(climb, -telescopeSpeed)); //Left Cots Climb Down
+      FightStick.fightStickRB.whenHeld(new RightTelescopeSetSpeed(climb, telescopeSpeed)); // Right Cots Climb Up
+      FightStick.fightStickRT.whenActive(new RightTelescopeSetSpeed(climb, -telescopeSpeed)); // Right Cots Climb Down
 
       /* MISC COMMANDS (Random lib of commands. Written using functional commands because most are just one line ) */
       // have fun with this - jason and jacob '22   ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ
