@@ -12,15 +12,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.auto.AutoRoutine6;
 import frc.robot.commands.drive.ArcadeDrive;
 import frc.robot.commands.drive.TankDrive;
-import frc.robot.commands.indexer.PulseIndexer;
-import frc.robot.commands.indexer.ShootTopBall;
-import frc.robot.commands.indexer.QueueBalls;
-import frc.robot.commands.intake.ToggleIntake;
-import frc.robot.commands.outtake.DisableShooter;
-import frc.robot.commands.outtake.EnableShooter;
 import frc.robot.commands.outtake.ManualAdjustHoodAngle;
-import frc.robot.commands.outtake.ShootOneBall;
-import frc.robot.lib.controllers.FightStick;
 import frc.robot.lib.shooterData.ShooterDataTable;
 import frc.robot.subsystems.*;
 
@@ -55,18 +47,18 @@ public class RobotContainer {
 
         drivetrain.setDefaultCommand(new ArcadeDrive(drivetrain, xboxController)); // Check for Arcade or Tank
         outtake.setDefaultCommand(new ManualAdjustHoodAngle(outtake)); // Check fight stick y-axis for manual hood adjustment
-        indexer.setDefaultCommand(new QueueBalls(indexer)); //Turns on indexer when sees a ball, sets it to off when there are no balls in sight
+        //indexer.setDefaultCommand(new QueueBalls(indexer)); //Turns on indexer when sees a ball, sets it to off when there are no balls in sight
   }
 
   // Configures xbox buttons to commands
   private void configureButtonBindings() {
     /*  SUBSYSTEM COMMANDS (Main, functional commands) */
-      xboxHamburger.whenPressed(new ShootOneBall(drivetrain, indexer, intake, limelight, outtake, shooterDataTable));
-      FightStick.fightStickA.whenPressed(new ToggleIntake(intake)); // Toggle intake wheels and pneumatics
+      //xboxHamburger.whenPressed(new ShootOneBall(drivetrain, indexer, intake, limelight, outtake, shooterDataTable));
+      //FightStick.fightStickA.whenPressed(new ToggleIntake(intake)); // Toggle intake wheels and pneumatics
       // FightStick.fightStickX.whenPressed(new ToggleIndexer(indexer));
-      FightStick.fightStickL3.whenHeld(new PulseIndexer(indexer, true)); // Toggle indexer (tower portion)
-      FightStick.fightStickB.whenPressed(new EnableShooter(outtake)); // Enable shooter wheels
-      FightStick.fightStickY.whenPressed(new DisableShooter(outtake)); // Disable shooter wheels
+      //FightStick.fightStickL3.whenHeld(new PulseIndexer(indexer, true)); // Toggle indexer (tower portion)
+      //FightStick.fightStickB.whenPressed(new EnableShooter(outtake)); // Enable shooter wheels
+      //FightStick.fightStickY.whenPressed(new DisableShooter(outtake)); // Disable shooter wheels
     
         /* MISC COMMANDS (Random lib of commands. Written using functional commands because most are just one line ) */
         // have fun with this - jason and jacob '22   ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ

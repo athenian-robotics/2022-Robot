@@ -1,7 +1,6 @@
 package frc.robot.commands.indexer;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.commands.ExampleCommand;
 import frc.robot.subsystems.IndexerSubsystem;
 
 

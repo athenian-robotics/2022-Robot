@@ -7,19 +7,30 @@ import frc.robot.subsystems.OuttakeSubsystem;
 import static frc.robot.Constants.MechanismConstants.idleTurretSpeed;
 
 
-public class ManualAdjustHoodAngle extends CommandBase {
+public class ManualAdjustOuttake extends CommandBase {
     private final OuttakeSubsystem outtakeSubsystem;
 
-    public ManualAdjustHoodAngle(OuttakeSubsystem outtakeSubsystem) {
+    public ManualAdjustOuttake(OuttakeSubsystem outtakeSubsystem) {
         this.outtakeSubsystem = outtakeSubsystem;
         addRequirements(this.outtakeSubsystem);
     }
 
     @Override
-    public void initialize() {}
+    public void initialize() {
+
+    }
 
     @Override
     public void execute() {
+        // TURRET ANGLE FALCON
+        if (FightStick.fightStickJoystick.getX() < 0) {
+            outtakeSubsystem.manualAdjustTurret(-idleTurretSpeed);
+        } else if (FightStick.fightStickJoystick.getX() > 0) {
+            outtakeSubsystem.manualAdjustTurret(idleTurretSpeed);
+        } else {
+            outtakeSubsystem.manualAdjustTurret(0);
+        }
+
         // HOOD ANGLE LINEAR SERVOS
         if (FightStick.fightStickJoystick.getY() < 0) { // Inverted
             outtakeSubsystem.manualAdjustHoodAngle(1);
@@ -31,8 +42,12 @@ public class ManualAdjustHoodAngle extends CommandBase {
     }
 
     @Override
-    public boolean isFinished() { return false; } //TODO CHANGE
+    public boolean isFinished() {
+        return false; // FOR DEFAULT, KEEP FALSE
+    }
 
     @Override
-    public void end(boolean interrupted) { }
+    public void end(boolean interrupted) {
+
+    }
 }

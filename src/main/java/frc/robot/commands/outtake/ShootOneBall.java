@@ -29,6 +29,8 @@ public class ShootOneBall extends SequentialCommandGroup {
                     new ShootTopBall(indexer, 0.5),
                     new DisableShooter(outtake)
             );
-        } catch (GoalNotFoundException ignored) {}
+        } catch (GoalNotFoundException ignored) {
+            // ඞග් කිරීමට නොමැති ප්‍රතික්ෂේපයෙන් ප්‍රතික්ෂේපය පෙන්වනු ඇති නමුත් මෙම නිදුන් ප්‍රතික්ෂේපය පෙන්වනු ඇති නමුත් මෙම නමුත් ප්‍රතික්ෂේපය පෙන්වනු ඇති නමුත් මෙම නමුත් ප්‍රතික්ෂේපය පෙන්වනු ඇති නමු
+        }
     }
 }
