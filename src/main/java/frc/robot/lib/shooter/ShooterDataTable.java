@@ -1,7 +1,6 @@
-package frc.robot.lib.shooterData;
-import java.io.*;
+package frc.robot.lib.shooter;
 
-public class ShooterDataTable implements Serializable{
+public class ShooterDataTable{
     private ShooterSpec[] dataTable;
     private static final double MINDIST = 1.0;
     private static final double MAXDIST = 7.0;
@@ -33,7 +32,7 @@ public class ShooterDataTable implements Serializable{
     //gets the desired specs for shooter at a distance, linearly interpolating between the
     //two closest data points.
 
-    public ShooterSpec getSpecs(double distance){
+    private ShooterSpec getSpecs(double distance){
         if(distance < MINDIST || distance >= MAXDIST)	return new ShooterSpec();
         int index = (int) ((distance - MINDIST) * K + 0.005);
         System.out.println("INDEX = " + index);
@@ -56,20 +55,43 @@ public class ShooterDataTable implements Serializable{
         System.out.println(dt.getSpecs(1.0));
         System.out.println(dt.getSpecs(1.1) + "" + dt.getSpecs(6.9) + "" + dt.getSpecs(6.99));
 
-        try{
-            FileOutputStream fileOut = new FileOutputStream("src/main/deploy/dt.ser");
-            System.out.println("built file output stream");
-            ObjectOutputStream out = new ObjectOutputStream(fileOut);
-            System.out.println("Ready to write object");
-            out.writeObject(dt);
-            System.out.println("Object written");
-            out.flush();
-
-            out.close();
-        }catch(IOException e){
-            System.out.println(e + " encountered. " + "Wow, such empty");
-        }
     }
 
 }
 
+//Stores launch speed, hood angle, and power as doubles
+class ShooterSpec{
+    private double speed;
+    private double hoodAngle;
+    private double power;
+
+    public ShooterSpec(){
+        this.speed = 0.0;
+        this.hoodAngle = 0.0;
+        this.power = 0.0;
+    }
+
+    public ShooterSpec(double theta, double power){
+        this.speed = 0.0;
+        this.hoodAngle = theta;
+        this.power = power;
+    }
+    // power is constrained between 0 and 1, hoodAngle is constrained between 9 and 40 deg
+    public ShooterSpec(double v0, double theta, double power){
+        this.speed = v0;
+        this.hoodAngle = theta > 40 ? 40 : (theta < 9 ? 9 : theta);
+        this.power = power > 1? 1 : (power < 0 ? 0 : power);
+    }
+    public double getSpeed(){
+        return this.speed;
+    }
+    public double getAngle(){
+        return this.hoodAngle;
+    }
+    public double getPower(){
+        return this.power;
+    }
+    public String toString(){
+        return ("speed = " + speed + " m/s \n" + "hoodAngle = " + hoodAngle + " degrees \n" + " power = " + power + "\n");
+    }
+}
