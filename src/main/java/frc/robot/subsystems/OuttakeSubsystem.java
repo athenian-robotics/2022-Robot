@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.lib.GoalNotFoundException;
 import frc.robot.lib.controllers.FightStick;
+import frc.robot.lib.shooter.ShooterDataTable;
 
 import java.util.Map;
 
@@ -30,6 +31,7 @@ public class OuttakeSubsystem extends SubsystemBase {
     private final PIDController turretAnglePID;
     private final LimelightSubsystem limelight;
 
+    private ShooterDataTable table =  new ShooterDataTable();
     public boolean shooterRunning = false;
     public boolean turretActive = false;
     public double shuffleboardShooterPower;
