@@ -1,6 +1,7 @@
 package frc.robot.lib.shooterData;
+import java.io.*;
 
-public class ShooterDataTable{
+public class ShooterDataTable implements Serializable{
     private ShooterSpec[] dataTable;
     private static final double MINDIST = 1.0;
     private static final double MAXDIST = 7.0;
@@ -55,6 +56,19 @@ public class ShooterDataTable{
         System.out.println(dt.getSpecs(1.0));
         System.out.println(dt.getSpecs(1.1) + "" + dt.getSpecs(6.9) + "" + dt.getSpecs(6.99));
 
+        try{
+            FileOutputStream fileOut = new FileOutputStream(new File("src/main/deploy/dt.ser"));
+            System.out.println("built file output stream");
+            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+            System.out.println("Ready to write object");
+            out.writeObject(dt);
+            System.out.println("Object written");
+            out.flush();
+
+            out.close();
+        }catch(IOException e){
+            System.out.println(e + " encountered. " + "Wow, such empty");
+        }
     }
 
 }
