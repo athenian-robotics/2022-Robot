@@ -19,7 +19,9 @@ import frc.robot.commands.intake.ToggleIntake;
 import frc.robot.commands.outtake.DisableShooter;
 import frc.robot.commands.outtake.EnableShooter;
 import frc.robot.commands.outtake.ManualAdjustHoodAngle;
+import frc.robot.commands.outtake.ShootOneBall;
 import frc.robot.lib.controllers.FightStick;
+import frc.robot.lib.shooterData.ShooterDataTable;
 import frc.robot.subsystems.*;
 
 
@@ -44,6 +46,7 @@ public class RobotContainer {
     public static IntakeSubsystem intake = new IntakeSubsystem();
     public static LimelightSubsystem limelight = new LimelightSubsystem("limelight-arc");
     public static OuttakeSubsystem outtake = new OuttakeSubsystem(limelight);
+    public static ShooterDataTable shooterDataTable = new ShooterDataTable();
 
     // Sets up controllers, configures controllers, and sets the default drive mode (tank or arcade)
     public RobotContainer() {
@@ -58,7 +61,7 @@ public class RobotContainer {
   // Configures xbox buttons to commands
   private void configureButtonBindings() {
     /*  SUBSYSTEM COMMANDS (Main, functional commands) */
-      xboxHamburger.whenPressed(new ShootTopBall(indexer));
+      xboxHamburger.whenPressed(new ShootOneBall(drivetrain, indexer, intake, limelight, outtake, shooterDataTable));
       FightStick.fightStickA.whenPressed(new ToggleIntake(intake)); // Toggle intake wheels and pneumatics
       // FightStick.fightStickX.whenPressed(new ToggleIndexer(indexer));
       FightStick.fightStickL3.whenHeld(new PulseIndexer(indexer, true)); // Toggle indexer (tower portion)
