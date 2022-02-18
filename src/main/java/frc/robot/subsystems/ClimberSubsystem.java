@@ -27,7 +27,6 @@ public class ClimberSubsystem extends SubsystemBase {
         leftPIDController.setTolerance(0.5);
         rightPIDController.setTolerance(0.5);
 
-
     }
 
     public void setLeftMotor(double power) {
