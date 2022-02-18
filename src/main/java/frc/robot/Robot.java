@@ -7,6 +7,10 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.lib.shooterData.ShooterDataTable;
+
+import java.io.FileInputStream;
+import java.io.ObjectInputStream;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -28,6 +32,16 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+    try{
+      ObjectInputStream fin = new ObjectInputStream(new FileInputStream(    "src/main/deploy/dt.ser"));
+      Object obj = fin.readObject();
+      if(obj instanceof ShooterDataTable) {
+        ShooterDataTable dt = (ShooterDataTable) obj;
+        System.out.println("Checking 1.1m data in shooterDataTable: " + dt.getSpecs(1.1));
+      }
+    }catch(Exception e){
+      System.out.println("file not found, or class not found");
+    }
   }
 
   /**
