@@ -5,7 +5,7 @@ import frc.robot.subsystems.ClimberSubsystem;
 
 
 public class LeftTelescopeSetSpeed extends CommandBase {
-    private final ClimberSubsystem climberSubsystem;\
+    private final ClimberSubsystem climberSubsystem;
     private final double power;
 
     public LeftTelescopeSetSpeed(ClimberSubsystem climberSubsystem, double power) {
