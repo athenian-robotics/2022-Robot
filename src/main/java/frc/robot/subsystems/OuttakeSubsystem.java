@@ -54,6 +54,11 @@ public class OuttakeSubsystem extends SubsystemBase {
                 .withWidget(BuiltInWidgets.kNumberSlider)
                 .withProperties(Map.of("min", 0, "max", 100))
                 .getEntry();
+
+        shooterMotorFront.configVoltageCompSaturation(12);
+        shooterMotorBack.configVoltageCompSaturation(12);
+        shooterMotorFront.enableVoltageCompensation(true);
+        shooterMotorBack.enableVoltageCompensation(true);
     }
 
     public void setShooterPower(double power) { // Enables both wheels
@@ -127,6 +132,8 @@ public class OuttakeSubsystem extends SubsystemBase {
     public void periodic() {
         SmartDashboard.putBoolean("Outtake", shooterRunning);
         shuffleboardShooterPower = shooterNTE.getDouble(0);
+        System.out.println(shuffleboardShooterPower);
+        System.out.println(shooterNTE);
 
         if (turretActive) { //Sets turret with limelight to PID to aim at the center of the goal
             try {

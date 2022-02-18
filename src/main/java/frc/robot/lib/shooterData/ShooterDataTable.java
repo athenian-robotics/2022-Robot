@@ -57,7 +57,7 @@ public class ShooterDataTable implements Serializable{
         System.out.println(dt.getSpecs(1.1) + "" + dt.getSpecs(6.9) + "" + dt.getSpecs(6.99));
 
         try{
-            FileOutputStream fileOut = new FileOutputStream(new File("src/main/deploy/dt.ser"));
+            FileOutputStream fileOut = new FileOutputStream("src/main/deploy/dt.ser");
             System.out.println("built file output stream");
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
             System.out.println("Ready to write object");
