@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.networktables.NetworkTableEntry;
@@ -9,6 +10,8 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.lib.GoalNotFoundException;
+import frc.robot.lib.controllers.FightStick;
 
 import java.util.Map;
 
@@ -18,7 +21,7 @@ public class OuttakeSubsystem extends SubsystemBase {
     // Setup motors, pid controller, and booleans
     private final TalonFX shooterMotorFront = new TalonFX(shooterMotorPortA);
     private final TalonFX shooterMotorBack = new TalonFX(shooterMotorPortB);
-    //private final TalonFX turretMotor = new TalonFX(turretMotorPort);
+    private final TalonFX turretMotor = new TalonFX(turretMotorPort);
 
     private final Servo leftHoodAngleServo = new Servo(2);
     private final Servo rightHoodAngleServo = new Servo(3);
@@ -100,8 +103,18 @@ public class OuttakeSubsystem extends SubsystemBase {
     }
 
     public void stopTurret() {
-        //turretMotor.set(TalonFXControlMode.PercentOutput, 0);
+        turretMotor.set(TalonFXControlMode.PercentOutput, 0);
     }
+
+    public void setTurretActive(boolean active) {
+        turretActive = active;
+    }
+
+    public double getFrontShooterAcceleration() {
+        return shooterMotorFront.getErrorDerivative();}
+
+    public double getBackShooterAcceleration() {
+        return shooterMotorBack.getErrorDerivative();}
 
     public void disable() {
         stopShooter();
@@ -109,19 +122,15 @@ public class OuttakeSubsystem extends SubsystemBase {
         stopTurret();
     }
 
-    public void setTurretActive(boolean active) {
-        turretActive = active;
-    }
-
     @Override
     public void periodic() {
         SmartDashboard.putBoolean("Outtake", shooterRunning);
         shuffleboardShooterPower = shooterNTE.getDouble(0);
 
-        /*if (turretActive) { //Sets turret with limelight to PID to aim at the center of the goal
+        if (turretActive) { //Sets turret with limelight to PID to aim at the center of the goal
             try {
                 turretMotor.set(ControlMode.PercentOutput, -limelight.getLimelightOutputAtIndex(1));
-            } catch (GoalNotFoundException e) {}
+            } catch (GoalNotFoundException e) {/* SEARCH FOR GOAL */}
         } else { //Checks Fight Stick X Axis for Moving the Turret
             if (FightStick.fightStickJoystick.getX() < 0) {
                 manualAdjustTurret(-idleTurretSpeed);
@@ -129,7 +138,8 @@ public class OuttakeSubsystem extends SubsystemBase {
                 manualAdjustTurret(idleTurretSpeed);
             } else {
                 manualAdjustTurret(0);
-            }*/
+            }
+        }
     }
 }
 
