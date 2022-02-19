@@ -83,7 +83,7 @@ public class OuttakeSubsystem extends SubsystemBase {
     }
 
     public void manualAdjustTurret(double power) {
-        //turretMotor.set(ControlMode.PercentOutput, power);}
+        turretMotor.set(ControlMode.PercentOutput, power);
     }
 
     public void setHoodAngle(double angle) {
