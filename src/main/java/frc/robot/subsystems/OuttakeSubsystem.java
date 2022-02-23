@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.lib.GoalNotFoundException;
 import frc.robot.lib.controllers.FightStick;
+import frc.robot.lib.shooter.ShooterDataTable;
 
 import java.util.Map;
 
@@ -30,9 +31,10 @@ public class OuttakeSubsystem extends SubsystemBase {
     private final PIDController turretAnglePID;
     private final LimelightSubsystem limelight;
 
+    private ShooterDataTable table =  new ShooterDataTable();
     public boolean shooterRunning = false;
     public boolean turretActive = false;
-    private double shuffleboardShooterPower = 0;
+    public double shuffleboardShooterPower = 0;
 
 
     public OuttakeSubsystem(LimelightSubsystem ll) {
@@ -52,6 +54,11 @@ public class OuttakeSubsystem extends SubsystemBase {
                 .withWidget(BuiltInWidgets.kNumberSlider)
                 .withProperties(Map.of("min", 0, "max", 100))
                 .getEntry();
+
+        shooterMotorFront.configVoltageCompSaturation(12);
+        shooterMotorBack.configVoltageCompSaturation(12);
+        shooterMotorFront.enableVoltageCompensation(true);
+        shooterMotorBack.enableVoltageCompensation(true);
     }
 
     public void setShooterPower(double power) { // Enables both wheels
@@ -76,7 +83,7 @@ public class OuttakeSubsystem extends SubsystemBase {
     }
 
     public void manualAdjustTurret(double power) {
-        //turretMotor.set(ControlMode.PercentOutput, power);}
+        turretMotor.set(ControlMode.PercentOutput, power);
     }
 
     public void setHoodAngle(double angle) {
@@ -125,6 +132,8 @@ public class OuttakeSubsystem extends SubsystemBase {
     public void periodic() {
         SmartDashboard.putBoolean("Outtake", shooterRunning);
         shuffleboardShooterPower = shooterNTE.getDouble(0);
+        System.out.println(shuffleboardShooterPower);
+        System.out.println(shooterNTE);
 
         if (turretActive) { //Sets turret with limelight to PID to aim at the center of the goal
             try {

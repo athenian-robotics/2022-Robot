@@ -17,13 +17,13 @@ import frc.robot.commands.drive.TankDrive;
 import frc.robot.commands.indexer.PulseIndexer;
 import frc.robot.commands.indexer.QueueBalls;
 import frc.robot.commands.intake.ToggleIntake;
-import frc.robot.commands.outtake.DisableShooter;
-import frc.robot.commands.outtake.EnableShooter;
-import frc.robot.commands.outtake.ManualAdjustHoodAngle;
-import frc.robot.commands.outtake.ShootOneBall;
+import frc.robot.commands.outtake.*;
 import frc.robot.lib.controllers.FightStick;
 import frc.robot.lib.shooterData.ShooterDataTable;
 import frc.robot.subsystems.*;
+
+import java.io.FileInputStream;
+import java.io.ObjectInputStream;
 
 import static frc.robot.Constants.MechanismConstants.telescopeSpeed;
 
@@ -58,9 +58,20 @@ public class RobotContainer {
         configureButtonBindings();
 
         drivetrain.setDefaultCommand(new ArcadeDrive(drivetrain, xboxController)); // Check for Arcade or Tank
-        outtake.setDefaultCommand(new ManualAdjustHoodAngle(outtake)); // Check fight stick y-axis for manual hood adjustment
+        outtake.setDefaultCommand(new ManualAdjustOuttake(outtake)); // Check fight stick y-axis for manual hood adjustment
         indexer.setDefaultCommand(new QueueBalls(indexer)); //Turns on indexer when sees a ball, sets it to off when there are no balls in sight
-  }
+
+        try {
+            ObjectInputStream fin = new ObjectInputStream(new FileInputStream(    "/home/lvuser/deploy/dt.ser"));
+            Object obj = fin.readObject();
+            if(obj instanceof ShooterDataTable) {
+                shooterDataTable = (ShooterDataTable) obj;
+                System.out.println("Checking 1.1m data in shooterDataTable: " + shooterDataTable.getSpecs(1.1));
+            }
+        }catch(Exception e){
+            System.out.println("file not found, or class not found");
+        }
+    }
 
   // Configures xbox buttons to commands
   private void configureButtonBindings() {

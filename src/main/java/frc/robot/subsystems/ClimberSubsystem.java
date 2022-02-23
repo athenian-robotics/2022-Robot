@@ -18,15 +18,13 @@ public class ClimberSubsystem extends SubsystemBase {
     private final PIDController rightPIDController;
 
     public ClimberSubsystem() {
-
-        climbMotorLeft.setInverted(false);
-        climbMotorRight.setInverted(true);
+        climbMotorLeft.setInverted(true);
+        climbMotorRight.setInverted(false);
 
         leftPIDController = new PIDController(0, 0, 0);
         rightPIDController = new PIDController(0, 0, 0);
         leftPIDController.setTolerance(0.5);
         rightPIDController.setTolerance(0.5);
-
     }
 
     public void setLeftMotor(double power) {
@@ -34,8 +32,7 @@ public class ClimberSubsystem extends SubsystemBase {
     }
 
     public void setLeftPosition(double position) {
-        leftPIDController.setSetpoint(position);
-        climbMotorLeft.set(ControlMode.PercentOutput, leftPIDController.calculate(position));
+        //leftPIDController.setSetpoint(position);
     }
 
     public void setRightMotor(double power) {
@@ -43,8 +40,7 @@ public class ClimberSubsystem extends SubsystemBase {
     }
 
     public void setRightPosition(int position) {
-        rightPIDController.setSetpoint(position);
-        climbMotorRight.set(ControlMode.PercentOutput, rightPIDController.calculate(position));
+        //rightPIDController.setSetpoint(position);
     }
 
     @Override

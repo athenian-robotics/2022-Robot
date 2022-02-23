@@ -126,9 +126,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
     public void configureDriveMotors(TalonFX[] driveMotors) {
         for (TalonFX motor: driveMotors) {
             motor.configFactoryDefault(); // Initialize motor set up
-            motor.configOpenloopRamp(0.3); // Ramp up (Trapezoid)
-            motor.configClosedloopRamp(0.3); // Ramp down (Trapezoid)
-            motor.setNeutralMode(NeutralMode.Brake); // Default robot mode should be Coasting
+            motor.configOpenloopRamp(0.7); // Ramp up (Trapezoid)
+            motor.configClosedloopRamp(0.7); // Ramp down (Trapezoid)
+            motor.setNeutralMode(NeutralMode.Coast); // Default robot mode should be Coasting (So it doesn't wobble cuz top heavy yaknow)
             motor.configForwardSoftLimitEnable(false);
             motor.configReverseSoftLimitEnable(false);
         }

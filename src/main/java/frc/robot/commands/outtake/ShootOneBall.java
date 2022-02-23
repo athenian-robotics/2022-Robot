@@ -29,6 +29,8 @@ public class ShootOneBall extends SequentialCommandGroup {
                     new ShootTopBall(indexer, 0.5),
                     new DisableShooter(outtake)
             );
-        } catch (GoalNotFoundException ignored) {}
+        } catch (GoalNotFoundException ignored) {
+            // ඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞ
+        }
     }
 }
