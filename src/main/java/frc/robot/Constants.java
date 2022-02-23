@@ -8,7 +8,7 @@ import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.util.Units;
 
 public final class Constants {
-    
+    public static final double looptime = 0.02;
     public static final class AutoConstants {
         public static double ksVolts = 0.2455; //0.49117
         public static double kvVoltSecondsPerMeter = 1.3023; //3.4251
@@ -93,5 +93,16 @@ public final class Constants {
     public static final class LEDConstants {
         public static final int LEDPort = 0;
         public static final int LEDStripLength = 40;
+    }
+
+    public static final class Shooter {
+        public static final double ks = 0.0;
+        public static final double ka = 0.0;
+        public static final double kv = 0.0;
+
+        public static double maxError;
+        public static double maxControlEffort;
+        public static double modelDeviation;
+        public static double encoderDeviation;
     }
 }

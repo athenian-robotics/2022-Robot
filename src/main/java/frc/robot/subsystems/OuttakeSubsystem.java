@@ -10,8 +10,10 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.lib.GoalNotFoundException;
 import frc.robot.lib.controllers.FightStick;
+import frc.robot.lib.controllers.SimpleVelocitySystem;
 import frc.robot.lib.shooter.ShooterDataTable;
 
 import java.util.Map;
@@ -35,7 +37,7 @@ public class OuttakeSubsystem extends SubsystemBase {
     public boolean shooterRunning = false;
     public boolean turretActive = false;
     public double shuffleboardShooterPower = 0;
-
+    private SimpleVelocitySystem sys;
 
     public OuttakeSubsystem(LimelightSubsystem ll) {
         limelight = ll;
@@ -59,12 +61,26 @@ public class OuttakeSubsystem extends SubsystemBase {
         shooterMotorBack.configVoltageCompSaturation(12);
         shooterMotorFront.enableVoltageCompensation(true);
         shooterMotorBack.enableVoltageCompensation(true);
+        sys = new SimpleVelocitySystem(Constants.Shooter.ks, Constants.Shooter.kv, Constants.Shooter.ka,
+                Constants.Shooter.maxError, Constants.Shooter.maxControlEffort,
+                Constants.Shooter.modelDeviation, Constants.Shooter.encoderDeviation,
+                Constants.looptime);
     }
 
     public void setShooterPower(double power) { // Enables both wheels
         setShooterFront(power);
         setShooterBack(power);
         shooterRunning = true;
+    }
+
+    public double getWheelSpeed() {
+        return shooterMotorFront.getSelectedSensorVelocity() / 4096;
+    }
+
+    public void setRPS(double rps) {
+        sys.set(rps);
+        sys.update(getWheelSpeed());
+        setShooterPower(sys.getOutput());
     }
 
     public void setShooterFront(double power) {
