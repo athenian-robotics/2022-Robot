@@ -70,6 +70,7 @@ public final class Constants {
         // SHOOTER HOOD
         public static final double minimumHoodAngle = 8;
         public static final double maximumHoodAngle = 41;
+        public static final double defaultHoodAngle = 25;
         // MAX MECHANISM SPEEDS
         public static final double idleOuttakeSpeed = 0.4;
         public static final double intakeSpeed = 0.3; //0 to 1

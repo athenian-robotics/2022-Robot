@@ -4,11 +4,11 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.OuttakeSubsystem;
 
 
-public class SetTurretActive extends InstantCommand {
+public class SetTurretStatus extends InstantCommand {
     private final OuttakeSubsystem outtakeSubsystem;
     private final boolean isActive;
 
-    public SetTurretActive(OuttakeSubsystem outtakeSubsystem, boolean isActive) {
+    public SetTurretStatus(OuttakeSubsystem outtakeSubsystem, boolean isActive) {
         this.outtakeSubsystem = outtakeSubsystem;
         addRequirements(this.outtakeSubsystem);
         this.isActive = isActive;
