@@ -34,6 +34,6 @@ public class ToggleIntakePneumaticsWithWheelsOn extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-
+        intakeSubsystem.stopIntake();
     }
 }

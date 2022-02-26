@@ -25,7 +25,7 @@ public class LimelightSubsystem extends SubsystemBase {
     public double getLimelightOutputAtIndex(int index) throws GoalNotFoundException {
         if (index > 8 || index < 0) {
             throw new IndexOutOfBoundsException();
-        } else if ((int) limelightOutputArray[7] == 1) {
+        } else if (Math.abs(limelightOutputArray[7].doubleValue() - 1) < 0.0001) {
             return (double) limelightOutputArray[index];
         } else {
             throw new GoalNotFoundException();

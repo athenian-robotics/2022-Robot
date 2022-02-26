@@ -118,10 +118,16 @@ public class OuttakeSubsystem extends SubsystemBase {
     }
 
     public double getFrontShooterAcceleration() {
-        return shooterMotorFront.getErrorDerivative();}
+        return shooterMotorFront.getErrorDerivative();
+    }
 
     public double getBackShooterAcceleration() {
-        return shooterMotorBack.getErrorDerivative();}
+        return shooterMotorBack.getErrorDerivative();
+    }
+
+    public double getTurretPosition() {
+        return turretMotor.getSelectedSensorPosition() * 36 / 2048;
+    }
 
     public void disable() {
         stopShooter();
@@ -141,13 +147,26 @@ public class OuttakeSubsystem extends SubsystemBase {
                 turretMotor.set(ControlMode.PercentOutput, -limelight.getLimelightOutputAtIndex(1));
             } catch (GoalNotFoundException e) {/* SEARCH FOR GOAL */}
         } else { //Checks Fight Stick X Axis for Moving the Turret
-            if (FightStick.fightStickJoystick.getX() < -0.02) {
-                manualAdjustTurret(-idleTurretSpeed);
-            } else if (FightStick.fightStickJoystick.getX() > 0.02) {
-                manualAdjustTurret(idleTurretSpeed);
+            // TURRET ANGLE FALCON
+            if (FightStick.fightStickJoystick.getX() < -0.5) {
+                this.manualAdjustTurret(-idleTurretSpeed);
+            } else if (FightStick.fightStickJoystick.getX() > 0.5) {
+                this.manualAdjustTurret(idleTurretSpeed);
             } else {
-                manualAdjustTurret(0);
+                this.manualAdjustTurret(0);
             }
+
+            // HOOD ANGLE LINEAR SERVOS
+            if (FightStick.fightStickJoystick.getY() < 0) { // Inverted
+                this.manualAdjustHoodAngle(1);
+            } else if (FightStick.fightStickJoystick.getY() > 0) {
+                this.manualAdjustHoodAngle(-1);
+            } else {
+
+            }
+        }
+        if (getTurretPosition() < -90 || getTurretPosition() > 210) {
+            turretMotor.set(ControlMode.PercentOutput, 0);
         }
     }
 }
