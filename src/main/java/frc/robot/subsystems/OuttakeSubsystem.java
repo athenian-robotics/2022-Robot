@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.lib.GoalNotFoundException;
 import frc.robot.lib.controllers.FightStick;
-import frc.robot.lib.shooter.ShooterDataTable;
+import frc.robot.lib.shooterData.ShooterDataTable;
 
 import java.util.Map;
 
