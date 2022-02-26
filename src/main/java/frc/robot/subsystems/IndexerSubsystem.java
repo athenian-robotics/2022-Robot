@@ -22,17 +22,16 @@ public class IndexerSubsystem extends SubsystemBase {
     public boolean indexerRunning = false;
 
     public IndexerSubsystem() {
-        indexerMotor.setInverted(true);
+        indexerMotor.setInverted(false);
     }
 
     public void startIndexer() {
-        System.out.println("forward");// Enables indexer
+        // Enables indexer
         indexerMotor.set(ControlMode.PercentOutput, Constants.MechanismConstants.indexerSpeed);
         indexerRunning = true;
     }
 
     public void reverseIndexer() {
-        System.out.println("revers");
         indexerMotor.set(ControlMode.PercentOutput, -Constants.MechanismConstants.indexerSpeed);
         indexerRunning = true;
     }

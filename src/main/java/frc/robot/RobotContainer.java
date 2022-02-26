@@ -16,6 +16,7 @@ import frc.robot.commands.drive.ArcadeDrive;
 import frc.robot.commands.drive.TankDrive;
 import frc.robot.commands.indexer.PulseIndexer;
 import frc.robot.commands.indexer.QueueBalls;
+import frc.robot.commands.intake.RunIntakeWithoutPneumatics;
 import frc.robot.commands.intake.ToggleIntake;
 import frc.robot.commands.outtake.*;
 import frc.robot.lib.controllers.FightStick;
@@ -84,7 +85,8 @@ public class RobotContainer {
       FightStick.fightStickY.whenPressed(new DisableShooter(outtake)); // Disable shooter wheels
       FightStick.fightStickLB.whenHeld(new LeftTelescopeSetSpeed(climb, telescopeSpeed)); // Left Cots Climb Up
       FightStick.fightStickLT.whenActive(new LeftTelescopeSetSpeed(climb, -telescopeSpeed)); //Left Cots Climb Down
-      FightStick.fightStickRB.whenHeld(new RightTelescopeSetSpeed(climb, telescopeSpeed)); // Right Cots Climb Up
+      //FightStick.fightStickRB.whenHeld(new RightTelescopeSetSpeed(climb, telescopeSpeed)); // Right Cots Climb Up
+      FightStick.fightStickRB.whenHeld(new RunIntakeWithoutPneumatics(intake));
       FightStick.fightStickRT.whenActive(new RightTelescopeSetSpeed(climb, -telescopeSpeed)); // Right Cots Climb Down
 
       /* MISC COMMANDS (Random lib of commands. Written using functional commands because most are just one line ) */

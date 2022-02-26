@@ -13,8 +13,8 @@ import frc.robot.lib.GoalNotFoundException;
 import frc.robot.lib.shooterData.ShooterDataTable;
 import frc.robot.subsystems.*;
 
-public class ShootOneBall extends SequentialCommandGroup {
-    public ShootOneBall(DrivetrainSubsystem drivetrain, IndexerSubsystem indexer, IntakeSubsystem intake, LimelightSubsystem limelight, OuttakeSubsystem outtake, ShooterDataTable shooterDataTable) {
+public class ShootTwoBalls extends SequentialCommandGroup {
+    public ShootTwoBalls(DrivetrainSubsystem drivetrain, IndexerSubsystem indexer, IntakeSubsystem intake, LimelightSubsystem limelight, OuttakeSubsystem outtake, ShooterDataTable shooterDataTable) {
         addRequirements(drivetrain, indexer, intake, limelight, outtake);
         try {
             addCommands(
@@ -30,8 +30,14 @@ public class ShootOneBall extends SequentialCommandGroup {
                     new SetTurretStatus(outtake, true),
                     new SetSpecificShooterPower(outtake, shooterDataTable.getSpecs(limelight.getLimelightOutputAtIndex(0)).getPower()),
                     new GuaranteeLimelightDataEquals(limelight, 1, 0),
-                    new SetTurretStatus(outtake, false),
-                    new ShootTopBall(indexer, 0.5),
+                    new ShootTopBall(indexer),
+                    //Aim again and shoot again
+                    new ParallelDeadlineGroup(new GuaranteeLimelightData(limelight), new ManualAdjustTurret(outtake)),
+                    new SetHoodAngle(outtake, shooterDataTable.getSpecs(limelight.getLimelightOutputAtIndex(0)).getAngle()),
+                    new SetTurretStatus(outtake, true),
+                    new SetSpecificShooterPower(outtake, shooterDataTable.getSpecs(limelight.getLimelightOutputAtIndex(0)).getPower()),
+                    new GuaranteeLimelightDataEquals(limelight, 1, 0),
+                    new ShootTopBall(indexer),
                     //Wind down
                     new DisableShooter(outtake),
                     new SetHoodAngle(outtake, Constants.MechanismConstants.defaultHoodAngle)

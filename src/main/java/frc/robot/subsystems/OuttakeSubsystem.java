@@ -42,6 +42,7 @@ public class OuttakeSubsystem extends SubsystemBase {
 
         shooterMotorFront.setInverted(false);
         shooterMotorBack.setInverted(false);
+        turretMotor.setInverted(true);
 
         turretAnglePID = new PIDController(0, 0, 0);
         turretAnglePID.setSetpoint(0); //Always trying to minimize our offset
@@ -132,17 +133,17 @@ public class OuttakeSubsystem extends SubsystemBase {
     public void periodic() {
         SmartDashboard.putBoolean("Outtake", shooterRunning);
         shuffleboardShooterPower = shooterNTE.getDouble(0);
-        System.out.println(shuffleboardShooterPower);
-        System.out.println(shooterNTE);
+        //System.out.println(shuffleboardShooterPower);
+        //System.out.println(shooterNTE);
 
         if (turretActive) { //Sets turret with limelight to PID to aim at the center of the goal
             try {
                 turretMotor.set(ControlMode.PercentOutput, -limelight.getLimelightOutputAtIndex(1));
             } catch (GoalNotFoundException e) {/* SEARCH FOR GOAL */}
         } else { //Checks Fight Stick X Axis for Moving the Turret
-            if (FightStick.fightStickJoystick.getX() < 0) {
+            if (FightStick.fightStickJoystick.getX() < -0.02) {
                 manualAdjustTurret(-idleTurretSpeed);
-            } else if (FightStick.fightStickJoystick.getX() > 0) {
+            } else if (FightStick.fightStickJoystick.getX() > 0.02) {
                 manualAdjustTurret(idleTurretSpeed);
             } else {
                 manualAdjustTurret(0);
