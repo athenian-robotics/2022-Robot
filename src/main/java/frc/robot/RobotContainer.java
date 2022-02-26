@@ -16,9 +16,9 @@ import frc.robot.commands.drive.ArcadeDrive;
 import frc.robot.commands.drive.TankDrive;
 import frc.robot.commands.indexer.PulseIndexer;
 import frc.robot.commands.indexer.QueueBalls;
-import frc.robot.commands.intake.RunIntakePneumaticsWithWheelsOn;
 import frc.robot.commands.intake.RunIntakeWithoutPneumatics;
 import frc.robot.commands.intake.ToggleIntake;
+import frc.robot.commands.intake.ToggleIntakePneumaticsWithWheelsOn;
 import frc.robot.commands.outtake.DisableShooter;
 import frc.robot.commands.outtake.EnableShooter;
 import frc.robot.commands.outtake.ManualAdjustOuttake;
@@ -83,7 +83,7 @@ public class RobotContainer {
       /*  SUBSYSTEM COMMANDS (Main, functional commands) */
       xboxHamburger.whenPressed(new ShootOneBall(drivetrain, indexer, intake, limelight, outtake, shooterDataTable));
       FightStick.fightStickA.whenPressed(new ToggleIntake(intake)); // Toggle intake wheels and pneumatics
-      FightStick.fightStickA.whenHeld(new RunIntakePneumaticsWithWheelsOn(intake)); //When A is held, it toggles the intake but does not turn off wheels
+      FightStick.fightStickA.whenHeld(new ToggleIntakePneumaticsWithWheelsOn(intake)); //When A is held, it toggles the intake but does not turn off wheels
       // FightStick.fightStickX.whenPressed(new ToggleIndexer(indexer));
       FightStick.fightStickL3.whenHeld(new PulseIndexer(indexer, true)); // Toggle indexer (tower portion)
       FightStick.fightStickB.whenPressed(new EnableShooter(outtake)); // Enable shooter wheels

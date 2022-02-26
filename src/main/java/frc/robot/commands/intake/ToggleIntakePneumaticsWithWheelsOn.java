@@ -4,10 +4,10 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.IntakeSubsystem;
 
 
-public class RunIntakePneumaticsWithWheelsOn extends CommandBase {
+public class ToggleIntakePneumaticsWithWheelsOn extends CommandBase {
     private final IntakeSubsystem intakeSubsystem;
 
-    public RunIntakePneumaticsWithWheelsOn(IntakeSubsystem intakeSubsystem) {
+    public ToggleIntakePneumaticsWithWheelsOn(IntakeSubsystem intakeSubsystem) {
         this.intakeSubsystem = intakeSubsystem;
         addRequirements(this.intakeSubsystem);
     }
