@@ -139,12 +139,10 @@ public class OuttakeSubsystem extends SubsystemBase {
     public void periodic() {
         SmartDashboard.putBoolean("Outtake", shooterRunning);
         shuffleboardShooterPower = shooterNTE.getDouble(0);
-        //System.out.println(shuffleboardShooterPower);
-        //System.out.println(shooterNTE);
 
         if (turretActive) { //Sets turret with limelight to PID to aim at the center of the goal
             try {
-                turretMotor.set(ControlMode.PercentOutput, -limelight.getLimelightOutputAtIndex(1));
+                turretMotor.set(ControlMode.PercentOutput, limelight.getLimelightOutputAtIndex(1));
             } catch (GoalNotFoundException e) {/* SEARCH FOR GOAL */}
         } else { //Checks Fight Stick X Axis for Moving the Turret
             // TURRET ANGLE FALCON
@@ -157,12 +155,10 @@ public class OuttakeSubsystem extends SubsystemBase {
             }
 
             // HOOD ANGLE LINEAR SERVOS
-            if (FightStick.fightStickJoystick.getY() < 0) { // Inverted
+            if (FightStick.fightStickJoystick.getY() < -0.5) { // Inverted
                 this.manualAdjustHoodAngle(1);
-            } else if (FightStick.fightStickJoystick.getY() > 0) {
+            } else if (FightStick.fightStickJoystick.getY() > 0.5) {
                 this.manualAdjustHoodAngle(-1);
-            } else {
-
             }
         }
         if (getTurretPosition() < -90 || getTurretPosition() > 210) {
