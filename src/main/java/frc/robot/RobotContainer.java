@@ -27,7 +27,9 @@ import frc.robot.lib.shooterData.ShooterDataTable;
 import frc.robot.subsystems.*;
 
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
 import static frc.robot.Constants.MechanismConstants.telescopeSpeed;
 
@@ -67,7 +69,7 @@ public class RobotContainer {
         try {
             ObjectInputStream fin = new ObjectInputStream(new FileInputStream(    "/home/lvuser/deploy/dt.ser"));
             Object obj = fin.readObject();
-            if(obj instanceof ShooterDataTable) {
+            if (obj instanceof ShooterDataTable) {
                 shooterDataTable = (ShooterDataTable) obj;
                 System.out.println("Checking 1.1m data in shooterDataTable: " + shooterDataTable.getSpecs(1.1));
             }
