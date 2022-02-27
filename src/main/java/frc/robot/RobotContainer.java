@@ -17,9 +17,11 @@ import frc.robot.commands.drive.TankDrive;
 import frc.robot.commands.indexer.PulseIndexer;
 import frc.robot.commands.indexer.QueueBalls;
 import frc.robot.commands.indexer.ShootTopBall;
+import frc.robot.commands.intake.RunIntakeWithoutPneumatics;
 import frc.robot.commands.intake.ToggleIntake;
 import frc.robot.commands.outtake.DisableShooter;
 import frc.robot.commands.outtake.EnableShooter;
+import frc.robot.commands.outtake.ManualAdjustOuttake;
 import frc.robot.commands.outtake.ShootOneBall;
 import frc.robot.lib.controllers.FightStick;
 import frc.robot.lib.shooterData.ShooterDataTable;
@@ -61,9 +63,8 @@ public class RobotContainer {
         configureButtonBindings();
 
         drivetrain.setDefaultCommand(new ArcadeDrive(drivetrain, xboxController)); // Check for Arcade or Tank
-
         outtake.setDefaultCommand(new ManualAdjustOuttake(outtake)); // Check fight stick y-axis for manual hood adjustment
-        //indexer.setDefaultCommand(new QueueBalls(indexer, intake)); //Turns on indexer when sees a ball, sets it to
+        indexer.setDefaultCommand(new QueueBalls(indexer)); //Turns on indexer when sees a ball, sets it to
         // off
         // when there are no balls in sight
 
@@ -94,7 +95,7 @@ public class RobotContainer {
       //FightStick.fightStickRB.whenHeld(new RightTelescopeSetSpeed(climb, telescopeSpeed)); // Right Cots Climb Up
       FightStick.fightStickRB.whenHeld(new RunIntakeWithoutPneumatics(intake));
       FightStick.fightStickRT.whenActive(new RightTelescopeSetSpeed(climb, -telescopeSpeed)); // Right Cots Climb Down
-      xboxX.whenPressed(new ShootTopBall(indexer));
+      xboxX.whenPressed(new ShootTopBall(indexer, intake));
 
       /* MISC COMMANDS (Random lib of commands. Written using functional commands because most are just one line ) */
       // have fun with this - jason and jacob '22   ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ
