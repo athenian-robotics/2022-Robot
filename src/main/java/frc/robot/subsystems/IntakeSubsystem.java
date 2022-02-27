@@ -17,6 +17,7 @@ import static frc.robot.Constants.PneumaticConstants.*;
 public class IntakeSubsystem extends SubsystemBase {
     // Configure intake motor, solenoid, and booleans
     private final TalonFX intakeMotor = new TalonFX(Constants.MechanismConstants.intakeMotorPort);
+
     private final CANSparkMax intakeToIndexerMotor = new CANSparkMax(intakeToIndexerMotorPort, CANSparkMaxLowLevel.MotorType.kBrushless);
     private final DoubleSolenoid rightIntakePneumatic = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, pneumaticPortRightA, pneumaticPortRightB);
     private final DoubleSolenoid leftIntakePneumatic = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, pneumaticPortLeftA, pneumaticPortLeftB);
@@ -102,6 +103,7 @@ public class IntakeSubsystem extends SubsystemBase {
         if (isRunning) {
             startIntakeToIndexerMotor();
         } else stopIntakeToIndexerMotor();
+
     }
 }
 

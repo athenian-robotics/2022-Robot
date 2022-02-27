@@ -8,7 +8,7 @@ import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.util.Units;
 
 public final class Constants {
-    
+    public static final double looptime = 0.02;
     public static final class AutoConstants {
         public static double ksVolts = 0.2455; //0.49117
         public static double kvVoltSecondsPerMeter = 1.3023; //3.4251
@@ -57,8 +57,8 @@ public final class Constants {
         public static final int intakeMotorPort = 6;
         public static final int indexerMotorPort = 12;
         public static final int intakeToIndexerMotorPort = 13;
-        public static final double indexerSpeed = 0.33;
-        public static final double intakeToIndexerSpeed = 0.6;
+        public static final double indexerSpeed = 0.45;
+        public static final double intakeToIndexerSpeed = 0.3;
         //CLIMBER
         public static final int leftClimberMotorPort = 15;
         public static final int rightClimberMotorPort = 0;
@@ -96,5 +96,17 @@ public final class Constants {
     public static final class LEDConstants {
         public static final int LEDPort = 0;
         public static final int LEDStripLength = 40;
+    }
+
+    public static final class Shooter {
+        public static final double ks = 0.51149;
+        public static final double ka = 0.0091765;
+        public static final double kv = 0.10818;
+
+        public static double maxError = 0.05;
+        public static double maxControlEffort = 12;
+        public static double modelDeviation = 0.075;
+        public static double encoderDeviation = 0.02;
+        public static double hoodToHub = 0.9207;
     }
 }
