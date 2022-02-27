@@ -10,8 +10,6 @@ import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.auto.AutoRoutine6;
-import frc.robot.commands.climb.LeftTelescopeSetSpeed;
-import frc.robot.commands.climb.RightTelescopeSetSpeed;
 import frc.robot.commands.drive.ArcadeDrive;
 import frc.robot.commands.drive.TankDrive;
 import frc.robot.commands.indexer.PulseIndexer;
@@ -28,8 +26,6 @@ import frc.robot.subsystems.*;
 
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
-
-import static frc.robot.Constants.MechanismConstants.telescopeSpeed;
 
 
 public class RobotContainer {
@@ -62,7 +58,7 @@ public class RobotContainer {
         configureButtonBindings();
 
         drivetrain.setDefaultCommand(new ArcadeDrive(drivetrain, xboxController)); // Check for Arcade or Tank
-        indexer.setDefaultCommand(new QueueBalls(indexer, intake)); //Turns on indexer when sees a ball, sets it to off when there are no balls in sight
+        indexer.setDefaultCommand(new QueueBalls(indexer)); //Turns on indexer when sees a ball, sets it to off when there are no balls in sight
 
         try {
             ObjectInputStream fin = new ObjectInputStream(new FileInputStream(    "/home/lvuser/deploy/dt.ser"));
@@ -86,11 +82,11 @@ public class RobotContainer {
       FightStick.fightStickL3.whenHeld(new PulseIndexer(indexer, true)); // Toggle indexer (tower portion)
       FightStick.fightStickB.whenPressed(new EnableShooter(outtake)); // Enable shooter wheels
       FightStick.fightStickY.whenPressed(new DisableShooter(outtake)); // Disable shooter wheels
-      FightStick.fightStickLB.whenHeld(new LeftTelescopeSetSpeed(climb, telescopeSpeed)); // Left Cots Climb Up
-      FightStick.fightStickLT.whenActive(new LeftTelescopeSetSpeed(climb, -telescopeSpeed)); //Left Cots Climb Down
+      //FightStick.fightStickLB.whenHeld(new LeftTelescopeSetSpeed(climb, telescopeSpeed)); // Left Cots Climb Up
+      //FightStick.fightStickLT.whenActive(new LeftTelescopeSetSpeed(climb, -telescopeSpeed)); //Left Cots Climb Down
       //FightStick.fightStickRB.whenHeld(new RightTelescopeSetSpeed(climb, telescopeSpeed)); // Right Cots Climb Up
       FightStick.fightStickRB.whenHeld(new RunIntakeWithoutPneumatics(intake));
-      FightStick.fightStickRT.whenActive(new RightTelescopeSetSpeed(climb, -telescopeSpeed)); // Right Cots Climb Down
+      //FightStick.fightStickRT.whenActive(new RightTelescopeSetSpeed(climb, -telescopeSpeed)); // Right Cots Climb Down
       xboxX.whenPressed(new ShootTopBall(indexer));
 
       /* MISC COMMANDS (Random lib of commands. Written using functional commands because most are just one line ) */
