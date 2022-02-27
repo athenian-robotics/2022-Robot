@@ -1,7 +1,11 @@
 package frc.robot.lib.shooterData;
-import java.io.*;
 
-public class ShooterDataTable implements Serializable{
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+
+public class ShooterDataTable implements Serializable {
     private ShooterSpec[] dataTable;
     private static final double MINDIST = 1.0;
     private static final double MAXDIST = 7.0;
@@ -45,18 +49,12 @@ public class ShooterDataTable implements Serializable{
     }
 
     //main method for testing
-    public static void main(String[] args){
+    public static void main(String[] args) {
         ShooterDataTable dt = new ShooterDataTable();
-        dt.addSpecs(1.0, 6.6158354995, 10.03334, 0.6);
-        dt.addSpecs(1.2, 6.741745, 11.3128, 0.62);
-        dt.addSpecs(1.4, 6.872057383, 12.4430, 0.65);
-        dt.addSpecs(1.6, 7.0050826, 13.4479, 0.67);
-        dt.addSpecs(6.8, 10.1950, 23.3826, 0.95);
-        dt.addSpecs(7.0, 10.3302, 23.5712, 0.97);
-        System.out.println(dt.getSpecs(1.0));
-        System.out.println(dt.getSpecs(1.1) + "" + dt.getSpecs(6.9) + "" + dt.getSpecs(6.99));
+        dt.addSpecs(1.0, 0, 9, 0.6);
+        dt.addSpecs(3.0, 0, 18.22, 0.6);
 
-        try{
+        try {
             FileOutputStream fileOut = new FileOutputStream("src/main/deploy/dt.ser");
             System.out.println("built file output stream");
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
