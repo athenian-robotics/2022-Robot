@@ -22,7 +22,7 @@ public class IndexerSubsystem extends SubsystemBase {
     public boolean indexerRunning = false;
 
     public IndexerSubsystem() {
-        indexerMotor.setInverted(true);
+        indexerMotor.setInverted(false);
     }
 
     public void startIndexer() {

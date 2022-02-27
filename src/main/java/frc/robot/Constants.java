@@ -56,7 +56,9 @@ public final class Constants {
         // INDEXER
         public static final int intakeMotorPort = 6;
         public static final int indexerMotorPort = 12;
+        public static final int intakeToIndexerMotorPort = 13;
         public static final double indexerSpeed = 0.45;
+        public static final double intakeToIndexerSpeed = 0.3;
         //CLIMBER
         public static final int leftClimberMotorPort = 15;
         public static final int rightClimberMotorPort = 0;
@@ -100,9 +102,9 @@ public final class Constants {
         public static final double ka = 0.0091765;
         public static final double kv = 0.10818;
 
-        public static double maxError = 0.1;
-        public static double maxControlEffort = 10;
-        public static double modelDeviation = 0.1;
+        public static double maxError = 0.05;
+        public static double maxControlEffort = 12;
+        public static double modelDeviation = 0.075;
         public static double encoderDeviation = 0.02;
         public static double hoodToHub = 0.9207;
     }

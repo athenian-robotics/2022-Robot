@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.math.controller.PIDController;
@@ -30,6 +31,7 @@ public class OuttakeSubsystem extends SubsystemBase {
     private final Servo rightHoodAngleServo = new Servo(3);
 
     private final NetworkTableEntry shooterNTE;
+    private final NetworkTableEntry turretAngleNTE;
     private final PIDController turretAnglePID;
     private final LimelightSubsystem limelight;
 
@@ -37,6 +39,7 @@ public class OuttakeSubsystem extends SubsystemBase {
     public boolean shooterRunning = false;
     public boolean turretActive = false;
     public double shuffleboardShooterPower = 0;
+    public double shuffleBoardTurretAngle = 0;
     private SimpleVelocitySystem sys;
 
     public OuttakeSubsystem(LimelightSubsystem ll) {
@@ -48,14 +51,28 @@ public class OuttakeSubsystem extends SubsystemBase {
         turretAnglePID = new PIDController(0, 0, 0);
         turretAnglePID.setSetpoint(0); //Always trying to minimize our offset
 
+        turretMotor.setNeutralMode(NeutralMode.Brake);
+        shooterMotorFront.setNeutralMode(NeutralMode.Coast);
+        shooterMotorBack.setNeutralMode(NeutralMode.Coast);
+        shooterMotorBack.follow(shooterMotorFront);
+
         leftHoodAngleServo.setBounds(2.0, 1.8, 1.5, 1.2, 1.0); //Manufacturer specified for Actuonix linear servos
         rightHoodAngleServo.setBounds(2.0, 1.8, 1.5, 1.2, 1.0); //Manufacturer specified for Actuonix linear servos
 
         shooterNTE = Shuffleboard.getTab("852 - Dashboard")
                 .add("Shooter Power", 0)
-                .withWidget(BuiltInWidgets.kNumberSlider)
-                .withProperties(Map.of("min", 0, "max", 100))
+                .withWidget(BuiltInWidgets.kTextView)
+                .withProperties(Map.of())
                 .getEntry();
+
+        turretAngleNTE = Shuffleboard.getTab("852 - Dashboard")
+                .add("Turret Angle", 0)
+                .withWidget(BuiltInWidgets.kTextView)
+                .withProperties(Map.of("min", 8, "max", 41))
+                .getEntry();
+
+
+
 
         shooterMotorFront.configVoltageCompSaturation(12);
         shooterMotorBack.configVoltageCompSaturation(12);
@@ -69,7 +86,6 @@ public class OuttakeSubsystem extends SubsystemBase {
 
     public void setShooterPower(double power) { // Enables both wheels
         setShooterFront(power);
-        setShooterBack(power);
         shooterRunning = true;
     }
 
@@ -88,10 +104,7 @@ public class OuttakeSubsystem extends SubsystemBase {
         shooterMotorFront.set(ControlMode.PercentOutput, power);
     }
 
-    public void setShooterBack(double power) {
-        if (power > 1.0 || power < 0.0) return;
-        shooterMotorBack.set(ControlMode.PercentOutput, power);
-    }
+
 
     public void manualAdjustHoodAngle(double theta) {
         leftHoodAngleServo.setAngle(leftHoodAngleServo.getAngle() + theta);
@@ -115,7 +128,6 @@ public class OuttakeSubsystem extends SubsystemBase {
 
     public void stopShooter() { // Disables shooter
         setShooterFront(0);
-        setShooterBack(0);
         shooterRunning = false;
     }
 
@@ -148,10 +160,12 @@ public class OuttakeSubsystem extends SubsystemBase {
     public void periodic() {
         SmartDashboard.putBoolean("Outtake", shooterRunning);
         SmartDashboard.putNumber("Shooter Speed", getWheelSpeed());
+        SmartDashboard.putNumber("HoodAngle",leftHoodAngleServo.get());
         shuffleboardShooterPower = shooterNTE.getDouble(0);
+        shuffleBoardTurretAngle= turretAngleNTE.getDouble(0);
+        setHoodAngle(shuffleBoardTurretAngle);
         System.out.println(shuffleboardShooterPower);
         System.out.println(shooterNTE);
-
         if (turretActive) { //Sets turret with limelight to PID to aim at the center of the goal
             try {
                 turretMotor.set(ControlMode.PercentOutput, -limelight.getLimelightOutputAtIndex(1));

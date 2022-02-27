@@ -16,6 +16,7 @@ import frc.robot.commands.drive.ArcadeDrive;
 import frc.robot.commands.drive.TankDrive;
 import frc.robot.commands.indexer.PulseIndexer;
 import frc.robot.commands.indexer.QueueBalls;
+import frc.robot.commands.indexer.ShootTopBall;
 import frc.robot.commands.intake.ToggleIntake;
 import frc.robot.commands.outtake.*;
 import frc.robot.lib.controllers.FightStick;
@@ -59,7 +60,9 @@ public class RobotContainer {
 
         drivetrain.setDefaultCommand(new ArcadeDrive(drivetrain, xboxController)); // Check for Arcade or Tank
         outtake.setDefaultCommand(new ManualAdjustOuttake(outtake)); // Check fight stick y-axis for manual hood adjustment
-        indexer.setDefaultCommand(new QueueBalls(indexer)); //Turns on indexer when sees a ball, sets it to off when there are no balls in sight
+        //indexer.setDefaultCommand(new QueueBalls(indexer, intake)); //Turns on indexer when sees a ball, sets it to
+        // off
+        // when there are no balls in sight
 
         try {
             ObjectInputStream fin = new ObjectInputStream(new FileInputStream(    "/home/lvuser/deploy/dt.ser"));
@@ -78,8 +81,9 @@ public class RobotContainer {
       /*  SUBSYSTEM COMMANDS (Main, functional commands) */
       xboxHamburger.whenPressed(new ShootOneBall(drivetrain, indexer, intake, limelight, outtake, shooterDataTable));
       FightStick.fightStickA.whenPressed(new ToggleIntake(intake)); // Toggle intake wheels and pneumatics
-      // FightStick.fightStickX.whenPressed(new ToggleIndexer(indexer));
-      FightStick.fightStickL3.whenHeld(new PulseIndexer(indexer, true)); // Toggle indexer (tower portion)
+      xboxX.whenPressed(new ShootTopBall(indexer, intake));
+      FightStick.fightStickL3.whenHeld(new PulseIndexer(intake, indexer, true)); // Toggle indexer (tower portion)
+      FightStick.fightStickR3.whenHeld(new PulseIndexer(intake,indexer,false)); //Toggle Indexer down (tower portion)
       FightStick.fightStickB.whenPressed(new EnableShooter(outtake)); // Enable shooter wheels
       FightStick.fightStickY.whenPressed(new DisableShooter(outtake)); // Disable shooter wheels
       FightStick.fightStickLB.whenHeld(new LeftTelescopeSetSpeed(climb, telescopeSpeed)); // Left Cots Climb Up

@@ -3,6 +3,8 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -14,18 +16,21 @@ import static frc.robot.Constants.PneumaticConstants.*;
 public class IntakeSubsystem extends SubsystemBase {
     // Configure intake motor, solenoid, and booleans
     private final TalonFX intakeMotor = new TalonFX(Constants.MechanismConstants.intakeMotorPort);
+    private final CANSparkMax intakeToIndexerMotor = new CANSparkMax(Constants.MechanismConstants.intakeToIndexerMotorPort, CANSparkMaxLowLevel.MotorType.kBrushless);
     private final DoubleSolenoid rightIntakePneumatic = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, pneumaticPortRightA, pneumaticPortRightB);
     private final DoubleSolenoid leftIntakePneumatic = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, pneumaticPortLeftA, pneumaticPortLeftB);
 
     public boolean isRunning = false;
     public boolean isExtended = false;
     public boolean isInverted = false;
+    public boolean intakeToIndexerRunning = false;
 
     public IntakeSubsystem() {
         intakeMotor.configFactoryDefault(); // Initialize motor set up
         intakeMotor.setNeutralMode(NeutralMode.Coast);
         intakeMotor.configOpenloopRamp(0.1); // Ramp up (Trapezoid)
         intakeMotor.configClosedloopRamp(0.1); // Ramp down (Trapezoid)
+        intakeToIndexerMotor.setInverted(true);
     }
 
     public void startIntake() { // Enables intake
@@ -66,12 +71,38 @@ public class IntakeSubsystem extends SubsystemBase {
         }
     }
 
+    public void startIntakeToIndexerMotor(){
+        intakeToIndexerMotor.set(Constants.MechanismConstants.intakeToIndexerSpeed);
+        intakeToIndexerRunning = true;
+    }
+    public void stopIntakeToIndexerMotor(){
+        intakeToIndexerMotor.set(0);
+        intakeToIndexerRunning = false;
+    }
+
+    public void toggleIntakeToIndexerMotor(){
+        if(intakeToIndexerRunning){
+            stopIntakeToIndexerMotor();
+        }
+        else {
+            startIntakeToIndexerMotor();
+        }
+    }
+
     public void disable() { // Disables intake subsystem
         stopIntake();
         retractPneumatic();
     }
 
     @Override
-    public void periodic() {SmartDashboard.putBoolean("Intake", isRunning);}
+    public void periodic() {
+        SmartDashboard.putBoolean("Intake", isRunning);
+        if(isRunning){
+            startIntakeToIndexerMotor();
+        }
+        else{
+            stopIntakeToIndexerMotor();
+        }
+    }
 }
 

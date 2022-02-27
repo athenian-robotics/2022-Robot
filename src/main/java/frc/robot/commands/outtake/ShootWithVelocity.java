@@ -31,7 +31,7 @@ public class ShootWithVelocity extends CommandBase {
             double velocity =
                     Math.sqrt((9.81*distance*distance)/(2*(Constants.Shooter.hoodToHub + 1.73205080757*distance))); //
             double rps = veloData.get(velocity);
-            outtake.setRPS(rps);
+            //outtake.setRPS(rps);
         }
     }
 }

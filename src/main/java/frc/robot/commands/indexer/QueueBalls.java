@@ -1,22 +1,31 @@
 package frc.robot.commands.indexer;
 
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.IndexerSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
 
 
 public class QueueBalls extends CommandBase {
     private final IndexerSubsystem indexerSubsystem;
+    private final IntakeSubsystem intakeSubsystem;
+    private long startTime = 0;
 
-    public QueueBalls(IndexerSubsystem indexerSubsystem) {
+    public QueueBalls(IndexerSubsystem indexerSubsystem, IntakeSubsystem intakeSubsystem) {
         this.indexerSubsystem = indexerSubsystem;
-        addRequirements(this.indexerSubsystem);
+        this.intakeSubsystem = intakeSubsystem;
+        addRequirements(this.indexerSubsystem, this.intakeSubsystem);
     }
 
     @Override
     public void execute() {
-        if (indexerSubsystem.ballPrimed())
+        if (indexerSubsystem.ballPrimed()){
             indexerSubsystem.startIndexer();
-        else
+            intakeSubsystem.startIntakeToIndexerMotor();
+    }
+        else {
             indexerSubsystem.stopIndexer();
+            intakeSubsystem.stopIntakeToIndexerMotor();
+        }
     }
 }
