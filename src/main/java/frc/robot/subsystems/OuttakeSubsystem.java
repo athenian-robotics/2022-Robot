@@ -28,13 +28,16 @@ public class OuttakeSubsystem extends SubsystemBase {
     private final Servo rightHoodAngleServo = new Servo(3);
 
     private final NetworkTableEntry shooterNTE;
+    private final NetworkTableEntry turretAngleNTE;
     private final PIDController turretAnglePID;
+    private final PIDController turretPositionPID;
     private final LimelightSubsystem limelight;
 
     private ShooterDataTable table =  new ShooterDataTable();
     public boolean shooterRunning = false;
     public boolean turretActive = false;
     public double shuffleboardShooterPower = 0;
+    public double shuffleboardTurretAngle = 0;
 
 
     public OuttakeSubsystem(LimelightSubsystem ll) {
@@ -42,10 +45,12 @@ public class OuttakeSubsystem extends SubsystemBase {
 
         shooterMotorFront.setInverted(false);
         shooterMotorBack.setInverted(false);
-        turretMotor.setInverted(true);
+        turretMotor.setInverted(false);
 
         turretAnglePID = new PIDController(0, 0, 0);
         turretAnglePID.setSetpoint(0); //Always trying to minimize our offset
+
+        turretPositionPID = new PIDController(0, 0, 0);
 
         leftHoodAngleServo.setBounds(2.0, 1.8, 1.5, 1.2, 1.0); //Manufacturer specified for Actuonix linear servos
         rightHoodAngleServo.setBounds(2.0, 1.8, 1.5, 1.2, 1.0); //Manufacturer specified for Actuonix linear servos
@@ -54,6 +59,12 @@ public class OuttakeSubsystem extends SubsystemBase {
                 .add("Shooter Power", 0)
                 .withWidget(BuiltInWidgets.kNumberSlider)
                 .withProperties(Map.of("min", 0, "max", 100))
+                .getEntry();
+
+        turretAngleNTE = Shuffleboard.getTab("852 - Dashboard")
+                .add("Turret Angle", 0)
+                .withWidget(BuiltInWidgets.kNumberSlider)
+                .withProperties(Map.of("min", 8, "max", 41))
                 .getEntry();
 
         shooterMotorFront.configVoltageCompSaturation(12);
@@ -84,7 +95,9 @@ public class OuttakeSubsystem extends SubsystemBase {
     }
 
     public void manualAdjustTurret(double power) {
-        turretMotor.set(ControlMode.PercentOutput, power);
+        if (getTurretPosition() < -280 || getTurretPosition() > 20) {
+            turretMotor.set(ControlMode.PercentOutput, power);
+        } else turretMotor.set(ControlMode.PercentOutput, 0);
     }
 
     public void setHoodAngle(double angle) {
@@ -139,6 +152,9 @@ public class OuttakeSubsystem extends SubsystemBase {
     public void periodic() {
         SmartDashboard.putBoolean("Outtake", shooterRunning);
         shuffleboardShooterPower = shooterNTE.getDouble(0);
+        shuffleboardShooterPower = turretAngleNTE.getDouble(0);
+        SmartDashboard.putNumber("Turret Position", getTurretPosition());
+        SmartDashboard.putNumber("Turret Angle", leftHoodAngleServo.get());
 
         if (turretActive) { //Sets turret with limelight to PID to aim at the center of the goal
             try {
@@ -160,9 +176,6 @@ public class OuttakeSubsystem extends SubsystemBase {
             } else if (FightStick.fightStickJoystick.getY() > 0.5) {
                 this.manualAdjustHoodAngle(-1);
             }
-        }
-        if (getTurretPosition() < -90 || getTurretPosition() > 210) {
-            turretMotor.set(ControlMode.PercentOutput, 0);
         }
     }
 }

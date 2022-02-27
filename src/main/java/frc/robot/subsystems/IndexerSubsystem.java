@@ -50,6 +50,7 @@ public class IndexerSubsystem extends SubsystemBase {
         else startIndexer();
     } // Toggles indexer
 
+
     public boolean ballPrimed() {
         return currentProximity > 10;
     }
