@@ -147,6 +147,7 @@ public class OuttakeSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         SmartDashboard.putBoolean("Outtake", shooterRunning);
+        SmartDashboard.putNumber("Shooter Speed", getWheelSpeed());
         shuffleboardShooterPower = shooterNTE.getDouble(0);
         System.out.println(shuffleboardShooterPower);
         System.out.println(shooterNTE);

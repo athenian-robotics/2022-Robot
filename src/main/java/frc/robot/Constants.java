@@ -96,13 +96,14 @@ public final class Constants {
     }
 
     public static final class Shooter {
-        public static final double ks = 0.0;
-        public static final double ka = 0.0;
-        public static final double kv = 0.0;
+        public static final double ks = 0.51149;
+        public static final double ka = 0.0091765;
+        public static final double kv = 0.10818;
 
-        public static double maxError;
-        public static double maxControlEffort;
-        public static double modelDeviation;
-        public static double encoderDeviation;
+        public static double maxError = 0.1;
+        public static double maxControlEffort = 10;
+        public static double modelDeviation = 0.1;
+        public static double encoderDeviation = 0.02;
+        public static double hoodToHub = 0.9207;
     }
 }

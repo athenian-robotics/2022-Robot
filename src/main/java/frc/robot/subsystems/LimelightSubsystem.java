@@ -39,7 +39,7 @@ public class LimelightSubsystem extends SubsystemBase {
     }
     public double getDistance() {
         try {
-            return getLimelightOutputAtIndex(2); // TODO: check if index is correct
+            return getLimelightOutputAtIndex(0); // TODO: check if index is correct
         } catch (GoalNotFoundException e) {
             return -1;
         }

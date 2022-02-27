@@ -15,5 +15,5 @@ public class EnableShooter extends InstantCommand {
     }
 
     @Override
-    public void initialize() { outtakeSubsystem.setShooterPower(idleOuttakeSpeed); }
+    public void initialize() { outtakeSubsystem.setRPS(1); }
 }
