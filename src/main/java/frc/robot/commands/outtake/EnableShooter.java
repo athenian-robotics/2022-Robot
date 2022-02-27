@@ -13,8 +13,6 @@ public class EnableShooter extends InstantCommand {
     }
 
     @Override
-    public void initialize() {
-        outtakeSubsystem.setShooterPower(outtakeSubsystem.shuffleboardShooterPower);
-        outtakeSubsystem.setHoodAngle(outtakeSubsystem.shuffleboardTurretAngle);
-    }
+    public void initialize() { outtakeSubsystem.setRPS(outtakeSubsystem.shuffleboardShooterPower);}
+
 }

@@ -30,11 +30,10 @@ public class ShootOneBall extends SequentialCommandGroup {
                     new SetTurretStatus(outtake, true),
                     new SetSpecificShooterPower(outtake, shooterDataTable.getSpecs(limelight.getLimelightOutputAtIndex(0)).getPower()),
                     new GuaranteeLimelightDataEquals(limelight, 1, 0),
-                    new SetTurretStatus(outtake, false),
-                    new ShootTopBall(indexer, 0.5),
-                    //Wind down
-                    new DisableShooter(outtake),
-                    new SetHoodAngle(outtake, Constants.MechanismConstants.defaultHoodAngle)
+                    new SetTurretActive(outtake, false),
+                    new ShootTopBall(indexer, intake,0.5),
+                    new DisableShooter(outtake)
+
             );
         } catch (GoalNotFoundException ignored) {
             // ඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞ

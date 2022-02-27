@@ -44,4 +44,19 @@ public class LimelightSubsystem extends SubsystemBase {
             SmartDashboard.putNumber("zDistance", getLimelightOutputAtIndex(0));
         } catch (GoalNotFoundException ignored) {}
     }
+    public double getDistance() {
+        try {
+            return getLimelightOutputAtIndex(0); // TODO: check if index is correct
+        } catch (GoalNotFoundException e) {
+            return -1;
+        }
+    }
+    public boolean isTargetFound() {
+
+        try {
+            return getLimelightOutputAtIndex(7) == 1;
+        } catch (GoalNotFoundException e) {
+            return false;
+        }
+    }
 }
