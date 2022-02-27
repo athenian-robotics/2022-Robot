@@ -92,6 +92,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public void disable() { // Disables intake subsystem
         stopIntake();
+        stopIntakeToIndexerMotor();
         retractPneumatic();
     }
 

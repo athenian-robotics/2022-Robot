@@ -151,7 +151,7 @@ public class OuttakeSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         SmartDashboard.putBoolean("Outtake", shooterRunning);
-        shuffleboardShooterPower = shooterNTE.getDouble(0);
+        shuffleboardShooterPower = shooterNTE.getDouble(0.2);
         shuffleboardShooterPower = turretAngleNTE.getDouble(0);
         SmartDashboard.putNumber("Turret Position", getTurretPosition());
         SmartDashboard.putNumber("Turret Angle", leftHoodAngleServo.get());
