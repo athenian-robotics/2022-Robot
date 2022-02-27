@@ -11,12 +11,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
+import static frc.robot.Constants.MechanismConstants.intakeToIndexerMotorPort;
 import static frc.robot.Constants.PneumaticConstants.*;
 
 public class IntakeSubsystem extends SubsystemBase {
     // Configure intake motor, solenoid, and booleans
     private final TalonFX intakeMotor = new TalonFX(Constants.MechanismConstants.intakeMotorPort);
-    private final CANSparkMax intakeToIndexerMotor = new CANSparkMax(Constants.MechanismConstants.intakeToIndexerMotorPort, CANSparkMaxLowLevel.MotorType.kBrushless);
+
+    private final CANSparkMax intakeToIndexerMotor = new CANSparkMax(intakeToIndexerMotorPort, CANSparkMaxLowLevel.MotorType.kBrushless);
     private final DoubleSolenoid rightIntakePneumatic = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, pneumaticPortRightA, pneumaticPortRightB);
     private final DoubleSolenoid leftIntakePneumatic = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, pneumaticPortLeftA, pneumaticPortLeftB);
 
@@ -71,38 +73,37 @@ public class IntakeSubsystem extends SubsystemBase {
         }
     }
 
-    public void startIntakeToIndexerMotor(){
+    public void startIntakeToIndexerMotor() {
         intakeToIndexerMotor.set(Constants.MechanismConstants.intakeToIndexerSpeed);
-        intakeToIndexerRunning = true;
-    }
-    public void stopIntakeToIndexerMotor(){
-        intakeToIndexerMotor.set(0);
-        intakeToIndexerRunning = false;
     }
 
-    public void toggleIntakeToIndexerMotor(){
-        if(intakeToIndexerRunning){
+    public void stopIntakeToIndexerMotor() {
+        intakeToIndexerMotor.set(0);
+    }
+
+    public void toggleIntakeToIndexerMotor() {
+        if (intakeToIndexerRunning) {
             stopIntakeToIndexerMotor();
-        }
-        else {
-            startIntakeToIndexerMotor();
-        }
+        } else startIntakeToIndexerMotor();
+    }
+
+    public boolean isRunning() {
+        return isRunning;
     }
 
     public void disable() { // Disables intake subsystem
         stopIntake();
+        stopIntakeToIndexerMotor();
         retractPneumatic();
     }
 
     @Override
     public void periodic() {
         SmartDashboard.putBoolean("Intake", isRunning);
-        if(isRunning){
+        if (isRunning) {
             startIntakeToIndexerMotor();
-        }
-        else{
-            stopIntakeToIndexerMotor();
-        }
+        } else stopIntakeToIndexerMotor();
+
     }
 }
 

@@ -12,6 +12,7 @@ public class ShootTopBall extends SequentialCommandGroup {
         super(
                 new PulseIndexer(intakeSubsystem, indexerSubsystem, false).withTimeout(.1),
                 new PulseIndexer(intakeSubsystem, indexerSubsystem, true).withTimeout(.4)
+
         );
     }
 

@@ -26,13 +26,12 @@ public class IndexerSubsystem extends SubsystemBase {
     }
 
     public void startIndexer() {
-        System.out.println("forward");// Enables indexer
+        // Enables indexer
         indexerMotor.set(ControlMode.PercentOutput, Constants.MechanismConstants.indexerSpeed);
         indexerRunning = true;
     }
 
     public void reverseIndexer() {
-        System.out.println("revers");
         indexerMotor.set(ControlMode.PercentOutput, -Constants.MechanismConstants.indexerSpeed);
         indexerRunning = true;
     }
@@ -50,6 +49,7 @@ public class IndexerSubsystem extends SubsystemBase {
         if (indexerRunning) stopIndexer();
         else startIndexer();
     } // Toggles indexer
+
 
     public boolean ballPrimed() {
         return currentProximity > 10;

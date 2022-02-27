@@ -23,9 +23,9 @@ public class ManualAdjustOuttake extends CommandBase {
     @Override
     public void execute() {
         // TURRET ANGLE FALCON
-        if (FightStick.fightStickJoystick.getX() < 0) {
+        if (FightStick.fightStickJoystick.getX() < -0.5) {
             outtakeSubsystem.manualAdjustTurret(-idleTurretSpeed);
-        } else if (FightStick.fightStickJoystick.getX() > 0) {
+        } else if (FightStick.fightStickJoystick.getX() > 0.5) {
             outtakeSubsystem.manualAdjustTurret(idleTurretSpeed);
         } else {
             outtakeSubsystem.manualAdjustTurret(0);
