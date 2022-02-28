@@ -15,7 +15,7 @@ import frc.robot.Constants;
 import frc.robot.lib.GoalNotFoundException;
 import frc.robot.lib.controllers.FightStick;
 import frc.robot.lib.controllers.SimpleVelocitySystem;
-import frc.robot.lib.shooter.ShooterDataTable;
+import frc.robot.lib.shooterData.ShooterDataTable;
 
 import java.util.Map;
 
@@ -33,7 +33,6 @@ public class OuttakeSubsystem extends SubsystemBase {
     private final NetworkTableEntry shooterNTE;
     private final NetworkTableEntry turretAngleNTE;
     private final PIDController turretAnglePID;
-    private final PIDController turretPositionPID;
     private final LimelightSubsystem limelight;
 
     private ShooterDataTable table =  new ShooterDataTable();
@@ -65,13 +64,13 @@ public class OuttakeSubsystem extends SubsystemBase {
         rightHoodAngleServo.setBounds(2.0, 1.8, 1.5, 1.2, 1.0); //Manufacturer specified for Actuonix linear servos
 
         shooterNTE = Shuffleboard.getTab("852 - Dashboard")
-                .add("Shooter Power", 0)
+                .add("Shooter Power", shuffleboardShooterPower)
                 .withWidget(BuiltInWidgets.kTextView)
                 .withProperties(Map.of())
                 .getEntry();
 
         turretAngleNTE = Shuffleboard.getTab("852 - Dashboard")
-                .add("Turret Angle", 0)
+                .add("Turret Angle", 8)
                 .withWidget(BuiltInWidgets.kTextView)
                 .withProperties(Map.of("min", 8, "max", 41))
                 .getEntry();
@@ -171,9 +170,10 @@ public class OuttakeSubsystem extends SubsystemBase {
         SmartDashboard.putBoolean("Outtake", shooterRunning);
 
         SmartDashboard.putNumber("Shooter Speed", getWheelSpeed());
-        SmartDashboard.putNumber("HoodAngle",leftHoodAngleServo.get());
-        shuffleboardShooterPower = shooterNTE.getDouble(0);
-        shuffleBoardTurretAngle= turretAngleNTE.getDouble(0);
+        SmartDashboard.putNumber("HoodAngle", leftHoodAngleServo.get());
+        shuffleboardShooterPower = shooterNTE.getDouble(1);
+        shuffleBoardTurretAngle = turretAngleNTE.getDouble(8);
+        this.setRPS(this.shuffleboardShooterPower);
         setHoodAngle(shuffleBoardTurretAngle);
         System.out.println(shuffleboardShooterPower);
         System.out.println(shooterNTE);

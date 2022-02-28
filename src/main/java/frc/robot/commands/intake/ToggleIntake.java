@@ -16,6 +16,11 @@ public class ToggleIntake extends CommandBase {
     @Override
     public void initialize() {
         intakeSubsystem.toggleIntake(); // On initialize, toggle intake
+        if (intakeSubsystem.isRunning) {
+            intakeSubsystem.startIntakeToIndexerMotor();
+        } else {
+            intakeSubsystem.stopIntakeToIndexerMotor();
+        }
         intakeSubsystem.togglePneumatic();
     }
 

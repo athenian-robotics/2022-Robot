@@ -30,14 +30,14 @@ public class ShootTwoBalls extends SequentialCommandGroup {
                     new SetTurretStatus(outtake, true),
                     new SetSpecificShooterPower(outtake, shooterDataTable.getSpecs(limelight.getLimelightOutputAtIndex(0)).getPower()),
                     new GuaranteeLimelightDataEquals(limelight, 1, 0),
-                    new ShootTopBall(indexer),
+                    new ShootTopBall(indexer, intake),
                     //Aim again and shoot again
                     new ParallelDeadlineGroup(new GuaranteeLimelightData(limelight), new ManualAdjustTurret(outtake)),
                     new SetHoodAngle(outtake, shooterDataTable.getSpecs(limelight.getLimelightOutputAtIndex(0)).getAngle()),
                     new SetTurretStatus(outtake, true),
                     new SetSpecificShooterPower(outtake, shooterDataTable.getSpecs(limelight.getLimelightOutputAtIndex(0)).getPower()),
                     new GuaranteeLimelightDataEquals(limelight, 1, 0),
-                    new ShootTopBall(indexer),
+                    new ShootTopBall(indexer, intake),
                     //Wind down
                     new DisableShooter(outtake),
                     new SetHoodAngle(outtake, Constants.MechanismConstants.defaultHoodAngle)
