@@ -30,8 +30,8 @@ public class ShootOneBall extends SequentialCommandGroup {
                     new SetTurretStatus(outtake, true),
                     new SetSpecificShooterPower(outtake, shooterDataTable.getSpecs(limelight.getLimelightOutputAtIndex(0)).getPower()),
                     new GuaranteeLimelightDataEquals(limelight, 1, 0),
-                    new SetTurretActive(outtake, false),
-                    new ShootTopBall(indexer, intake,0.5),
+                    new SetTurretStatus(outtake, false),
+                    new ShootTopBall(indexer, intake, 0.5),
                     new DisableShooter(outtake)
 
             );

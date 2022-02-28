@@ -15,10 +15,12 @@ public class RunIntakeWithoutPneumatics extends CommandBase {
     @Override
     public void initialize() {
         intakeSubsystem.startIntake();
+        intakeSubsystem.startIntakeToIndexerMotor();
     }
 
     @Override
     public void end(boolean interrupted) {
         intakeSubsystem.stopIntake();
+        intakeSubsystem.stopIntakeToIndexerMotor();
     }
 }

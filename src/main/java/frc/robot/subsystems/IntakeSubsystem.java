@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 import static frc.robot.Constants.MechanismConstants.intakeToIndexerMotorPort;
+import static frc.robot.Constants.MechanismConstants.intakeToIndexerSpeed;
 import static frc.robot.Constants.PneumaticConstants.*;
 
 public class IntakeSubsystem extends SubsystemBase {
@@ -87,6 +88,10 @@ public class IntakeSubsystem extends SubsystemBase {
         } else startIntakeToIndexerMotor();
     }
 
+    public void invertedIntakeToIndexerMotor() {
+        intakeToIndexerMotor.set(-intakeToIndexerSpeed);
+    }
+
     public boolean isRunning() {
         return isRunning;
     }
@@ -100,10 +105,6 @@ public class IntakeSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         SmartDashboard.putBoolean("Intake", isRunning);
-        if (isRunning) {
-            startIntakeToIndexerMotor();
-        } else stopIntakeToIndexerMotor();
-
     }
 }
 

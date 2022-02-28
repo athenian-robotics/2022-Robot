@@ -16,9 +16,11 @@ public class ToggleIntakePneumaticsWithWheelsOn extends CommandBase {
     public void initialize() {
         if (intakeSubsystem.isRunning) {
             intakeSubsystem.togglePneumatic();
+            intakeSubsystem.startIntakeToIndexerMotor();
         } else {
             intakeSubsystem.startIntake();
             intakeSubsystem.togglePneumatic();
+            intakeSubsystem.stopIntakeToIndexerMotor();
         }
     }
 
@@ -35,5 +37,6 @@ public class ToggleIntakePneumaticsWithWheelsOn extends CommandBase {
     @Override
     public void end(boolean interrupted) {
         intakeSubsystem.stopIntake();
+        intakeSubsystem.stopIntakeToIndexerMotor();
     }
 }

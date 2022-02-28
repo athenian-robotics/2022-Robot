@@ -23,22 +23,24 @@ public final class Constants {
     }
 
     public static final class DriveConstants {
-        /** DRIVE MOTOR PORTS **/
+        /**
+         * DRIVE MOTOR PORTS
+         **/
         public static final int leftFrontDrivePort = 2;
         public static final int leftRearDrivePort = 1;
         public static final int rightFrontDrivePort = 3;
         public static final int rightRearDrivePort = 4;
 
-        public static final int rightEncoderChannelA = 0;
-        public static final int rightEncoderchannelB = 1;
-        public static final int leftEncoderChannelA = 2;
-        public static final int leftEncoderChannelB = 3;
+        public static final int rightEncoderChannelA = 2;
+        public static final int rightEncoderchannelB = 3;
+        public static final int leftEncoderChannelA = 1;
+        public static final int leftEncoderChannelB = 0;
 
         /**
          * MISC CONSTANTS
          **/
         public static final double trackWidth = Units.inchesToMeters(28);
-        public static final double driveGearRatio = 4/3.0;
+        public static final double driveGearRatio = 4 / 3.0;
         public static final double wheelDiameter = 6.0; // 6 in.
 
         public static final double minDriveSpeed = 0.1;
@@ -57,7 +59,7 @@ public final class Constants {
         public static final int intakeMotorPort = 6;
         public static final int indexerMotorPort = 12;
         public static final int intakeToIndexerMotorPort = 13;
-        public static final double indexerSpeed = 0.45;
+        public static final double indexerSpeed = 0.4;
         public static final double intakeToIndexerSpeed = 0.3;
         //CLIMBER
         public static final int leftClimberMotorPort = 15;

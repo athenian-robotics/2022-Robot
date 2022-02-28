@@ -52,7 +52,7 @@ public class ShooterDataTable implements Serializable {
     public static void main(String[] args) {
         ShooterDataTable dt = new ShooterDataTable();
         dt.addSpecs(1.0, 0, 9, 0.6);
-        dt.addSpecs(3.0, 0, 18.22, 0.6);
+        dt.addSpecs(2.36, 0, 20, 38); //From hub to the diagonal starting cargo line
 
         try {
             FileOutputStream fileOut = new FileOutputStream("src/main/deploy/dt.ser");
