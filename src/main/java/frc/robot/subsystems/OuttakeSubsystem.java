@@ -174,8 +174,6 @@ public class OuttakeSubsystem extends SubsystemBase {
         shuffleboardShooterPower = shooterNTE.getDouble(1);
         shuffleBoardTurretAngle = turretAngleNTE.getDouble(8);
         setHoodAngle(shuffleBoardTurretAngle);
-        System.out.println(shuffleboardShooterPower);
-        System.out.println(shooterNTE);
 
         if (turretActive) { //Sets turret with limelight to PID to aim at the center of the goal
             try {

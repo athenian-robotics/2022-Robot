@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.lib.GoalNotFoundException;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 
@@ -32,6 +33,7 @@ public class LimelightSubsystem extends SubsystemBase {
     public void periodic() {
         try {
             Number[] temp = limelight.getEntry("llpython").getNumberArray(new Number[]{-1, -1, -1, -1, -1, -1, -1, -1});
+            System.out.println(limelight);
             if (!Objects.equals(temp[7], new Double(-1.0))) limelightOutputArray = temp;
         } catch (ArrayIndexOutOfBoundsException ignored) {}
         try {

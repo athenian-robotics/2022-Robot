@@ -61,6 +61,7 @@ public final class Constants {
         public static final int intakeToIndexerMotorPort = 13;
         public static final double indexerSpeed = 0.35;
         public static final double intakeToIndexerSpeed = 0.3;
+        public static final int intakeToIndexerResidualIndexTimeMillis = 1000;
         //CLIMBER
         public static final int leftClimberMotorPort = 15;
         public static final int rightClimberMotorPort = 16;
