@@ -15,11 +15,6 @@ public class LimelightSubsystem extends SubsystemBase {
 
     public LimelightSubsystem(String tableName) {
         this.limelight = NetworkTableInstance.getDefault().getTable(tableName);
-        try{
-            System.out.println("\n\n\n\n\n" + this.limelight + "\n\n" + this.limelight.getEntry("llpython").getNumberArray(new Number[]{-1. -1, -1, -1, -1, -1, -1, -1})[1]);
-        }catch(Exception e){
-            System.out.println("Exception found");
-        }
     }
 
     public double getLimelightOutputAtIndex(int index) throws GoalNotFoundException {
@@ -37,7 +32,7 @@ public class LimelightSubsystem extends SubsystemBase {
     public void periodic() {
         try {
             Number[] temp = limelight.getEntry("llpython").getNumberArray(new Number[]{-1, -1, -1, -1, -1, -1, -1, -1});
-            if (!Objects.equals(temp[7], ((-1.0))) || Objects.equals(temp[7], 0)) limelightOutputArray = temp;
+            if (!Objects.equals(temp[7], new Double(-1.0))) limelightOutputArray = temp;
         } catch (ArrayIndexOutOfBoundsException ignored) {}
         try {
             SmartDashboard.putNumber("xOffset", getLimelightOutputAtIndex(1));
@@ -52,7 +47,6 @@ public class LimelightSubsystem extends SubsystemBase {
         }
     }
     public boolean isTargetFound() {
-
         try {
             return getLimelightOutputAtIndex(7) == 1;
         } catch (GoalNotFoundException e) {

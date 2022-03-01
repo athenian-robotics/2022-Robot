@@ -18,6 +18,7 @@ public class IndexerSubsystem extends SubsystemBase {
 
     public WheelColors currentColor = WheelColors.GREEN;
     public double currentProximity = 0;
+    public int ballsIndexed = 0;
 
     public boolean indexerRunning = false;
 

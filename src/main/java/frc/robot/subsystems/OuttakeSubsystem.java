@@ -51,7 +51,7 @@ public class OuttakeSubsystem extends SubsystemBase {
         shooterMotorBack.setInverted(false);
         turretMotor.setInverted(false);
 
-        turretAnglePID = new PIDController(0, 0, 0);
+        turretAnglePID = new PIDController(0.001, 0, 0.001);
         turretAnglePID.setSetpoint(0); //Always trying to minimize our offset
 
 
@@ -173,7 +173,6 @@ public class OuttakeSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("HoodAngle", leftHoodAngleServo.get());
         shuffleboardShooterPower = shooterNTE.getDouble(1);
         shuffleBoardTurretAngle = turretAngleNTE.getDouble(8);
-        this.setRPS(this.shuffleboardShooterPower);
         setHoodAngle(shuffleBoardTurretAngle);
         System.out.println(shuffleboardShooterPower);
         System.out.println(shooterNTE);

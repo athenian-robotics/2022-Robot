@@ -1,15 +1,18 @@
 package frc.robot.commands.intake;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 
 
 public class RunIntakeWithoutPneumatics extends CommandBase {
     private final IntakeSubsystem intakeSubsystem;
+    private final IndexerSubsystem indexerSubsystem;
 
-    public RunIntakeWithoutPneumatics(IntakeSubsystem intakeSubsystem) {
+    public RunIntakeWithoutPneumatics(IntakeSubsystem intakeSubsystem, IndexerSubsystem indexerSubsystem) {
         this.intakeSubsystem = intakeSubsystem;
-        addRequirements(this.intakeSubsystem);
+        this.indexerSubsystem = indexerSubsystem;
+        addRequirements(this.intakeSubsystem, this.indexerSubsystem);
     }
 
     @Override

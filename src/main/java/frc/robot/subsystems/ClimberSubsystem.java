@@ -2,8 +2,10 @@ package frc.robot.subsystems;
 
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import static frc.robot.Constants.MechanismConstants.leftClimberMotorPort;
@@ -20,6 +22,9 @@ public class ClimberSubsystem extends SubsystemBase {
     public ClimberSubsystem() {
         climbMotorLeft.setInverted(true);
         climbMotorRight.setInverted(false);
+
+        climbMotorLeft.setNeutralMode(NeutralMode.Brake);
+        climbMotorRight.setNeutralMode(NeutralMode.Brake);
 
         leftPIDController = new PIDController(0, 0, 0);
         rightPIDController = new PIDController(0, 0, 0);
@@ -39,13 +44,22 @@ public class ClimberSubsystem extends SubsystemBase {
         climbMotorRight.set(ControlMode.PercentOutput, power);
     }
 
-    public void setRightPosition(int position) {
+    public void setRightPosition(double position) {
         //rightPIDController.setSetpoint(position);
+    }
+
+    public double getLeftHeightMeters() {
+        return 0.0254 * ((33.5 * climbMotorLeft.getSelectedSensorPosition() / 287578) + 33.5);
+    }
+
+    public double getRightHeightMeters() {
+        return 0.0254 * ((33.5 * climbMotorRight.getSelectedSensorPosition() / 287578) + 33.5);
     }
 
     @Override
     public void periodic() {
-
+        SmartDashboard.putNumber("left telescope height", getLeftHeightMeters());
+        SmartDashboard.putNumber("right telescope height", getRightHeightMeters());
     }
 }
 
