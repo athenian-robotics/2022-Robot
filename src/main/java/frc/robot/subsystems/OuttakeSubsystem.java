@@ -83,6 +83,8 @@ public class OuttakeSubsystem extends SubsystemBase {
                 Constants.Shooter.maxError, Constants.Shooter.maxControlEffort,
                 Constants.Shooter.modelDeviation, Constants.Shooter.encoderDeviation,
                 Constants.looptime);
+
+        setTurretPosition(180);
     }
 
     public void setShooterPower(double power) { // Enables both wheels
@@ -155,6 +157,11 @@ public class OuttakeSubsystem extends SubsystemBase {
         return shooterMotorBack.getErrorDerivative();
     }
 
+    public void setTurretPosition(double position) {
+        //Primarily for use in auto routines where we need to know where the shooter starts
+        turretMotor.setSelectedSensorPosition(2048 * position / 36);
+    }
+
     public double getTurretPosition() {
         return turretMotor.getSelectedSensorPosition() * 36 / 2048;
     }
@@ -168,9 +175,9 @@ public class OuttakeSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         SmartDashboard.putBoolean("Outtake", shooterRunning);
-
         SmartDashboard.putNumber("Shooter Speed", getWheelSpeed());
         SmartDashboard.putNumber("HoodAngle", leftHoodAngleServo.get());
+        SmartDashboard.putNumber("Turret Angle", getTurretPosition());
         shuffleboardShooterPower = shooterNTE.getDouble(1);
         shuffleBoardTurretAngle = turretAngleNTE.getDouble(8);
         setHoodAngle(shuffleBoardTurretAngle);
