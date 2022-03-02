@@ -22,7 +22,7 @@ public class ClimberSubsystem extends SubsystemBase {
 
     public ClimberSubsystem() {
         climbMotorLeft.setInverted(true);
-        climbMotorRight.setInverted(false);
+        climbMotorRight.setInverted(true);
 
         climbMotorLeft.setNeutralMode(NeutralMode.Brake);
         climbMotorRight.setNeutralMode(NeutralMode.Brake);
@@ -64,11 +64,11 @@ public class ClimberSubsystem extends SubsystemBase {
     }
 
     public double getLeftHeightPercent() {
-        return getLeftHeightEncoderCount()/297214;
+        return getLeftHeightEncoderCount()/333654;
     }
 
     public double getRightHeightPercent() {
-        return getRightHeightEncoderCount()/297214;
+        return getRightHeightEncoderCount()/333654;
     }
 
     public void disable() {
@@ -79,13 +79,7 @@ public class ClimberSubsystem extends SubsystemBase {
     public void periodic() {
         SmartDashboard.putNumber("left telescope height", getLeftHeightPercent());
         SmartDashboard.putNumber("right telescope height", getRightHeightPercent());
-
-        if (climberActive) {
-            setLeftMotor(leftPIDController.calculate(getLeftHeightPercent()));
-            setRightMotor(rightPIDController.calculate(getRightHeightPercent()));
-        } else {
-            setLeftMotor(0);
-            setRightMotor(0);
-        }
+        SmartDashboard.putNumber("left telescope encoder count", getLeftHeightEncoderCount());
+        SmartDashboard.putNumber("right telescope encoder count", getRightHeightEncoderCount());
     }
 }
