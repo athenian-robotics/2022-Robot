@@ -7,42 +7,47 @@ import static frc.robot.Constants.MechanismConstants.telescopeSpeed;
 
 
 public class SetBothTelescopePositions extends CommandBase {
-    private final ClimberSubsystem climberSubsystem;
+    private final ClimberSubsystem climber;
     private final double position;
     private final boolean leftDirection;
     private final boolean rightDirection;
 
-    public SetBothTelescopePositions(ClimberSubsystem climberSubsystem, double position) {
+    public SetBothTelescopePositions(ClimberSubsystem climber, double position) {
         if (position < 0 || position > 1) this.cancel();
 
-        this.climberSubsystem = climberSubsystem;
+        this.climber = climber;
         this.position = position;
-        this.leftDirection = position > climberSubsystem.getLeftHeightPercent();
-        this.rightDirection = position > climberSubsystem.getRightHeightPercent();
+        this.leftDirection = position > climber.getLeftHeightPercent();
+        this.rightDirection = position > climber.getRightHeightPercent();
 
-        addRequirements(this.climberSubsystem);
+        addRequirements(this.climber);
     }
 
     @Override
     public void initialize() {
-        climberSubsystem.setLeftMotor(leftDirection ? telescopeSpeed : -telescopeSpeed);
-        climberSubsystem.setRightMotor(rightDirection ? telescopeSpeed : -telescopeSpeed);
+        climber.setLeftMotor(leftDirection ? telescopeSpeed : -telescopeSpeed);
+        climber.setRightMotor(rightDirection ? telescopeSpeed : -telescopeSpeed);
     }
 
     @Override
     public void execute() {
-        if (Math.abs(climberSubsystem.getLeftHeightPercent() - position) < 0.03) climberSubsystem.setLeftMotor(0);
-        if (Math.abs(climberSubsystem.getRightHeightPercent() - position) < 0.03) climberSubsystem.setRightMotor(0);
+        if (atGoal(climber.getLeftHeightPercent(), leftDirection)) climber.setLeftMotor(0);
+        if (atGoal(climber.getRightHeightPercent(), rightDirection)) climber.setRightMotor(0);
     }
 
     @Override
     public boolean isFinished() {
-        return Math.abs(climberSubsystem.getLeftHeightPercent() - position) < 0.03 && Math.abs(climberSubsystem.getRightHeightPercent() - position) < 0.03;
+        return atGoal(climber.getLeftHeightPercent(), leftDirection) && atGoal(climber.getRightHeightPercent(), rightDirection);
     }
 
     @Override
     public void end(boolean interrupted) {
-        climberSubsystem.setLeftMotor(0);
-        climberSubsystem.setRightMotor(0);
+        climber.setLeftMotor(0);
+        climber.setRightMotor(0);
+    }
+
+    //Util
+    private boolean atGoal(double heightPercent, boolean direction) {
+        return direction ? heightPercent > position : heightPercent < position;
     }
 }

@@ -33,6 +33,7 @@ public class LimelightSubsystem extends SubsystemBase {
         try {
             Number[] temp = limelight.getEntry("llpython").getNumberArray(new Number[]{-1, -1, -1, -1, -1, -1, -1, -1});
             if ((double) temp[7] != (double) -1) limelightOutputArray = temp;
+            System.out.println(temp[0]);
         } catch (ArrayIndexOutOfBoundsException ignored) {}
         try {
             SmartDashboard.putNumber("xOffset", getLimelightOutputAtIndex(1));
