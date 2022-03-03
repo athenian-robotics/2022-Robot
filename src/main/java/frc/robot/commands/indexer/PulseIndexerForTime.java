@@ -5,12 +5,12 @@ import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 
 
-public class PulseForTime extends CommandBase {
+public class PulseIndexerForTime extends CommandBase {
     private final IndexerSubsystem indexerSubsystem;
     private final IntakeSubsystem intakeSubsystem;
     private boolean up;
 
-    public PulseForTime(IndexerSubsystem indexerSubsystem, IntakeSubsystem intakeSubsystem, boolean u) {
+    public PulseIndexerForTime(IndexerSubsystem indexerSubsystem, IntakeSubsystem intakeSubsystem, boolean u) {
         this.indexerSubsystem = indexerSubsystem;
         this.intakeSubsystem = intakeSubsystem;
         this.up = u;

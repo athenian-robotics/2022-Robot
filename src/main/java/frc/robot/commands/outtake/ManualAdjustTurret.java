@@ -7,16 +7,13 @@ import frc.robot.subsystems.OuttakeSubsystem;
 import static frc.robot.Constants.MechanismConstants.turretTurnSpeed;
 
 
+//For use only in auto commands or as a default--you have to manually end!
 public class ManualAdjustTurret extends CommandBase {
     private final OuttakeSubsystem outtakeSubsystem;
 
     public ManualAdjustTurret(OuttakeSubsystem outtakeSubsystem) {
         this.outtakeSubsystem = outtakeSubsystem;
         addRequirements(this.outtakeSubsystem);
-    }
-
-    @Override
-    public void initialize() {
     }
 
     @Override
@@ -29,12 +26,4 @@ public class ManualAdjustTurret extends CommandBase {
             outtakeSubsystem.turnTurret(0);
         }
     }
-
-    @Override
-    public boolean isFinished() {
-        return false;
-    } //TODO CHANGE
-
-    @Override
-    public void end(boolean interrupted) {}
 }
