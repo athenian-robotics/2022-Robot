@@ -10,12 +10,18 @@ public class QueueBalls extends CommandBase {
     private final IndexerSubsystem indexerSubsystem;
     private final IntakeSubsystem intakeSubsystem;
     private boolean ballQueued = false;
-    private double queueStartTime = 0;
+    private double queueStartTime = Integer.MAX_VALUE;
 
     public QueueBalls(IndexerSubsystem indexerSubsystem, IntakeSubsystem intakeSubsystem) {
         this.indexerSubsystem = indexerSubsystem;
         this.intakeSubsystem = intakeSubsystem;
         addRequirements(this.indexerSubsystem, this.intakeSubsystem);
+    }
+
+    @Override
+    public void initialize() {
+        queueStartTime = Integer.MAX_VALUE;
+        ballQueued = false;
     }
 
     @Override
@@ -28,7 +34,7 @@ public class QueueBalls extends CommandBase {
                 intakeSubsystem.startIntakeToIndexerMotor();
                 if (!ballQueued) queueStartTime = System.currentTimeMillis();
                 ballQueued = true;
-            } else if (!intakeSubsystem.isExtended) {
+            } else if (!intakeSubsystem.isRunning) {
                 //If we don't see a ball we should stop the intakeToIndexer motor unless the intake is running, in which case we'd like it to spin (at least until we see a ball)
                 intakeSubsystem.stopIntakeToIndexerMotor();
             }

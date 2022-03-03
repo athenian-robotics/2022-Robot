@@ -16,11 +16,12 @@ import frc.robot.commands.drive.ArcadeDrive;
 import frc.robot.commands.drive.TankDrive;
 import frc.robot.commands.indexer.PulseIndexer;
 import frc.robot.commands.indexer.QueueBalls;
+import frc.robot.commands.intake.RunIntakeWithoutPneumatics;
 import frc.robot.commands.intake.ToggleIntake;
 import frc.robot.commands.outtake.DisableShooter;
 import frc.robot.commands.outtake.EnableShooter;
 import frc.robot.commands.outtake.ManualAdjustHoodAngle;
-import frc.robot.commands.outtake.ShootOneBall;
+import frc.robot.commands.outtake.TurretTurnToGoalOrManualControl;
 import frc.robot.lib.controllers.FightStick;
 import frc.robot.lib.shooterData.ShooterDataTable;
 import frc.robot.subsystems.*;
@@ -49,7 +50,7 @@ public class RobotContainer {
     public static IntakeSubsystem intake = new IntakeSubsystem();
     public static ClimberSubsystem climb = new ClimberSubsystem();
     public static LimelightSubsystem limelight = new LimelightSubsystem("limelight-arc");
-    public static OuttakeSubsystem outtake = new OuttakeSubsystem(limelight);
+    public static OuttakeSubsystem outtake = new OuttakeSubsystem();
     public static ShooterDataTable shooterDataTable = new ShooterDataTable();
 
     // Sets up controllers, configures controllers, and sets the default drive mode (tank or arcade)
@@ -58,7 +59,7 @@ public class RobotContainer {
         configureButtonBindings();
 
         drivetrain.setDefaultCommand(new ArcadeDrive(drivetrain, xboxController)); // Check for Arcade or Tank
-        outtake.setDefaultCommand(new ManualAdjustHoodAngle(outtake)); // Check fight stick y-axis for manual hood adjustment
+        outtake.setDefaultCommand(new TurretTurnToGoalOrManualControl(outtake, limelight)); // Check fight stick y-axis for manual hood adjustment
         indexer.setDefaultCommand(new QueueBalls(indexer, intake)); //Turns on indexer when sees a ball, sets it to
         // off
         // when there are no balls in sight
@@ -78,7 +79,7 @@ public class RobotContainer {
   // Configures xbox buttons to commands
   private void configureButtonBindings() {
       /*  SUBSYSTEM COMMANDS (Main, functional commands) */
-      xboxHamburger.whenPressed(new ShootOneBall(drivetrain, indexer, intake, limelight, outtake, shooterDataTable));
+      //xboxHamburger.whenPressed(new ShootOneBall(drivetrain, indexer, intake, limelight, outtake, shooterDataTable));
       FightStick.fightStickA.whenPressed(new ToggleIntake(intake)); // Toggle intake wheels and pneumatics
       //xboxX.whenPressed(new ShootTopBall(indexer, intake));
       FightStick.fightStickL3.whenHeld(new PulseIndexer(intake, indexer, true)); // Toggle indexer (tower portion)
@@ -90,6 +91,7 @@ public class RobotContainer {
       FightStick.fightStickRB.whenPressed(new SetBothTelescopePositions(climb, 1));
       //FightStick.fightStickRB.whenHeld(new RunIntakeWithoutPneumatics(intake, indexer));
       //FightStick.fightStickRT.whileActiveOnce(new RightTelescopeSetSpeed(climb, -telescopeSpeed));
+      xboxB.whenHeld(new RunIntakeWithoutPneumatics(intake, indexer));
 
       /* MISC COMMANDS (Random lib of commands. Written using functional commands because most are just one line ) */
       // have fun with this - jason and jacob '22   ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ

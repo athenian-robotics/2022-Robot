@@ -20,11 +20,9 @@ public class PulseIndexer extends CommandBase {
     @Override
     public void initialize() {
         if (up) {
-            System.out.println("indexer up init");
             indexerSubsystem.startIndexer();
             intakeSubsystem.startIntakeToIndexerMotor();
         } else {
-            System.out.println("indexer down init");
             indexerSubsystem.reverseIndexer();
         }
     }

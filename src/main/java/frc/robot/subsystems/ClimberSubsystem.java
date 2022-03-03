@@ -64,11 +64,11 @@ public class ClimberSubsystem extends SubsystemBase {
     }
 
     public double getLeftHeightPercent() {
-        return getLeftHeightEncoderCount()/333654;
+        return getLeftHeightEncoderCount()/333600;
     }
 
     public double getRightHeightPercent() {
-        return getRightHeightEncoderCount()/333654;
+        return getRightHeightEncoderCount()/333600;
     }
 
     public void disable() {
