@@ -18,7 +18,7 @@ public class IndexerSubsystem extends SubsystemBase {
 
     public WheelColors currentColor = WheelColors.GREEN;
     public double currentProximity = 0;
-    public int ballsIndexed = 0;
+    public boolean ballIndexed = false;
 
     public boolean indexerRunning = false;
 
@@ -71,6 +71,7 @@ public class IndexerSubsystem extends SubsystemBase {
 
         SmartDashboard.putBoolean("Indexer", indexerRunning);
         SmartDashboard.putNumber("Proximity", currentProximity);
+        SmartDashboard.putBoolean("Ball Indexed", ballIndexed);
     }
 }
 

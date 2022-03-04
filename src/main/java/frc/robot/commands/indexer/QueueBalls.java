@@ -20,8 +20,14 @@ public class QueueBalls extends CommandBase {
 
     @Override
     public void initialize() {
-        queueStartTime = Integer.MAX_VALUE;
-        ballQueued = false;
+        if (indexerSubsystem.ballPrimed()) {
+            queueStartTime = Integer.MIN_VALUE;
+            ballQueued = true;
+        } else {
+            queueStartTime = Integer.MAX_VALUE;
+            ballQueued = false;
+            indexerSubsystem.ballIndexed = false;
+        }
     }
 
     @Override
@@ -41,6 +47,7 @@ public class QueueBalls extends CommandBase {
         } else if (System.currentTimeMillis() - queueStartTime > Constants.MechanismConstants.intakeToIndexerResidualIndexTimeMillis) {
             //Ball is under the intakeToIndexer wheels, and we'll wait a bit and then stop the wheels. A second ball will wait in the intake
             intakeSubsystem.stopIntakeToIndexerMotor();
+            indexerSubsystem.ballIndexed = true;
         }
     }
 }
