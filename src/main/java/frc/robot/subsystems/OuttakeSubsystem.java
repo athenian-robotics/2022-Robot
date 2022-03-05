@@ -47,7 +47,7 @@ public class OuttakeSubsystem extends SubsystemBase {
         shooterMotorBack.setInverted(false);
         turretMotor.setInverted(false);
 
-        turretAnglePID = new PIDController(0.001, 0, 0.001);
+        turretAnglePID = new PIDController(0.005, 0.0005, 0.0005);
         turretAnglePID.setSetpoint(0); //Always trying to minimize our offset
         turretAnglePID.setTolerance(0.5);
 
@@ -138,6 +138,7 @@ public class OuttakeSubsystem extends SubsystemBase {
 
     public void stopTurret() {
         turretMotor.set(TalonFXControlMode.PercentOutput, 0);
+        turretAnglePID.reset();
     }
 
     public void setTurretActive(boolean active) {

@@ -11,6 +11,8 @@ import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.auto.AutoRoutine6;
+import frc.robot.commands.climb.LeftTelescopeSetSpeed;
+import frc.robot.commands.climb.RightTelescopeSetSpeed;
 import frc.robot.commands.climb.SetBothTelescopePositions;
 import frc.robot.commands.drive.ArcadeDrive;
 import frc.robot.commands.drive.TankDrive;
@@ -91,6 +93,7 @@ public class RobotContainer {
       FightStick.fightStickRB.whenPressed(new SetBothTelescopePositions(climb, 1));
       //FightStick.fightStickRB.whenHeld(new RunIntakeWithoutPneumatics(intake, indexer));
       //FightStick.fightStickRT.whileActiveOnce(new RightTelescopeSetSpeed(climb, -telescopeSpeed));
+      FightStick.fightStickX.whenHeld(new LeftTelescopeSetSpeed(climb, 0.2));
       xboxB.whenHeld(new RunIntakeWithoutPneumatics(intake, indexer));
 
       /* MISC COMMANDS (Random lib of commands. Written using functional commands because most are just one line ) */

@@ -26,7 +26,7 @@ public class TurretTurnToGoalOrManualControl extends CommandBase {
             outtakeSubsystem.turnTurret(Constants.MechanismConstants.turretTurnSpeed);
         } else if (limelightSubsystem.isTargetFound()) {
             try {
-                outtakeSubsystem.turnTurret(outtakeSubsystem.turretAnglePID.calculate(limelightSubsystem.getLimelightOutputAtIndex(1)));
+                outtakeSubsystem.turnTurret(-outtakeSubsystem.turretAnglePID.calculate(limelightSubsystem.getLimelightOutputAtIndex(1)));
             } catch (GoalNotFoundException ignored) {}
         } else {
             outtakeSubsystem.turnTurret(0);
