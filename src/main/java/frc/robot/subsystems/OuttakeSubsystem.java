@@ -110,7 +110,7 @@ public class OuttakeSubsystem extends SubsystemBase {
     }
 
     public void turnTurret(double power) {
-        if (getTurretPosition() < 180 && power > 0 || getTurretPosition() > -90 && power < 0) {
+        if (getTurretPosition() < maximumTurretAngle && power > 0 || getTurretPosition() > minimumTurretAngle && power < 0) {
             turretMotor.set(ControlMode.PercentOutput, power);
         } else turretMotor.set(ControlMode.PercentOutput, 0);
     }

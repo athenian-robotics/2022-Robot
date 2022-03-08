@@ -76,6 +76,8 @@ public final class Constants {
         public static final double minimumHoodAngle = 8;
         public static final double maximumHoodAngle = 41;
         public static final double defaultHoodAngle = 25;
+        public static final double maximumTurretAngle = 260;
+        public static final double minimumTurretAngle = -100;
         // MAX MECHANISM SPEEDS
         public static final double idleOuttakeSpeed = 0.35;
         public static final double intakeSpeed = 0.3; //0 to 1
