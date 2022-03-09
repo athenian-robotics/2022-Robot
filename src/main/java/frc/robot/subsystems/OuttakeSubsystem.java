@@ -47,7 +47,7 @@ public class OuttakeSubsystem extends SubsystemBase {
         shooterMotorBack.setInverted(false);
         turretMotor.setInverted(false);
 
-        turretAnglePID = new PIDController(0.005, 0.0005, 0.0005);
+        turretAnglePID = new PIDController(0.011, 0, 0.00015);
         turretAnglePID.setSetpoint(0); //Always trying to minimize our offset
         turretAnglePID.setTolerance(0.5);
 
@@ -81,7 +81,7 @@ public class OuttakeSubsystem extends SubsystemBase {
                 Constants.Shooter.modelDeviation, Constants.Shooter.encoderDeviation,
                 Constants.looptime);
 
-        setTurretPosition(180);
+        setTurretPosition(-180);
     }
 
     public void setShooterPower(double power) { // Enables both wheels
@@ -111,7 +111,7 @@ public class OuttakeSubsystem extends SubsystemBase {
 
     public void turnTurret(double power) {
         if (getTurretPosition() < maximumTurretAngle && power > 0 || getTurretPosition() > minimumTurretAngle && power < 0) {
-            turretMotor.set(ControlMode.PercentOutput, power);
+            turretMotor.set(ControlMode.PercentOutput, power > turretTurnSpeed ? turretTurnSpeed : power < -turretTurnSpeed ? -turretTurnSpeed : power);
         } else turretMotor.set(ControlMode.PercentOutput, 0);
     }
 

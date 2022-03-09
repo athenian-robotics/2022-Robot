@@ -1,6 +1,7 @@
 package frc.robot.commands.outtake;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.subsystems.OuttakeSubsystem;
 
 
@@ -16,13 +17,13 @@ public class TurretTurnToAngle extends CommandBase {
 
     @Override
     public void initialize() {
-        if (angle < -90 || angle > 180) this.cancel();
+        if (angle < Constants.MechanismConstants.minimumTurretAngle || angle > Constants.MechanismConstants.maximumTurretAngle) this.cancel();
         outtakeSubsystem.turretAnglePID.setSetpoint(angle);
     }
 
     @Override
     public void execute() {
-        outtakeSubsystem.turnTurret(outtakeSubsystem.turretAnglePID.calculate(outtakeSubsystem.getTurretPosition())); //lol
+        outtakeSubsystem.turnTurret(-outtakeSubsystem.turretAnglePID.calculate(outtakeSubsystem.getTurretPosition())); //lol
     }
 
     @Override

@@ -68,7 +68,7 @@ public final class Constants {
         public static final double telescopeSpeed = 0.2;
         // TURRET
         public static final int turretMotorPort = 10;
-        public static final double turretTurnSpeed = 0.08;
+        public static final double turretTurnSpeed = 0.15;
         // SHOOTER
         public static final int shooterMotorPortA = 7;
         public static final int shooterMotorPortB = 8;
@@ -76,8 +76,8 @@ public final class Constants {
         public static final double minimumHoodAngle = 8;
         public static final double maximumHoodAngle = 41;
         public static final double defaultHoodAngle = 25;
-        public static final double maximumTurretAngle = 260;
-        public static final double minimumTurretAngle = -100;
+        public static final double maximumTurretAngle = 90;
+        public static final double minimumTurretAngle = -210;
         // MAX MECHANISM SPEEDS
         public static final double idleOuttakeSpeed = 0.35;
         public static final double intakeSpeed = 0.3; //0 to 1

@@ -18,6 +18,7 @@ public class TurretTurnToGoalOrManualControl extends CommandBase {
     private final double hardstopDeadzoneBuffer = 10;
     private final double hardstopMidpoint = (maximumTurretAngle + minimumTurretAngle) / 2;
     private long hardstopToggleCountdown = Long.MAX_VALUE;
+    private double lastVelocity = 0;
 
     public TurretTurnToGoalOrManualControl(OuttakeSubsystem outtakeSubsystem, LimelightSubsystem limelightSubsystem) {
         this.outtakeSubsystem = outtakeSubsystem;
@@ -28,20 +29,24 @@ public class TurretTurnToGoalOrManualControl extends CommandBase {
     @Override
     public void initialize() {
         hardstopToggleCountdown = Long.MAX_VALUE;
+        lastVelocity = 0;
     }
 
     @Override
     public void execute() {
         if (FightStick.fightStickJoystick.getX() < -0.75) {
             outtakeSubsystem.turnTurret(-turretTurnSpeed);
+            lastVelocity = 0;
         } else if (FightStick.fightStickJoystick.getX() > 0.75) {
             outtakeSubsystem.turnTurret(turretTurnSpeed);
+            lastVelocity = 0;
         } else if (System.currentTimeMillis() - hardstopToggleCountdown > 1000) {
             new TurretTurnToAngle(outtakeSubsystem, outtakeSubsystem.getTurretPosition() > hardstopMidpoint ? minimumTurretAngle + 20 : maximumTurretAngle - 20).schedule();
         } else if (limelightSubsystem.isTargetFound()) {
             try {
                 double goalOffset = limelightSubsystem.getLimelightOutputAtIndex(1);
-                outtakeSubsystem.turnTurret(-outtakeSubsystem.turretAnglePID.calculate(goalOffset));
+                lastVelocity = -outtakeSubsystem.turretAnglePID.calculate(goalOffset);
+                outtakeSubsystem.turnTurret(lastVelocity);
 
                 if (outtakeSubsystem.getTurretPosition() > maximumTurretAngle - hardstopDeadzoneBuffer && goalOffset > hardstopDeadzoneBuffer
                         || outtakeSubsystem.getTurretPosition() < minimumTurretAngle + hardstopDeadzoneBuffer && goalOffset < hardstopDeadzoneBuffer) {
@@ -51,8 +56,9 @@ public class TurretTurnToGoalOrManualControl extends CommandBase {
                 }
             } catch (GoalNotFoundException ignored) {}
         } else {
-            outtakeSubsystem.turnTurret(0);
+            outtakeSubsystem.turnTurret(lastVelocity);
             hardstopToggleCountdown = Long.MAX_VALUE;
+            lastVelocity += lastVelocity > 0 ? -0.003 : 0.003;
         }
     }
 
