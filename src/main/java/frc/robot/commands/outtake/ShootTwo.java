@@ -13,8 +13,6 @@ import frc.robot.lib.GoalNotFoundException;
 import frc.robot.lib.shooterData.ShooterDataTable;
 import frc.robot.subsystems.*;
 
-import java.util.function.BooleanSupplier;
-
 
 public class ShootTwo extends SequentialCommandGroup {
     public ShootTwo(ClimberSubsystem climber, DrivetrainSubsystem drivetrain, IndexerSubsystem indexer, IntakeSubsystem intake, OuttakeSubsystem outtake, LimelightSubsystem limelight, ShooterDataTable shooterDataTable) {
