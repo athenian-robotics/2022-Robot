@@ -42,6 +42,7 @@ public class TurretTurnToGoalOrManualControl extends CommandBase {
             try {
                 double goalOffset = limelightSubsystem.getLimelightOutputAtIndex(1);
                 outtakeSubsystem.turnTurret(-outtakeSubsystem.turretAnglePID.calculate(goalOffset));
+
                 if (outtakeSubsystem.getTurretPosition() > maximumTurretAngle - hardstopDeadzoneBuffer && goalOffset > hardstopDeadzoneBuffer
                         || outtakeSubsystem.getTurretPosition() < minimumTurretAngle + hardstopDeadzoneBuffer && goalOffset < hardstopDeadzoneBuffer) {
                     hardstopToggleCountdown = System.currentTimeMillis();
