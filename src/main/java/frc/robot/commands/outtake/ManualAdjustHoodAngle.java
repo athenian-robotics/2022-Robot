@@ -4,8 +4,6 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.lib.controllers.FightStick;
 import frc.robot.subsystems.OuttakeSubsystem;
 
-import static frc.robot.Constants.MechanismConstants.idleTurretSpeed;
-
 
 public class ManualAdjustHoodAngle extends CommandBase {
     private final OuttakeSubsystem outtakeSubsystem;

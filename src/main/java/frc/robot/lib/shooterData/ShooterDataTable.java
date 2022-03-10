@@ -15,7 +15,7 @@ public class ShooterDataTable implements Serializable {
 
     //Sets up the data table and pushes in empty specs
     public ShooterDataTable(){
-        this.dataTable =new ShooterSpec[(int) Math.floor((MAXDIST - MINDIST) / DINCREMENT) + 1];
+        this.dataTable = new ShooterSpec[(int) Math.floor((MAXDIST - MINDIST) / DINCREMENT) + 1];
         for(int i = 0; i < dataTable.length; i++){
             this.dataTable[i] = new ShooterSpec();
         }
@@ -51,8 +51,7 @@ public class ShooterDataTable implements Serializable {
     //main method for testing
     public static void main(String[] args) {
         ShooterDataTable dt = new ShooterDataTable();
-        dt.addSpecs(1.0, 0, 9, 0.6);
-        dt.addSpecs(2.36, 0, 20, 38); //From hub to the diagonal starting cargo line
+        dt.addSpecs(2.7, 35, 28, 0);
 
         try {
             FileOutputStream fileOut = new FileOutputStream("src/main/deploy/dt.ser");

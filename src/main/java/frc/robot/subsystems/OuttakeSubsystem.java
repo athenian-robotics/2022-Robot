@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.lib.GoalNotFoundException;
 import frc.robot.lib.controllers.FightStick;
 import frc.robot.lib.controllers.SimpleVelocitySystem;
 import frc.robot.lib.shooterData.ShooterDataTable;
@@ -32,27 +31,25 @@ public class OuttakeSubsystem extends SubsystemBase {
 
     private final NetworkTableEntry shooterNTE;
     private final NetworkTableEntry turretAngleNTE;
-    private final PIDController turretAnglePID;
-    private final LimelightSubsystem limelight;
+    public final PIDController turretAnglePID;
 
-    private ShooterDataTable table =  new ShooterDataTable();
+    private final ShooterDataTable table =  new ShooterDataTable();
     public boolean shooterRunning = false;
     public boolean turretActive = false;
     public double shuffleboardShooterPower = 0;
 
     public double shuffleBoardTurretAngle = 0;
-    private SimpleVelocitySystem sys;
+    private final SimpleVelocitySystem sys;
 
 
-    public OuttakeSubsystem(LimelightSubsystem ll) {
-        limelight = ll;
-
+    public OuttakeSubsystem() {
         shooterMotorFront.setInverted(false);
         shooterMotorBack.setInverted(false);
         turretMotor.setInverted(false);
 
-        turretAnglePID = new PIDController(0, 0, 0);
+        turretAnglePID = new PIDController(0.011, 0, 0.00015);
         turretAnglePID.setSetpoint(0); //Always trying to minimize our offset
+        turretAnglePID.setTolerance(0.5);
 
 
         turretMotor.setNeutralMode(NeutralMode.Brake);
@@ -83,6 +80,8 @@ public class OuttakeSubsystem extends SubsystemBase {
                 Constants.Shooter.maxError, Constants.Shooter.maxControlEffort,
                 Constants.Shooter.modelDeviation, Constants.Shooter.encoderDeviation,
                 Constants.looptime);
+
+        setTurretPosition(-180);
     }
 
     public void setShooterPower(double power) { // Enables both wheels
@@ -105,16 +104,14 @@ public class OuttakeSubsystem extends SubsystemBase {
         shooterMotorFront.set(ControlMode.PercentOutput, power);
     }
 
-
-
     public void manualAdjustHoodAngle(double theta) {
         leftHoodAngleServo.setAngle(leftHoodAngleServo.getAngle() + theta);
         rightHoodAngleServo.setAngle(rightHoodAngleServo.getAngle() + theta);
     }
 
-    public void manualAdjustTurret(double power) {
-        if (getTurretPosition() < -280 || getTurretPosition() > 20) {
-            turretMotor.set(ControlMode.PercentOutput, power);
+    public void turnTurret(double power) {
+        if (getTurretPosition() < maximumTurretAngle && power > 0 || getTurretPosition() > minimumTurretAngle && power < 0) {
+            turretMotor.set(ControlMode.PercentOutput, power > turretTurnSpeed ? turretTurnSpeed : power < -turretTurnSpeed ? -turretTurnSpeed : power);
         } else turretMotor.set(ControlMode.PercentOutput, 0);
     }
 
@@ -141,6 +138,7 @@ public class OuttakeSubsystem extends SubsystemBase {
 
     public void stopTurret() {
         turretMotor.set(TalonFXControlMode.PercentOutput, 0);
+        turretAnglePID.reset();
     }
 
     public void setTurretActive(boolean active) {
@@ -153,6 +151,11 @@ public class OuttakeSubsystem extends SubsystemBase {
 
     public double getBackShooterAcceleration() {
         return shooterMotorBack.getErrorDerivative();
+    }
+
+    public void setTurretPosition(double position) {
+        //Primarily for use in auto routines where we need to know where the shooter starts
+        turretMotor.setSelectedSensorPosition(2048 * position / 36);
     }
 
     public double getTurretPosition() {
@@ -168,36 +171,19 @@ public class OuttakeSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         SmartDashboard.putBoolean("Outtake", shooterRunning);
-
         SmartDashboard.putNumber("Shooter Speed", getWheelSpeed());
         SmartDashboard.putNumber("HoodAngle", leftHoodAngleServo.get());
+        SmartDashboard.putNumber("Turret Angle", getTurretPosition());
+        SmartDashboard.putNumber("Shooter RPS", sys.getVelocity());
         shuffleboardShooterPower = shooterNTE.getDouble(1);
         shuffleBoardTurretAngle = turretAngleNTE.getDouble(8);
-        this.setRPS(this.shuffleboardShooterPower);
         setHoodAngle(shuffleBoardTurretAngle);
-        System.out.println(shuffleboardShooterPower);
-        System.out.println(shooterNTE);
 
-        if (turretActive) { //Sets turret with limelight to PID to aim at the center of the goal
-            try {
-                turretMotor.set(ControlMode.PercentOutput, limelight.getLimelightOutputAtIndex(1));
-            } catch (GoalNotFoundException e) {/* SEARCH FOR GOAL */}
-        } else { //Checks Fight Stick X Axis for Moving the Turret
-            // TURRET ANGLE FALCON
-            if (FightStick.fightStickJoystick.getX() < -0.5) {
-                this.manualAdjustTurret(-idleTurretSpeed);
-            } else if (FightStick.fightStickJoystick.getX() > 0.5) {
-                this.manualAdjustTurret(idleTurretSpeed);
-            } else {
-                this.manualAdjustTurret(0);
-            }
-
-            // HOOD ANGLE LINEAR SERVOS
-            if (FightStick.fightStickJoystick.getY() < -0.5) { // Inverted
-                this.manualAdjustHoodAngle(1);
-            } else if (FightStick.fightStickJoystick.getY() > 0.5) {
-                this.manualAdjustHoodAngle(-1);
-            }
+        // HOOD ANGLE LINEAR SERVOS
+        if (FightStick.fightStickJoystick.getY() < -0.5) { // Inverted
+            this.manualAdjustHoodAngle(1);
+        } else if (FightStick.fightStickJoystick.getY() > 0.5) {
+            this.manualAdjustHoodAngle(-1);
         }
     }
 }

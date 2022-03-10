@@ -1,12 +1,11 @@
 package frc.robot.commands.intake;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.IntakeSubsystem;
 
-public class ToggleIntake extends CommandBase {
-    // Define necessary subsystems
+public class ToggleIntake extends InstantCommand {
     private final IntakeSubsystem intakeSubsystem;
-    private final long start = 0;
 
     public ToggleIntake(IntakeSubsystem intakeSubsystem) {
         this.intakeSubsystem = intakeSubsystem;
@@ -15,23 +14,9 @@ public class ToggleIntake extends CommandBase {
 
     @Override
     public void initialize() {
-        intakeSubsystem.toggleIntake(); // On initialize, toggle intake
-        if (intakeSubsystem.isRunning) {
-            intakeSubsystem.startIntakeToIndexerMotor();
-        } else {
-            intakeSubsystem.stopIntakeToIndexerMotor();
-        }
         intakeSubsystem.togglePneumatic();
+        Timer.delay(0.3);
+        intakeSubsystem.toggleIntake(); // On initialize, toggle intake
+        if (intakeSubsystem.isRunning) intakeSubsystem.startIntakeToIndexerMotor();
     }
-
-    @Override
-    public void execute() {}
-
-    @Override
-    public boolean isFinished() {
-        return true;
-    }
-
-    @Override
-    public void end(boolean interrupted) {}
 }

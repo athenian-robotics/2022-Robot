@@ -20,16 +20,6 @@ public class LeftTelescopeSetSpeed extends CommandBase {
     }
 
     @Override
-    public void execute() {
-
-    }
-
-    @Override
-    public boolean isFinished() {
-        return false;
-    }
-
-    @Override
     public void end(boolean interrupted) {
         climberSubsystem.setLeftMotor(0);
     }
