@@ -7,16 +7,16 @@ import java.io.Serializable;
 
 public class ShooterDataTable implements Serializable {
     private ShooterSpec[] dataTable;
-    private static final double MINDIST = 1.0;
-    private static final double MAXDIST = 7.0;
-    private static final double DINCREMENT = 0.2;
-    private static final int K = 5;
+    private static final double MINDIST = 1.95;
+    private static final double MAXDIST = 6.15;
+    private static final double DINCREMENT = 0.3;
+    private static final double K = 3.333334;
     private static final int LINEAR = 1;
 
     //Sets up the data table and pushes in empty specs
-    public ShooterDataTable(){
+    public ShooterDataTable() {
         this.dataTable = new ShooterSpec[(int) Math.floor((MAXDIST - MINDIST) / DINCREMENT) + 1];
-        for(int i = 0; i < dataTable.length; i++){
+        for (int i = 0; i < dataTable.length; i++) {
             this.dataTable[i] = new ShooterSpec();
         }
     }
@@ -51,7 +51,23 @@ public class ShooterDataTable implements Serializable {
     //main method for testing
     public static void main(String[] args) {
         ShooterDataTable dt = new ShooterDataTable();
-        dt.addSpecs(2.7, 35, 28, 0);
+        //dt.addSpecs(2.7, 0, 28, 35);
+        dt.addSpecs(1.95, 0, 21, 35);
+        //dt.addSpecs(2.11, 0, 20, 35);
+        dt.addSpecs(2.25, 0, 22, 36);
+        //dt.addSpecs(2.40, 0, 23, 37);
+        dt.addSpecs(2.55, 0, 23, 37);
+        dt.addSpecs(2.85, 0, 24, 37.5);
+        dt.addSpecs(3.15, 0, 25, 39);
+        dt.addSpecs(3.45, 0, 25, 40.8);
+        dt.addSpecs(3.75, 0, 26.5, 41.5);
+        dt.addSpecs(4.05, 0, 27.5, 42.2);
+        dt.addSpecs(4.35, 0, 28.5, 43);
+        dt.addSpecs(4.65, 0, 29.5, 44);
+        dt.addSpecs(4.95, 0, 30.5, 45.2);
+        dt.addSpecs(5.25, 0, 31.3, 46.8);
+        dt.addSpecs(5.55, 0, 31.3, 46.8);
+        dt.addSpecs(5.85, 0, 33, 47);
 
         try {
             FileOutputStream fileOut = new FileOutputStream("src/main/deploy/dt.ser");
