@@ -28,6 +28,18 @@ public class LimelightSubsystem extends SubsystemBase {
         }
     }
 
+     public double getDistance() {
+        try {
+            return getLimelightOutputAtIndex(0);
+        } catch (GoalNotFoundException e) {
+            return -3;
+        }
+    }
+
+    public boolean isTargetFound() {
+        return (double) limelightOutputArray[7] == (double) 1;
+    }
+
     public void disable() {}
 
     public void periodic() {
@@ -41,17 +53,5 @@ public class LimelightSubsystem extends SubsystemBase {
             SmartDashboard.putNumber("xOffset", getLimelightOutputAtIndex(1));
             SmartDashboard.putNumber("zDistance", getLimelightOutputAtIndex(0));
         } catch (GoalNotFoundException ignored) {}
-    }
-
-    public double getDistance() {
-        try {
-            return getLimelightOutputAtIndex(0);
-        } catch (GoalNotFoundException e) {
-            return -3;
-        }
-    }
-
-    public boolean isTargetFound() {
-        return (double) limelightOutputArray[7] == (double) 1;
     }
 }

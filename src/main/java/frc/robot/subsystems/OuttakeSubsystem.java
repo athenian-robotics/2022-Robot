@@ -47,12 +47,12 @@ public class OuttakeSubsystem extends SubsystemBase {
         shooterMotorBack.setInverted(false);
         turretMotor.setInverted(false);
 
-        turretAnglePID = new PIDController(0.011, 0, 0.00015);
+        turretAnglePID = new PIDController(0.011, 0.01, 0.00015);
         turretAnglePID.setSetpoint(0); //Always trying to minimize our offset
         turretAnglePID.setTolerance(0.5);
 
 
-        turretMotor.setNeutralMode(NeutralMode.Brake);
+        turretMotor.setNeutralMode(NeutralMode.Coast);
         shooterMotorFront.setNeutralMode(NeutralMode.Coast);
         shooterMotorBack.setNeutralMode(NeutralMode.Coast);
         shooterMotorBack.follow(shooterMotorFront);

@@ -83,8 +83,6 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-
-    System.out.println(RobotContainer.shooterDataTable.getSpecs(1.1));
   }
 
   /** This function is called periodically during operator control. */
