@@ -22,52 +22,51 @@ public class ShooterDataTable implements Serializable {
     }
 
     //adds new specs at specified index
-    public void addSpecs(int index, double speed, double hoodAngle, double power){
-        ShooterSpec newSpec = new ShooterSpec(speed, hoodAngle, power);
+    public void addSpecs(int index, double hoodAngle, double power){
+        ShooterSpec newSpec = new ShooterSpec( hoodAngle, power);
         dataTable[index] = newSpec;
     }
 
     //adds specs at a desired distance, rounded down to the nearest standard distance
-    public void addSpecs(double distance, double speed, double hoodAngle, double power){
-        ShooterSpec newSpec = new ShooterSpec(speed, hoodAngle, power);
+    public void addSpecs(double distance, double hoodAngle, double power){
+        ShooterSpec newSpec = new ShooterSpec(hoodAngle, power);
         int index = (int) ((distance - MINDIST) * K + 0.005);
         dataTable[index] = newSpec;
     }
 
     //gets the desired specs for shooter at a distance, linearly interpolating between the
     //two closest data points.
-
     public ShooterSpec getSpecs(double distance){
-        if(distance < MINDIST || distance >= MAXDIST)	return new ShooterSpec();
+        if(distance <= MINDIST || distance >= MAXDIST) return new ShooterSpec();
         int index = (int) ((distance - MINDIST) * K + 0.005);
         System.out.println("INDEX = " + index);
         ShooterSpec s1 = dataTable[index];
         ShooterSpec s2 = dataTable[index+1];
         double weight2 = (distance - MINDIST - (DINCREMENT * index)) / DINCREMENT;
         double weight1 = 1 - weight2;
-        return new ShooterSpec(s1.getSpeed() * weight1 + s2.getSpeed() * weight2, s1.getAngle() * weight1 + s2.getAngle() * weight2, s1.getPower() * weight1 + s2.getPower() * weight2);
+        return new ShooterSpec(s1.getAngle() * weight1 + s2.getAngle() * weight2, s1.getPower() * weight1 + s2.getPower() * weight2);
     }
 
     //main method for testing
     public static void main(String[] args) {
         ShooterDataTable dt = new ShooterDataTable();
         //dt.addSpecs(2.7, 0, 28, 35);
-        dt.addSpecs(1.95, 0, 21, 35);
+        dt.addSpecs(1.95, 21, 35);
         //dt.addSpecs(2.11, 0, 20, 35);
-        dt.addSpecs(2.25, 0, 22, 36);
+        dt.addSpecs(2.25, 22, 36);
         //dt.addSpecs(2.40, 0, 23, 37);
-        dt.addSpecs(2.55, 0, 23, 37);
-        dt.addSpecs(2.85, 0, 24, 37.5);
-        dt.addSpecs(3.15, 0, 25, 39);
-        dt.addSpecs(3.45, 0, 25, 40.8);
-        dt.addSpecs(3.75, 0, 26.5, 41.5);
-        dt.addSpecs(4.05, 0, 27.5, 42.2);
-        dt.addSpecs(4.35, 0, 28.5, 43);
-        dt.addSpecs(4.65, 0, 29.5, 44);
-        dt.addSpecs(4.95, 0, 30.5, 45.2);
-        dt.addSpecs(5.25, 0, 31.3, 46.8);
-        dt.addSpecs(5.55, 0, 31.3, 46.8);
-        dt.addSpecs(5.85, 0, 33, 47);
+        dt.addSpecs(2.55, 23, 37);
+        dt.addSpecs(2.85, 24, 37.5);
+        dt.addSpecs(3.15, 25, 39);
+        dt.addSpecs(3.45, 25, 40.8);
+        dt.addSpecs(3.75, 26.5, 41.5);
+        dt.addSpecs(4.05, 27.5, 42.2);
+        dt.addSpecs(4.35, 28.5, 43);
+        dt.addSpecs(4.65, 29.5, 44);
+        dt.addSpecs(4.95, 30.5, 45.2);
+        dt.addSpecs(5.25, 31.3, 46.8);
+        dt.addSpecs(5.55, 31.3, 46.8);
+        dt.addSpecs(5.85, 33, 47);
 
         try {
             FileOutputStream fileOut = new FileOutputStream("src/main/deploy/dt.ser");

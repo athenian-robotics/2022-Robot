@@ -53,7 +53,7 @@ public class RobotContainer {
     public static ClimberSubsystem climb = new ClimberSubsystem();
     public static LimelightSubsystem limelight = new LimelightSubsystem("limelight-arc");
     public static OuttakeSubsystem outtake = new OuttakeSubsystem();
-    public static ShooterDataTable shooterDataTable = new ShooterDataTable();
+    public static ShooterDataTable shooterDataTable;
 
     // Sets up controllers, configures controllers, and sets the default drive mode (tank or arcade)
     public RobotContainer() {
@@ -71,7 +71,7 @@ public class RobotContainer {
             Object obj = fin.readObject();
             if (obj instanceof ShooterDataTable) {
                 shooterDataTable = (ShooterDataTable) obj;
-                System.out.println("Checking 1.1m data in shooterDataTable: " + shooterDataTable.getSpecs(1.1));
+                System.out.println("Checking 2.5m data in shooterDataTable: " + shooterDataTable.getSpecs(2.5));
             }
         }catch(Exception e){
             System.out.println("file not found, or class not found");

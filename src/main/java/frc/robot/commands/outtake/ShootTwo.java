@@ -25,10 +25,9 @@ public class ShootTwo extends SequentialCommandGroup {
                     new DisableIntake(intake),
                     //Align to shoot
                     new ParallelDeadlineGroup(new GuaranteeLimelightData(limelight), new ManualAdjustTurret(outtake)),
-                    new ParallelCommandGroup(
-                            new TurretTurnToGoal(limelight, outtake),
-                            new SetHoodAngle(outtake, shooterDataTable.getSpecs(limelight.getDistance()).getAngle()),
-                            new SetShooterPower(outtake, shooterDataTable.getSpecs(limelight.getDistance()).getSpeed())),
+                    new SetHoodAngle(outtake, shooterDataTable.getSpecs(limelight.getDistance()).getAngle()),
+                    new SetShooterPower(outtake, shooterDataTable.getSpecs(limelight.getDistance()).getPower()),
+                    new TurretTurnToGoal(limelight, outtake),
                     //Shoot 1st
                     new ShootIndexedBallForever(indexer, intake, outtake).withTimeout(2.5),
                     //Index next ball (may or may not be there) TODO remove withTimeout() on RunIntakeWithoutPneumatics()

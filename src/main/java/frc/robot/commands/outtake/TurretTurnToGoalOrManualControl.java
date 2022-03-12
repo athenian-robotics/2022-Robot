@@ -15,10 +15,8 @@ import static frc.robot.Constants.MechanismConstants.turretTurnSpeed;
 public class TurretTurnToGoalOrManualControl extends CommandBase {
     private final OuttakeSubsystem outtakeSubsystem;
     private final LimelightSubsystem limelightSubsystem;
-    private final double hardstopDeadzoneBuffer = 10;
-    private final double hardstopMidpoint = (maximumTurretAngle + minimumTurretAngle) / 2;
-    private long hardstopToggleCountdown = Long.MAX_VALUE;
-    private double lastVelocity = 0;
+    private static final double hardstopMidpoint = (maximumTurretAngle + minimumTurretAngle) / 2;
+    private double inactivityTime = Long.MAX_VALUE;
 
     public TurretTurnToGoalOrManualControl(OuttakeSubsystem outtakeSubsystem, LimelightSubsystem limelightSubsystem) {
         this.outtakeSubsystem = outtakeSubsystem;
@@ -28,37 +26,28 @@ public class TurretTurnToGoalOrManualControl extends CommandBase {
 
     @Override
     public void initialize() {
-        hardstopToggleCountdown = Long.MAX_VALUE;
-        lastVelocity = 0;
+
     }
 
     @Override
     public void execute() {
         if (FightStick.fightStickJoystick.getX() < -0.75) {
             outtakeSubsystem.turnTurret(-turretTurnSpeed);
-            lastVelocity = 0;
         } else if (FightStick.fightStickJoystick.getX() > 0.75) {
             outtakeSubsystem.turnTurret(turretTurnSpeed);
-            lastVelocity = 0;
-        } else if (System.currentTimeMillis() - hardstopToggleCountdown > 1000) {
-            new TurretTurnToAngle(outtakeSubsystem, outtakeSubsystem.getTurretPosition() > hardstopMidpoint ? minimumTurretAngle + 20 : maximumTurretAngle - 20).schedule();
+        } else if (System.currentTimeMillis() - inactivityTime > 200) {
+            outtakeSubsystem.turnTurret(0);
         } else if (limelightSubsystem.isTargetFound()) {
             try {
                 double goalOffset = limelightSubsystem.getLimelightOutputAtIndex(1);
-                lastVelocity = -outtakeSubsystem.turretAnglePID.calculate(goalOffset);
-                outtakeSubsystem.turnTurret(lastVelocity);
-
-                if (outtakeSubsystem.getTurretPosition() > maximumTurretAngle - hardstopDeadzoneBuffer && goalOffset > hardstopDeadzoneBuffer
-                        || outtakeSubsystem.getTurretPosition() < minimumTurretAngle + hardstopDeadzoneBuffer && goalOffset < hardstopDeadzoneBuffer) {
-                    hardstopToggleCountdown = System.currentTimeMillis();
-                } else {
-                    hardstopToggleCountdown = Long.MAX_VALUE;
-                }
+                outtakeSubsystem.turnTurret(-outtakeSubsystem.turretAnglePID.calculate(goalOffset));
+                if (outtakeSubsystem.getTurretPosition() > maximumTurretAngle && goalOffset > 0) new TurretTurnToAngle(outtakeSubsystem, minimumTurretAngle + 20);
+                if (outtakeSubsystem.getTurretPosition() < minimumTurretAngle && goalOffset < 0) new TurretTurnToAngle(outtakeSubsystem, maximumTurretAngle - 20);
             } catch (GoalNotFoundException ignored) {}
+        } else if (inactivityTime == Long.MAX_VALUE) {
+            inactivityTime = System.currentTimeMillis();
         } else {
-            outtakeSubsystem.turnTurret(lastVelocity);
-            hardstopToggleCountdown = Long.MAX_VALUE;
-            lastVelocity += lastVelocity > 0 ? -0.003 : 0.003;
+
         }
     }
 
