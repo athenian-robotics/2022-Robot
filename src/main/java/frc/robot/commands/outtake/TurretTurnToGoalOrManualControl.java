@@ -1,8 +1,7 @@
 package frc.robot.commands.outtake;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
-import frc.robot.lib.GoalNotFoundException;
+import frc.robot.lib.limelight.GoalNotFoundException;
 import frc.robot.lib.controllers.FightStick;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.OuttakeSubsystem;

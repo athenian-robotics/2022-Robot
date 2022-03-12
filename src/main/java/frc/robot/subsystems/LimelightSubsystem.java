@@ -4,10 +4,7 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.lib.GoalNotFoundException;
-
-import java.util.Arrays;
-import java.util.Objects;
+import frc.robot.lib.limelight.GoalNotFoundException;
 
 
 public class LimelightSubsystem extends SubsystemBase {
@@ -28,16 +25,17 @@ public class LimelightSubsystem extends SubsystemBase {
         }
     }
 
-     public double getDistance() {
-        try {
-            return getLimelightOutputAtIndex(0);
-        } catch (GoalNotFoundException e) {
-            return -3;
-        }
+     public double getDistance() throws GoalNotFoundException {
+        if (isTargetFound()) return getLimelightOutputAtIndex(0);
+        else throw new GoalNotFoundException();
     }
 
     public boolean isTargetFound() {
-        return (double) limelightOutputArray[7] == (double) 1;
+        try {
+            return (double) getLimelightOutputAtIndex(7) == (double) 1;
+        } catch (GoalNotFoundException e) {
+            return false;
+        }
     }
 
     public void disable() {}

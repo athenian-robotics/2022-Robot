@@ -2,7 +2,7 @@ package frc.robot.commands.auto;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.lib.GoalNotFoundException;
+import frc.robot.lib.limelight.GoalNotFoundException;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
 

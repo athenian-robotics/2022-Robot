@@ -22,14 +22,14 @@ public class ShootIndexedBallForever extends CommandBase {
     @Override
     public void initialize() {
         if (outtakeSubsystem.getWheelSpeed() < 1) this.cancel();
-        intakeSubsystem.startIntakeToIndexerMotor();
+        //intakeSubsystem.startIntakeToIndexerMotor();
         indexerSubsystem.startIndexer();
         indexerSubsystem.ballIndexed = false;
     }
 
     @Override
     public void end(boolean interrupted) {
-        intakeSubsystem.stopIntakeToIndexerMotor();
+        //intakeSubsystem.stopIntakeToIndexerMotor();
         indexerSubsystem.stopIndexer();
     }
 }

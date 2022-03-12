@@ -2,6 +2,7 @@ package frc.robot.commands.outtake;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
+import frc.robot.lib.limelight.GoalNotFoundException;
 import frc.robot.lib.shooterData.InterpolatedTreeMap;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.OuttakeSubsystem;
@@ -26,12 +27,14 @@ public class ShootWithVelocity extends CommandBase {
 
     @Override
     public void execute() {
-        if (limelight.isTargetFound()) {
-            double distance = limelight.getDistance();
-            double velocity =
-                    Math.sqrt((9.81*distance*distance)/(2*(Constants.Shooter.hoodToHub + 1.73205080757*distance))); //
-            double rps = veloData.get(velocity);
-            //outtake.setRPS(rps);
-        }
+        try {
+            if (limelight.isTargetFound()) {
+                double distance = limelight.getDistance();
+                double velocity =
+                        Math.sqrt((9.81 * distance * distance) / (2 * (Constants.Shooter.hoodToHub + 1.73205080757 * distance))); //
+                double rps = veloData.get(velocity);
+                //outtake.setRPS(rps);
+            }
+        } catch (GoalNotFoundException ignored) {}
     }
 }

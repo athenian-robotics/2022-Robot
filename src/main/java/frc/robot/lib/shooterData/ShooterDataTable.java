@@ -7,11 +7,13 @@ import java.io.Serializable;
 
 public class ShooterDataTable implements Serializable {
     private ShooterSpec[] dataTable;
-    private static final double MINDIST = 1.95;
-    private static final double MAXDIST = 6.15;
+    public static final double MINDIST = 1.95;
+    public static final double MAXDIST = 6.15;
     private static final double DINCREMENT = 0.3;
     private static final double K = 3.333334;
     private static final int LINEAR = 1;
+
+    static final long serialVersionUID = 8520L;
 
     //Sets up the data table and pushes in empty specs
     public ShooterDataTable() {

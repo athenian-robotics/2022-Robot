@@ -1,8 +1,7 @@
 package frc.robot.commands.outtake;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.lib.DetourableCommand;
-import frc.robot.lib.GoalNotFoundException;
+import frc.robot.lib.limelight.GoalNotFoundException;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.OuttakeSubsystem;
 
@@ -31,6 +30,7 @@ public class TurretTurnToGoal extends DetourableCommand {
             detour(new TurretTurnToAngle(outtakeSubsystem, outtakeSubsystem.getTurretPosition() > hardstopMidpoint ? minimumTurretAngle + 20 : maximumTurretAngle - 20));
         } else if (limelightSubsystem.isTargetFound()) {
             try {
+                distance = distance;
                 double goalOffset = limelightSubsystem.getLimelightOutputAtIndex(1);
                 outtakeSubsystem.turnTurret(-outtakeSubsystem.turretAnglePID.calculate(goalOffset));
 
@@ -48,6 +48,7 @@ public class TurretTurnToGoal extends DetourableCommand {
 
     public boolean _isFinished() {
         try {
+            System.out.println(limelightSubsystem.getLimelightOutputAtIndex(1));
             return Math.abs(limelightSubsystem.getLimelightOutputAtIndex(1)) < 5/distance;
         } catch (GoalNotFoundException e) {
             return false;

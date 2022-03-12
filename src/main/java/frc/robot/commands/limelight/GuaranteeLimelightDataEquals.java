@@ -1,7 +1,7 @@
 package frc.robot.commands.limelight;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.lib.GoalNotFoundException;
+import frc.robot.lib.limelight.GoalNotFoundException;
 import frc.robot.subsystems.LimelightSubsystem;
 
 
