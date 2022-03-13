@@ -23,8 +23,6 @@ public class ManualAdjustHoodAngle extends CommandBase {
             outtakeSubsystem.manualAdjustHoodAngle(1);
         } else if (FightStick.fightStickJoystick.getY() > 0) {
             outtakeSubsystem.manualAdjustHoodAngle(-1);
-        } else {
-
         }
     }
 

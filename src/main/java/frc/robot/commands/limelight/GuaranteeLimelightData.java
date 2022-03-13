@@ -1,7 +1,6 @@
 package frc.robot.commands.limelight;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.lib.limelight.GoalNotFoundException;
 import frc.robot.subsystems.LimelightSubsystem;
 
 
@@ -10,15 +9,26 @@ public class GuaranteeLimelightData extends CommandBase {
 
     public GuaranteeLimelightData(LimelightSubsystem limelightSubsystem) {
         this.limelightSubsystem = limelightSubsystem;
-        addRequirements(this.limelightSubsystem);
+    }
+
+    @Override
+    public void initialize() {
+
+    }
+
+    @Override
+    public void execute() {
+
     }
 
     @Override
     public boolean isFinished() {
-        try {
-            return (double) limelightSubsystem.getLimelightOutputAtIndex(7) == (double) 1;
-        } catch (GoalNotFoundException e) {
-            return false;
-        }
+        // TODO: Make this return true when this Command no longer needs to run execute()
+        return false;
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+
     }
 }

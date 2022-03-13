@@ -20,7 +20,6 @@ import frc.robot.commands.indexer.QueueBalls;
 import frc.robot.commands.intake.RunIntakeWithoutPneumatics;
 import frc.robot.commands.intake.ToggleIntake;
 import frc.robot.commands.outtake.*;
-import frc.robot.lib.limelight.GoalNotFoundException;
 import frc.robot.lib.controllers.FightStick;
 import frc.robot.lib.shooterData.ShooterDataTable;
 import frc.robot.subsystems.*;
@@ -44,11 +43,11 @@ public class RobotContainer {
     public static XboxController.Axis xboxRS;
     public static XboxController xboxController = new XboxController(Constants.OIConstants.xboxControllerPort);
     // SUBSYSTEMS
+    public static LimelightSubsystem limelight = new LimelightSubsystem("limelight-arc");
     public static DrivetrainSubsystem drivetrain = new DrivetrainSubsystem();
     public static IndexerSubsystem indexer = new IndexerSubsystem();
     public static IntakeSubsystem intake = new IntakeSubsystem();
     public static ClimberSubsystem climb = new ClimberSubsystem();
-    public static LimelightSubsystem limelight = new LimelightSubsystem("limelight-arc");
     public static OuttakeSubsystem outtake = new OuttakeSubsystem();
     public static ShooterDataTable shooterDataTable;
 
@@ -81,7 +80,6 @@ public class RobotContainer {
       //xboxHamburger.whenPressed(new ShootOneBall(drivetrain, indexer, intake, limelight, outtake, shooterDataTable));
       FightStick.fightStickA.whenPressed(new ToggleIntake(intake)); // Toggle intake wheels and pneumatics
       xboxX.whenPressed(new ShootTwo(climb, drivetrain, indexer, intake, outtake, limelight, shooterDataTable));
-      try {xboxY.whenPressed(new SetHoodAngle(outtake, shooterDataTable.getSpecs(limelight.getDistance()).getAngle()));} catch (GoalNotFoundException ignored) {}
       FightStick.fightStickL3.whenHeld(new PulseIndexer(intake, indexer, true)); // Toggle indexer (tower portion)
       FightStick.fightStickR3.whenHeld(new PulseIndexer(intake,indexer,false)); //Toggle Indexer down (tower portion)
       FightStick.fightStickB.whenPressed(new EnableShooter(outtake)); // Enable shooter wheels
