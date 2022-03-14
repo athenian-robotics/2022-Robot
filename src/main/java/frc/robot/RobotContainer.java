@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.auto.AutoRoutine6;
 import frc.robot.commands.climb.LeftTelescopeSetSpeed;
-import frc.robot.commands.climb.RightTelescopeSetSpeed;
 import frc.robot.commands.climb.SetBothTelescopePositions;
 import frc.robot.commands.drive.ArcadeDrive;
 import frc.robot.commands.drive.TankDrive;
@@ -21,12 +20,13 @@ import frc.robot.commands.indexer.QueueBalls;
 import frc.robot.commands.intake.RunIntakeWithoutPneumatics;
 import frc.robot.commands.intake.ToggleIntake;
 import frc.robot.commands.outtake.DisableShooter;
-import frc.robot.commands.outtake.EnableShooter;
-import frc.robot.commands.outtake.ManualAdjustHoodAngle;
+import frc.robot.commands.outtake.SetHoodAngle;
+import frc.robot.commands.outtake.SetShooterPower;
 import frc.robot.commands.outtake.TurretTurnToGoalOrManualControl;
 import frc.robot.lib.controllers.FightStick;
 import frc.robot.lib.shooterData.ShooterDataTable;
 import frc.robot.subsystems.*;
+
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 
@@ -57,9 +57,6 @@ public class RobotContainer {
 
     // Sets up controllers, configures controllers, and sets the default drive mode (tank or arcade)
     public RobotContainer() {
-        xboxButtonSetup();
-        configureButtonBindings();
-
         drivetrain.setDefaultCommand(new ArcadeDrive(drivetrain, xboxController)); // Check for Arcade or Tank
         outtake.setDefaultCommand(new TurretTurnToGoalOrManualControl(outtake, limelight)); // Check fight stick y-axis for manual hood adjustment
         indexer.setDefaultCommand(new QueueBalls(indexer, intake)); //Turns on indexer when sees a ball, sets it to
@@ -73,20 +70,26 @@ public class RobotContainer {
                 shooterDataTable = (ShooterDataTable) obj;
                 System.out.println("Checking 2.5m data in shooterDataTable: " + shooterDataTable.getSpecs(2.5));
             }
-        }catch(Exception e){
-            System.out.println("file not found, or class not found");
+        } catch (Exception e) {
+            System.out.println("file not found, or class not found" + e);
         }
+
+        xboxButtonSetup();
+        configureButtonBindings();
     }
 
-  // Configures xbox buttons to commands
+
+    // Configures xbox buttons to commands
   private void configureButtonBindings() {
       /*  SUBSYSTEM COMMANDS (Main, functional commands) */
       //xboxHamburger.whenPressed(new ShootOneBall(drivetrain, indexer, intake, limelight, outtake, shooterDataTable));
       FightStick.fightStickA.whenPressed(new ToggleIntake(intake)); // Toggle intake wheels and pneumatics
-      //xboxX.whenPressed(new ShootTopBall(indexer, intake));
+      //xboxX.whenPressed(new ShootTwo(climb, drivetrain, indexer, intake, outtake, limelight, shooterDataTable));
+      xboxX.whenPressed(new SetHoodAngle(outtake, shooterDataTable.getSpecs(limelight.getDistance()).getAngle()));
       FightStick.fightStickL3.whenHeld(new PulseIndexer(intake, indexer, true)); // Toggle indexer (tower portion)
-      FightStick.fightStickR3.whenHeld(new PulseIndexer(intake,indexer,false)); //Toggle Indexer down (tower portion)
-      FightStick.fightStickB.whenPressed(new EnableShooter(outtake)); // Enable shooter wheels
+      FightStick.fightStickR3.whenHeld(new PulseIndexer(intake, indexer, false)); //Toggle Indexer down (tower portion)
+      //FightStick.fightStickB.whenPressed(new EnableShooter(outtake)); // Enable shooter wheels
+      FightStick.fightStickB.whenPressed(new SetShooterPower(outtake, shooterDataTable.getSpecs(limelight.getDistance()).getPower()));
       FightStick.fightStickY.whenPressed(new DisableShooter(outtake)); // Disable shooter wheels
       FightStick.fightStickLB.whenPressed(new SetBothTelescopePositions(climb, 0));
       //FightStick.fightStickLT.whileActiveOnce(new LeftTelescopeSetSpeed(climb, -telescopeSpeed));
