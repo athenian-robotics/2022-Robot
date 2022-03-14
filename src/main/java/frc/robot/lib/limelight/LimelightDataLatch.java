@@ -8,13 +8,14 @@ package frc.robot.lib.limelight;
 public class LimelightDataLatch {
     public final LimelightDataType limelightDataType;
     private final long timeoutMillis;
-
     private long timeoutTimerStartMillis;
     private boolean unlocked;
+    private boolean expired;
     private double value;
 
     public LimelightDataLatch(LimelightDataType limelightDataType) {
         this.unlocked = false;
+        this.expired = false;
         this.limelightDataType = limelightDataType;
         this.timeoutMillis = 250; //default
         this.timeoutTimerStartMillis = System.currentTimeMillis();
@@ -22,22 +23,27 @@ public class LimelightDataLatch {
 
     public LimelightDataLatch(LimelightDataType limelightDataType, int timeoutSeconds) {
         this.unlocked = false;
+        this.expired = false;
         this.limelightDataType = limelightDataType;
         this.timeoutMillis = 1000L * timeoutSeconds;
         this.timeoutTimerStartMillis = System.currentTimeMillis();
     }
 
     public void unlock(double value) {
-        this.unlocked = true;
         this.value = value;
+        unlocked = true;
     }
 
     public boolean unlocked() throws GoalNotFoundException {
         if (System.currentTimeMillis() - timeoutTimerStartMillis > timeoutMillis) {
-            throw new GoalNotFoundException();
+            expired = true; throw new GoalNotFoundException();
         } else {
             return unlocked;
         }
+    }
+
+    public boolean expired() {
+        return expired;
     }
 
     public double open() {
@@ -48,6 +54,7 @@ public class LimelightDataLatch {
     public LimelightDataLatch reset() {
         timeoutTimerStartMillis = System.currentTimeMillis();
         unlocked = false;
+        expired = false;
         value = 0.0d;
         return this;
     }

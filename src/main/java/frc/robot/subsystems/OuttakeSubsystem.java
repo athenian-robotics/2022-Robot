@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.lib.controllers.FightStick;
 import frc.robot.lib.controllers.SimpleVelocitySystem;
-import frc.robot.lib.shooterData.ShooterDataTable;
 
 import java.util.Map;
 
@@ -33,14 +32,12 @@ public class OuttakeSubsystem extends SubsystemBase {
     private final NetworkTableEntry turretAngleNTE;
     public final PIDController turretAnglePID;
 
-    private final ShooterDataTable table =  new ShooterDataTable();
     public boolean shooterRunning = false;
     public boolean turretActive = false;
     public double shuffleboardShooterPower = 0;
 
     public double shuffleBoardTurretAngle = 0;
     private final SimpleVelocitySystem sys;
-
 
     public OuttakeSubsystem() {
         shooterMotorFront.setInverted(false);
@@ -60,6 +57,7 @@ public class OuttakeSubsystem extends SubsystemBase {
         leftHoodAngleServo.setBounds(2.0, 1.8, 1.5, 1.2, 1.0); //Manufacturer specified for Actuonix linear servos
         rightHoodAngleServo.setBounds(2.0, 1.8, 1.5, 1.2, 1.0); //Manufacturer specified for Actuonix linear servos
 
+        //TODO remove! for testing only
         shooterNTE = Shuffleboard.getTab("852 - Dashboard")
                 .add("Shooter Power", shuffleboardShooterPower)
                 .withWidget(BuiltInWidgets.kTextView)
@@ -81,7 +79,7 @@ public class OuttakeSubsystem extends SubsystemBase {
                 Constants.Shooter.modelDeviation, Constants.Shooter.encoderDeviation,
                 Constants.looptime);
 
-        setTurretPosition(-180);
+        setTurretPosition(-180); //assume default position is turret starting counterclockwise backwards
     }
 
     public void setShooterPower(double power) { // Enables both wheels
@@ -95,8 +93,6 @@ public class OuttakeSubsystem extends SubsystemBase {
 
     public void setRPS(double rps) {
         sys.set(rps);
-        sys.update(getWheelSpeed());
-        setShooterPower(sys.getOutput());
     }
 
     public void setShooterFront(double power) {
@@ -104,13 +100,8 @@ public class OuttakeSubsystem extends SubsystemBase {
         shooterMotorFront.set(ControlMode.PercentOutput, power);
     }
 
-    public void manualAdjustHoodAngle(double theta) {
-        leftHoodAngleServo.setAngle(leftHoodAngleServo.getAngle() + theta);
-        rightHoodAngleServo.setAngle(rightHoodAngleServo.getAngle() + theta);
-    }
-
     public void turnTurret(double power) {
-        if (getTurretPosition() < maximumTurretAngle && power > 0 || getTurretPosition() > minimumTurretAngle && power < 0) {
+        if (getTurretAngle() < maximumTurretAngle && power > 0 || getTurretAngle() > minimumTurretAngle && power < 0) {
             turretMotor.set(ControlMode.PercentOutput, power > turretTurnSpeed ? turretTurnSpeed : power < -turretTurnSpeed ? -turretTurnSpeed : power);
         } else turretMotor.set(ControlMode.PercentOutput, 0);
     }
@@ -127,7 +118,7 @@ public class OuttakeSubsystem extends SubsystemBase {
     }
 
     public void stopShooter() { // Disables shooter
-        setShooterFront(0);
+        setRPS(0);
         shooterRunning = false;
     }
 
@@ -139,10 +130,6 @@ public class OuttakeSubsystem extends SubsystemBase {
     public void stopTurret() {
         turretMotor.set(TalonFXControlMode.PercentOutput, 0);
         turretAnglePID.reset();
-    }
-
-    public void setTurretActive(boolean active) {
-        turretActive = active;
     }
 
     public double getFrontShooterAcceleration() {
@@ -158,7 +145,7 @@ public class OuttakeSubsystem extends SubsystemBase {
         turretMotor.setSelectedSensorPosition(2048 * position / 36);
     }
 
-    public double getTurretPosition() {
+    public double getTurretAngle() {
         return turretMotor.getSelectedSensorPosition() * 36 / 2048;
     }
 
@@ -173,19 +160,15 @@ public class OuttakeSubsystem extends SubsystemBase {
         SmartDashboard.putBoolean("Outtake", shooterRunning);
         SmartDashboard.putNumber("Shooter Speed", getWheelSpeed());
         SmartDashboard.putNumber("HoodAngle", leftHoodAngleServo.get());
-        SmartDashboard.putNumber("Turret Angle", getTurretPosition());
+        SmartDashboard.putNumber("Turret Angle", getTurretAngle());
         SmartDashboard.putNumber("Shooter RPS", sys.getVelocity());
+
         shuffleboardShooterPower = shooterNTE.getDouble(1);
         shuffleBoardTurretAngle = turretAngleNTE.getDouble(8);
-        sys.update(getWheelSpeed());
-        //setHoodAngle(shuffleBoardTurretAngle);
 
-        // HOOD ANGLE LINEAR SERVOS
-        if (FightStick.fightStickJoystick.getY() < -0.5) { // Inverted
-            this.manualAdjustHoodAngle(1);
-        } else if (FightStick.fightStickJoystick.getY() > 0.5) {
-            this.manualAdjustHoodAngle(-1);
+        if (shooterRunning) {
+            sys.update(getWheelSpeed());
+            setShooterPower(sys.getOutput());
         }
     }
 }
-

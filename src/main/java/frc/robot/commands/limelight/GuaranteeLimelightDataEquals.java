@@ -17,7 +17,7 @@ public class GuaranteeLimelightDataEquals extends CommandBase {
         this.limelightSubsystem = limelightSubsystem;
         this.valueToGuarantee = valueToGuarantee;
         this.tolerance = tolerance;
-        this.dataLatch = new LimelightDataLatch(dataType);
+        this.dataLatch = new LimelightDataLatch(dataType, 5);
     }
 
     @Override
@@ -32,7 +32,7 @@ public class GuaranteeLimelightDataEquals extends CommandBase {
                 if (Math.abs(dataLatch.open() - valueToGuarantee) < tolerance) {
                     return true;
                 } else {
-                    throw new GoalNotFoundException(); //shortcut to reset and reschedule latch vvv
+                    throw new GoalNotFoundException(); //shortcut to reset and reschedule latch  vvv  (since we didn't retrieve the value for which we were looking)
                 }
             } else {
                 return false;

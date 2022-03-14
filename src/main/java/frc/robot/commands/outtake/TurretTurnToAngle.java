@@ -23,7 +23,7 @@ public class TurretTurnToAngle extends CommandBase {
 
     @Override
     public void execute() {
-        outtakeSubsystem.turnTurret(-outtakeSubsystem.turretAnglePID.calculate(outtakeSubsystem.getTurretPosition())); //lol
+        outtakeSubsystem.turnTurret(-outtakeSubsystem.turretAnglePID.calculate(outtakeSubsystem.getTurretAngle())); //lol
     }
 
     @Override

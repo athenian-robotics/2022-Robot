@@ -4,6 +4,8 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.lib.limelight.LimelightDataLatch;
+
+import java.util.Iterator;
 import java.util.LinkedList;
 
 
@@ -38,8 +40,9 @@ public class LimelightSubsystem extends SubsystemBase {
                     while (latchPool.size() != 0) {
                         LimelightDataLatch currentLatch = latchPool.pollFirst();
                         currentLatch.unlock(limelightOutputArray[currentLatch.limelightDataType.llpythonIndex]);
-                    }
+                    } return;
                 }
+            latchPool.removeIf(LimelightDataLatch::expired);
         }
 
         private void addLatch(LimelightDataLatch latch) {
