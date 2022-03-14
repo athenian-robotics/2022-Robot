@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.lib.controllers.FightStick;
 import frc.robot.subsystems.OuttakeSubsystem;
 
-import static frc.robot.Constants.MechanismConstants.turretTurnSpeed;
+import static frc.robot.Constants.MechanismConstants.*;
 
 
 public class ManualAdjustOuttake extends CommandBase {
@@ -33,11 +33,11 @@ public class ManualAdjustOuttake extends CommandBase {
 
         // HOOD ANGLE LINEAR SERVOS
         if (FightStick.fightStickJoystick.getY() < 0) { // Inverted
-            outtakeSubsystem.manualAdjustHoodAngle(1);
+            outtakeSubsystem.setHoodAngle(maximumHoodAngle);
         } else if (FightStick.fightStickJoystick.getY() > 0) {
-            outtakeSubsystem.manualAdjustHoodAngle(-1);
+            outtakeSubsystem.setHoodAngle(minimumHoodAngle);
         } else {
-
+            outtakeSubsystem.stopHood();
         }
     }
 

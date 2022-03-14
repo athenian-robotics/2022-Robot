@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 //Calling the detour() method will immediately start executing the secondary command and the original won't start executing again until the secondary command ends.
 //DetourableCommands can detour() several times and can detour to other DetourableCommands. ඞ ඞ ඞ
 //A DetourableCommand ends when the default Command ends while executing or when the secondary command ends and endAfterDetour is set to true.
-//Classes that extend DetourableCommand will need to implement the standard Command methods with an underscore before their names instead of overriding.
+//Classes that extend DetourableCommand will need to implement the standard Command methods with an underscore before their names instead of overriding the standard functions.
 public abstract class DetourableCommand extends CommandBase {
     private final DetourableCommand m_detourableCommand;
     private Command m_detourCommand;
@@ -28,7 +28,6 @@ public abstract class DetourableCommand extends CommandBase {
     public final void execute() {
         if (m_detoured) {
             m_detourCommand.execute();
-            if (m_detourCommand.isFinished()) m_detoured = false;
         } else {
             m_detourableCommand._execute();
         }
@@ -36,7 +35,15 @@ public abstract class DetourableCommand extends CommandBase {
 
     @Override
     public final boolean isFinished() {
-        return !m_detoured && (m_detourableCommand._isFinished() || m_endAfterDetour);
+        if (m_detoured) {
+            if (m_detourCommand.isFinished()) {
+                m_detourCommand.end(false);
+                m_detoured = false;
+                return m_endAfterDetour;
+            } else return false;
+        } else {
+            return m_detourableCommand._isFinished();
+        }
     }
 
     @Override
@@ -61,7 +68,7 @@ public abstract class DetourableCommand extends CommandBase {
     public abstract void _initialize();
     public abstract void _execute();
     public abstract boolean _isFinished();
-    public abstract void _end(boolean interruped);
+    public abstract void _end(boolean interrupted);
 }
 
 //<3 Jacob '22

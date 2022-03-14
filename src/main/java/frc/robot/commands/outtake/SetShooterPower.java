@@ -1,11 +1,10 @@
 package frc.robot.commands.outtake;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.OuttakeSubsystem;
 
 
-public class SetShooterPower extends InstantCommand {
+public class SetShooterPower extends CommandBase {
     private final OuttakeSubsystem outtakeSubsystem;
     private final double power;
 
@@ -15,7 +14,7 @@ public class SetShooterPower extends InstantCommand {
     }
 
     @Override
-    public void initialize() {
+    public void execute() {
         outtakeSubsystem.setRPS(power);
     }
 }

@@ -15,6 +15,6 @@ public class DisableShooter extends InstantCommand {
 
     @Override
     public void initialize() {
-        outtakeSubsystem.setShooterPower(0.0);
+        outtakeSubsystem.stopShooter();
     }
 }

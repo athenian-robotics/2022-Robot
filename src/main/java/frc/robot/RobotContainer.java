@@ -19,14 +19,10 @@ import frc.robot.commands.indexer.PulseIndexer;
 import frc.robot.commands.indexer.QueueBalls;
 import frc.robot.commands.intake.RunIntakeWithoutPneumatics;
 import frc.robot.commands.intake.ToggleIntake;
-import frc.robot.commands.outtake.DisableShooter;
-import frc.robot.commands.outtake.SetHoodAngle;
-import frc.robot.commands.outtake.SetShooterPower;
-import frc.robot.commands.outtake.TurretTurnToGoalOrManualControl;
+import frc.robot.commands.outtake.*;
 import frc.robot.lib.controllers.FightStick;
 import frc.robot.lib.shooterData.ShooterDataTable;
 import frc.robot.subsystems.*;
-
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 
@@ -47,11 +43,11 @@ public class RobotContainer {
     public static XboxController.Axis xboxRS;
     public static XboxController xboxController = new XboxController(Constants.OIConstants.xboxControllerPort);
     // SUBSYSTEMS
+    public static LimelightSubsystem limelight = new LimelightSubsystem("limelight-arc");
     public static DrivetrainSubsystem drivetrain = new DrivetrainSubsystem();
     public static IndexerSubsystem indexer = new IndexerSubsystem();
     public static IntakeSubsystem intake = new IntakeSubsystem();
     public static ClimberSubsystem climb = new ClimberSubsystem();
-    public static LimelightSubsystem limelight = new LimelightSubsystem("limelight-arc");
     public static OuttakeSubsystem outtake = new OuttakeSubsystem();
     public static ShooterDataTable shooterDataTable;
 
@@ -70,26 +66,23 @@ public class RobotContainer {
                 shooterDataTable = (ShooterDataTable) obj;
                 System.out.println("Checking 2.5m data in shooterDataTable: " + shooterDataTable.getSpecs(2.5));
             }
-        } catch (Exception e) {
-            System.out.println("file not found, or class not found" + e);
+        }catch(Exception e){
+            System.out.println("file not found, or class not found");
         }
 
         xboxButtonSetup();
         configureButtonBindings();
     }
 
-
-    // Configures xbox buttons to commands
+  // Configures xbox buttons to commands
   private void configureButtonBindings() {
       /*  SUBSYSTEM COMMANDS (Main, functional commands) */
       //xboxHamburger.whenPressed(new ShootOneBall(drivetrain, indexer, intake, limelight, outtake, shooterDataTable));
       FightStick.fightStickA.whenPressed(new ToggleIntake(intake)); // Toggle intake wheels and pneumatics
-      //xboxX.whenPressed(new ShootTwo(climb, drivetrain, indexer, intake, outtake, limelight, shooterDataTable));
-      xboxX.whenPressed(new SetHoodAngle(outtake, shooterDataTable.getSpecs(limelight.getDistance()).getAngle()));
+      xboxX.whenPressed(new ShootTwo(climb, drivetrain, indexer, intake, outtake, limelight, shooterDataTable));
       FightStick.fightStickL3.whenHeld(new PulseIndexer(intake, indexer, true)); // Toggle indexer (tower portion)
-      FightStick.fightStickR3.whenHeld(new PulseIndexer(intake, indexer, false)); //Toggle Indexer down (tower portion)
-      //FightStick.fightStickB.whenPressed(new EnableShooter(outtake)); // Enable shooter wheels
-      FightStick.fightStickB.whenPressed(new SetShooterPower(outtake, shooterDataTable.getSpecs(limelight.getDistance()).getPower()));
+      FightStick.fightStickR3.whenHeld(new PulseIndexer(intake,indexer,false)); //Toggle Indexer down (tower portion)
+      FightStick.fightStickB.whenPressed(new EnableShooter(outtake)); // Enable shooter wheels
       FightStick.fightStickY.whenPressed(new DisableShooter(outtake)); // Disable shooter wheels
       FightStick.fightStickLB.whenPressed(new SetBothTelescopePositions(climb, 0));
       //FightStick.fightStickLT.whileActiveOnce(new LeftTelescopeSetSpeed(climb, -telescopeSpeed));

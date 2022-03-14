@@ -6,6 +6,8 @@ public class ShooterSpec implements Serializable{
     private double hoodAngle;
     private double power;
 
+    static final long serialVersionUID = 8521L;
+
     public ShooterSpec() {
         this.hoodAngle = 14.0;
         this.power = 33.5;
