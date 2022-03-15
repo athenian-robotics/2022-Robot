@@ -2,6 +2,7 @@ package frc.robot.commands.outtake;
 
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.Constants;
 import frc.robot.commands.climb.SetBothTelescopePositions;
 import frc.robot.commands.drive.DisableDrivetrain;
 import frc.robot.commands.indexer.ShootIndexedBallForever;
@@ -33,7 +34,7 @@ public class ShootTwo extends SequentialCommandGroup {
                     new ShootIndexedBallForever(indexer, intake, outtake).withTimeout(1.5),
                     //Return to teleop
                     new SetShooterPower(outtake, 0),
-                    new SetHoodAngle(outtake, 8)
+                    new SetHoodAngle(outtake, Constants.MechanismConstants.defaultHoodAngle)
             );
     }
 }
