@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.lib.controllers.FightStick;
 import frc.robot.lib.controllers.SimpleVelocitySystem;
 
 import java.util.Map;
@@ -30,11 +29,14 @@ public class OuttakeSubsystem extends SubsystemBase {
 
     private final NetworkTableEntry shooterNTE;
     private final NetworkTableEntry turretAngleNTE;
+    private final NetworkTableEntry shooterAdjustmentNTE;
+    private final NetworkTableEntry shooterActiveNTE;
     public final PIDController turretAnglePID;
 
     public boolean shooterRunning = false;
     public boolean turretActive = false;
     public double shuffleboardShooterPower = 0;
+    public double shuffleboardShooterAdjustment = 0;
 
     public double shuffleBoardTurretAngle = 0;
     private final SimpleVelocitySystem sys;
@@ -56,6 +58,16 @@ public class OuttakeSubsystem extends SubsystemBase {
 
         leftHoodAngleServo.setBounds(2.0, 1.8, 1.5, 1.2, 1.0); //Manufacturer specified for Actuonix linear servos
         rightHoodAngleServo.setBounds(2.0, 1.8, 1.5, 1.2, 1.0); //Manufacturer specified for Actuonix linear servos
+
+        shooterAdjustmentNTE = Shuffleboard.getTab("852 - Dashboard")
+                .add("Shooter Power Adjustment", 0)
+                .withWidget(BuiltInWidgets.kNumberSlider)
+                .withProperties(Map.of("min", 0.8, "max", 1.2, "default value", 1))
+                .getEntry();
+
+        shooterActiveNTE = Shuffleboard.getTab("852 - Dashboard")
+                .add("Shooter Active", false)
+                .getEntry();
 
         //TODO remove! for testing only
         shooterNTE = Shuffleboard.getTab("852 - Dashboard")
@@ -92,7 +104,7 @@ public class OuttakeSubsystem extends SubsystemBase {
     }
 
     public void setRPS(double rps) {
-        sys.set(rps);
+        sys.set(rps * shuffleboardShooterAdjustment);
     }
 
     public void setShooterFront(double power) {
@@ -157,14 +169,16 @@ public class OuttakeSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        SmartDashboard.putBoolean("Outtake", shooterRunning);
+        SmartDashboard.putBoolean("Outtake Active", shooterRunning);
         SmartDashboard.putNumber("Shooter Speed", getWheelSpeed());
         SmartDashboard.putNumber("HoodAngle", leftHoodAngleServo.get());
         SmartDashboard.putNumber("Turret Angle", getTurretAngle());
         SmartDashboard.putNumber("Shooter RPS", sys.getVelocity());
 
+        shooterActiveNTE.setBoolean(shooterRunning);
         shuffleboardShooterPower = shooterNTE.getDouble(1);
         shuffleBoardTurretAngle = turretAngleNTE.getDouble(8);
+        shuffleboardShooterAdjustment = shooterAdjustmentNTE.getDouble(1);
 
         if (shooterRunning) {
             sys.update(getWheelSpeed());

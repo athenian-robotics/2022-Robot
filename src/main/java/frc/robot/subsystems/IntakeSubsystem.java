@@ -5,8 +5,10 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -23,6 +25,8 @@ public class IntakeSubsystem extends SubsystemBase {
     private final DoubleSolenoid rightIntakePneumatic = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, pneumaticPortRightA, pneumaticPortRightB);
     private final DoubleSolenoid leftIntakePneumatic = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, pneumaticPortLeftA, pneumaticPortLeftB);
 
+    private final NetworkTableEntry intakeNTE;
+
     public boolean isRunning = false;
     public boolean isExtended = false;
     public boolean isInverted = false;
@@ -34,6 +38,10 @@ public class IntakeSubsystem extends SubsystemBase {
         intakeMotor.configOpenloopRamp(0.1); // Ramp up (Trapezoid)
         intakeMotor.configClosedloopRamp(0.1); // Ramp down (Trapezoid)
         intakeToIndexerMotor.setInverted(true);
+
+        intakeNTE = Shuffleboard.getTab("852 - Dashboard")
+                .add("Intake Active", false)
+                .getEntry();
     }
 
     public void startIntake() { // Enables intake
@@ -104,7 +112,8 @@ public class IntakeSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        SmartDashboard.putBoolean("Intake", isRunning);
+        SmartDashboard.putBoolean("Intake Active", isRunning);
+        intakeNTE.setBoolean(isRunning);
     }
 }
 
