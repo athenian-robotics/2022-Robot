@@ -26,11 +26,11 @@ public class AutoRoutine2 extends SequentialCommandGroup {
                 new ToggleIntake(intake),
                 new WaitCommand(0.75),
                 new ToggleIntake(intake),
-                new AutoRoutine2Part3(drivetrain), //bumps opponent ball and gets into a shooting position
                 new ParallelCommandGroup(
                         new TurretTurnToAngle(outtake, 0),
-                        new ShootOne(climber, drivetrain, indexer, intake, outtake, limelight, shooterDataTable)
-                )
+                        new AutoRoutine2Part3(drivetrain) //bumps opponent ball and gets into a shooting position
+                ),
+                new ShootOne(climber, drivetrain, indexer, intake, outtake, limelight, shooterDataTable)
         );
     }
 }
