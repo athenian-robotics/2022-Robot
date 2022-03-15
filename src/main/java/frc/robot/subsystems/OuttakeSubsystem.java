@@ -27,18 +27,14 @@ public class OuttakeSubsystem extends SubsystemBase {
     private final Servo leftHoodAngleServo = new Servo(2);
     private final Servo rightHoodAngleServo = new Servo(3);
 
-    private final NetworkTableEntry shooterNTE;
-    private final NetworkTableEntry turretAngleNTE;
-    private final NetworkTableEntry shooterAdjustmentNTE;
-    private final NetworkTableEntry shooterActiveNTE;
+    private final NetworkTableEntry shooterNTE, turretAngleNTE, shooterAdjustmentNTE, shooterActiveNTE;
     public final PIDController turretAnglePID;
 
     public boolean shooterRunning = false;
-    public boolean turretActive = false;
-    public double shuffleboardShooterPower = 0;
-    public double shuffleboardShooterAdjustment = 0;
+    public double shuffleboardShooterPower;
+    public double shuffleboardShooterAdjustment;
 
-    public double shuffleBoardTurretAngle = 0;
+    public double shuffleBoardTurretAngle;
     private final SimpleVelocitySystem sys;
 
     public OuttakeSubsystem() {
@@ -46,7 +42,7 @@ public class OuttakeSubsystem extends SubsystemBase {
         shooterMotorBack.setInverted(false);
         turretMotor.setInverted(false);
 
-        turretAnglePID = new PIDController(0.012, 0.005, 0.0015);
+        turretAnglePID = new PIDController(0.012, 0.003, 0.0015);
         turretAnglePID.setSetpoint(0); //Always trying to minimize our offset
         turretAnglePID.setTolerance(0.5);
 
