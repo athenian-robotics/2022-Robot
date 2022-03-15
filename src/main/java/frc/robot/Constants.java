@@ -59,7 +59,7 @@ public final class Constants {
         public static final int intakeMotorPort = 6;
         public static final int indexerMotorPort = 12;
         public static final int intakeToIndexerMotorPort = 13;
-        public static final double indexerSpeed = 0.25;
+        public static final double indexerSpeed = 0.25; //0.25
         public static final double intakeToIndexerSpeed = 0.2;
         public static final int intakeToIndexerResidualIndexTimeMillis = 750;
         //CLIMBER
@@ -68,7 +68,7 @@ public final class Constants {
         public static final double telescopeSpeed = 0.2;
         // TURRET
         public static final int turretMotorPort = 10;
-        public static final double turretTurnSpeed = 0.15;
+        public static final double turretTurnSpeed = 0.2;
         // SHOOTER
         public static final int shooterMotorPortA = 7;
         public static final int shooterMotorPortB = 8;

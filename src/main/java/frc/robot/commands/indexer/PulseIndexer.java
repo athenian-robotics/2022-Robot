@@ -13,7 +13,8 @@ public class PulseIndexer extends CommandBase {
 
     public PulseIndexer(IntakeSubsystem intakeSubsystem, IndexerSubsystem indexerSubsystem, boolean up) {
         this.intakeSubsystem = intakeSubsystem;
-        this.indexerSubsystem = indexerSubsystem; this.up = up;
+        this.indexerSubsystem = indexerSubsystem;
+        this.up = up;
         addRequirements(this.indexerSubsystem, this.intakeSubsystem);
     }
 
