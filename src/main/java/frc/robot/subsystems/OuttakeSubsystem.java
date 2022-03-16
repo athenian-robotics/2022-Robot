@@ -74,7 +74,7 @@ public class OuttakeSubsystem extends SubsystemBase {
 
         //TODO remove! for testing only
         shooterNTE = Shuffleboard.getTab("852 - Dashboard")
-                .add("Turret Angle", 0)
+                .add("Shooter Power", 0)
                 .getEntry();
 
         turretAngleNTE = Shuffleboard.getTab("852 - Dashboard")
