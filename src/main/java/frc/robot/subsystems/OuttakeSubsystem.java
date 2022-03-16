@@ -37,6 +37,7 @@ public class OuttakeSubsystem extends SubsystemBase {
 
     public double shuffleBoardTurretAngle;
     private final SimpleVelocitySystem sys;
+    private double shooterRPS = 0;
 
     public OuttakeSubsystem() {
         shooterMotorFront.setInverted(false);
@@ -73,15 +74,11 @@ public class OuttakeSubsystem extends SubsystemBase {
 
         //TODO remove! for testing only
         shooterNTE = Shuffleboard.getTab("852 - Dashboard")
-                .add("Shooter Power", shuffleboardShooterPower)
-                .withWidget(BuiltInWidgets.kTextView)
-                .withProperties(Map.of())
+                .add("Turret Angle", 0)
                 .getEntry();
 
         turretAngleNTE = Shuffleboard.getTab("852 - Dashboard")
                 .add("Turret Angle", 8)
-                .withWidget(BuiltInWidgets.kTextView)
-                .withProperties(Map.of("min", 8, "max", 41))
                 .getEntry();
 
         shooterMotorFront.configVoltageCompSaturation(12);
@@ -108,6 +105,7 @@ public class OuttakeSubsystem extends SubsystemBase {
     public void setRPS(double rps) {
         sys.set(rps * shuffleboardShooterAdjustment);
         shooterRunning = true;
+        shooterRPS = rps*shuffleboardShooterAdjustment;
     }
 
     public void setShooterFront(double power) {
@@ -179,8 +177,8 @@ public class OuttakeSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Shooter RPS", sys.getVelocity());
 
         shooterActiveNTE.setBoolean(shooterRunning);
-        shuffleboardShooterPower = shooterNTE.getDouble(1);
-        shuffleBoardTurretAngle = turretAngleNTE.getDouble(8);
+        shooterNTE.setDouble(shooterRPS);
+        turretAngleNTE.setDouble(getHoodAngle());
         shuffleboardShooterAdjustment = shooterAdjustmentNTE.getDouble(1);
 
         if (shooterRunning) {
