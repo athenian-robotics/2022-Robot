@@ -93,7 +93,7 @@ public class RobotContainer {
       //FightStick.fightStickRT.whileActiveOnce(new RightTelescopeSetSpeed(climb, -telescopeSpeed));
       FightStick.fightStickX.whenHeld(new LeftTelescopeSetSpeed(climb, 0.2));
       xboxB.whenHeld(new RunIntakeWithoutPneumatics(intake, indexer));
-      xboxY.whenPressed(new TurretTurnToGoalWithLimelight(limelight, outtake));
+      xboxY.whenPressed(new AlwaysTurretTurnToGoalWithLimelight(limelight, outtake));
 
       /* MISC COMMANDS (Random lib of commands. Written using functional commands because most are just one line ) */
       // have fun with this - jason and jacob '22   ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ

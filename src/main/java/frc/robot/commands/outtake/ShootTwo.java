@@ -27,19 +27,23 @@ public class ShootTwo extends SequentialCommandGroup {
                     new ParallelDeadlineGroup(new GuaranteeLimelightData(limelight), new ManualAdjustTurret(outtake)),
                     new SetHoodAngleWithLimelight(shooterDataTable, limelight, outtake),
                     new SetShooterPowerWithLimelight(shooterDataTable, limelight, outtake),
-                    new TurretTurnToGoalWithLimelight(limelight, outtake),
-                    //Shoot 1st
-                    new ParallelCommandGroup(
-                            new PulseIntakeToIndexerMotor(intake, 1.25),
-                            new ShootIndexedBallForever(indexer, outtake).withTimeout(2.5)
+                    new ParallelDeadlineGroup(
+                        new SequentialCommandGroup(
+                            //Shoot 1st
+                            new ParallelCommandGroup(
+                                    new PulseIntakeToIndexerMotor(intake, 0.5),
+                                    new ShootIndexedBallForever(indexer, outtake).withTimeout(2.5)
                             ),
-                    //Index next ball (may or may not be there) TODO remove withTimeout() on RunIntakeWithoutPneumatics()
-                    new RunIntakeWithoutPneumatics(intake, indexer).withTimeout(1.5),
-                    //Shoot 2nd
-                    new ParallelCommandGroup(
-                            new PulseIntakeToIndexerMotor(intake, 1.25),
-                            new ShootIndexedBallForever(indexer, outtake).withTimeout(2.5)
-                            ),
+                            //Index next ball (may or may not be there) TODO remove withTimeout() on RunIntakeWithoutPneumatics()
+                            new RunIntakeWithoutPneumatics(intake, indexer).withTimeout(1.5),
+                            //Shoot 2nd
+                            new ParallelCommandGroup(
+                                    new PulseIntakeToIndexerMotor(intake, 0.5),
+                                    new ShootIndexedBallForever(indexer, outtake).withTimeout(2.5)
+                            )
+                        ),
+                            new AlwaysTurretTurnToGoalWithLimelight(limelight, outtake)
+                    ),
                     //Return to teleop
                     new DisableShooter(outtake),
                     new SetHoodAngle(outtake, Constants.MechanismConstants.defaultHoodAngle)

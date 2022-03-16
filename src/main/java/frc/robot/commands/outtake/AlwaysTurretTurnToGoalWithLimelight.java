@@ -35,7 +35,6 @@ public class AlwaysTurretTurnToGoalWithLimelight extends CommandBase {
     @Override
     public void execute() {
         try {
-            System.out.println(offsetLatch.unlocked());
             if (offsetLatch.unlocked()) {
                 offset = offsetLatch.open();
                 outtakeSubsystem.turnTurret(-outtakeSubsystem.limelightTurretAnglePID.calculate(offset));

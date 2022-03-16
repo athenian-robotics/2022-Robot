@@ -133,7 +133,7 @@ public class OuttakeSubsystem extends SubsystemBase {
     }
 
     public void stopShooter() { // Disables shooter
-        setRPS(0);
+        setShooterPower(0);
         shooterRunning = false;
     }
 

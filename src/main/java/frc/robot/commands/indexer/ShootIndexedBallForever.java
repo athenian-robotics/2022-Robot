@@ -14,7 +14,7 @@ public class ShootIndexedBallForever extends CommandBase {
     public ShootIndexedBallForever(IndexerSubsystem indexerSubsystem, OuttakeSubsystem outtakeSubsystem) {
         this.indexerSubsystem = indexerSubsystem;
         this.outtakeSubsystem = outtakeSubsystem;
-        addRequirements(this.indexerSubsystem, this.outtakeSubsystem);
+        addRequirements(this.indexerSubsystem);
     }
 
     @Override
