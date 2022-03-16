@@ -26,7 +26,7 @@ public class ShootOne extends SequentialCommandGroup {
                 new SetShooterPowerWithLimelight(shooterDataTable, limelight, outtake),
                 new TurretTurnToGoalWithLimelight(limelight, outtake),
                 //Shoot 1st
-                new ShootIndexedBallForever(indexer, intake, outtake).withTimeout(2.5),
+                new ShootIndexedBallForever(indexer, outtake).withTimeout(2.5),
                 //Return to teleop
                 new SetShooterPower(outtake, 0),
                 new SetHoodAngle(outtake, Constants.MechanismConstants.defaultHoodAngle)

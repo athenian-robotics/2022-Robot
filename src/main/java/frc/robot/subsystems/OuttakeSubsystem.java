@@ -29,6 +29,7 @@ public class OuttakeSubsystem extends SubsystemBase {
 
     private final NetworkTableEntry shooterNTE, turretAngleNTE, shooterAdjustmentNTE, shooterActiveNTE;
     public final PIDController turretAnglePID;
+    public final PIDController limelightTurretAnglePID;
 
     public boolean shooterRunning = false;
     public double shuffleboardShooterPower;
@@ -42,9 +43,14 @@ public class OuttakeSubsystem extends SubsystemBase {
         shooterMotorBack.setInverted(false);
         turretMotor.setInverted(false);
 
-        turretAnglePID = new PIDController(0.012, 0.003, 0.0015);
+        turretAnglePID = new PIDController(0.007, 0.001, 0.001);
         turretAnglePID.setSetpoint(0); //Always trying to minimize our offset
         turretAnglePID.setTolerance(0.5);
+
+        limelightTurretAnglePID = new PIDController(0.0065, 0.001, 0.0012);
+                //(0.006, 0.00085, 0.004);
+        limelightTurretAnglePID.setSetpoint(0);
+        limelightTurretAnglePID.setTolerance(1);
 
 
         turretMotor.setNeutralMode(NeutralMode.Coast);
@@ -87,7 +93,7 @@ public class OuttakeSubsystem extends SubsystemBase {
                 Constants.Shooter.modelDeviation, Constants.Shooter.encoderDeviation,
                 Constants.looptime);
 
-        setTurretPosition(-180); //assume default position is turret starting counterclockwise backwards
+        setTurretPosition(0); //assume default position is turret starting counterclockwise backwards
     }
 
     public void setShooterPower(double power) { // Enables both wheels
@@ -101,6 +107,7 @@ public class OuttakeSubsystem extends SubsystemBase {
 
     public void setRPS(double rps) {
         sys.set(rps * shuffleboardShooterAdjustment);
+        shooterRunning = true;
     }
 
     public void setShooterFront(double power) {

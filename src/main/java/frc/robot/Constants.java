@@ -68,7 +68,7 @@ public final class Constants {
         public static final double telescopeSpeed = 0.2;
         // TURRET
         public static final int turretMotorPort = 10;
-        public static final double turretTurnSpeed = 0.2;
+        public static final double turretTurnSpeed = 0.12;
         // SHOOTER
         public static final int shooterMotorPortA = 7;
         public static final int shooterMotorPortB = 8;

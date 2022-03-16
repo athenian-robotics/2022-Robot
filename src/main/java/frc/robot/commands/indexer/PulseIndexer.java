@@ -22,7 +22,6 @@ public class PulseIndexer extends CommandBase {
     public void initialize() {
         if (up) {
             indexerSubsystem.startIndexer();
-            intakeSubsystem.startIntakeToIndexerMotor();
         } else {
             indexerSubsystem.reverseIndexer();
         }
@@ -31,6 +30,5 @@ public class PulseIndexer extends CommandBase {
     @Override
     public void end(boolean interrupted) {
         indexerSubsystem.stopIndexer();
-        intakeSubsystem.stopIntakeToIndexerMotor();
     }
 }

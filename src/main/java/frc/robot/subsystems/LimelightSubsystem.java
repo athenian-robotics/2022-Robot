@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.lib.limelight.LimelightDataLatch;
 
@@ -25,7 +26,8 @@ public class LimelightSubsystem extends SubsystemBase {
     public void disable() {latchManager.clearPool();}
 
     public void periodic() {
-        latchManager.update((Double[]) limelight.getEntry("llpython").getNumberArray(new Number[]{-1, -1, -1, -1, -1, -1, -1, -9}));
+        latchManager.update(limelight.getEntry("llpython").getNumberArray(new Number[]{-1, -1, -1, -1, -1, -1, -1, -9}));
+        SmartDashboard.putNumber("xOffset", (double) limelight.getEntry("llpython").getNumberArray(new Number[]{-1, -1, -1, -1, -1, -1, -1, -9})[1]);
     }
 
 
@@ -34,19 +36,19 @@ public class LimelightSubsystem extends SubsystemBase {
         private final LinkedList<LimelightDataLatch> latchPool = new LinkedList<>();
 
         //Updates every pooled latch if there's new data
-        public void update(Double[] limelightOutputArray) {
-            if (limelightOutputArray.length == 8)
-                if ((double) limelightOutputArray[7] == (double) 1) {
-                    while (latchPool.size() != 0) {
-                        LimelightDataLatch currentLatch = latchPool.pollFirst();
-                        currentLatch.unlock(limelightOutputArray[currentLatch.limelightDataType.llpythonIndex]);
-                    } return;
+        public void update(Number[] limelightOutputArray) {
+            if (limelightOutputArray.length == 8 && (double) limelightOutputArray[7] == (double) 1) {
+                while (latchPool.size() != 0) {
+                    LimelightDataLatch currentLatch = latchPool.pollFirst();
+                    currentLatch.unlock((double) limelightOutputArray[currentLatch.limelightDataType.llpythonIndex]);
                 }
-            latchPool.removeIf(LimelightDataLatch::expired);
+            } else {
+                latchPool.removeIf(LimelightDataLatch::expired);
+            }
         }
 
         private void addLatch(LimelightDataLatch latch) {
-            latchPool.addLast(latch);
+            latchPool.addFirst(latch);
         }
 
         private void clearPool() {
