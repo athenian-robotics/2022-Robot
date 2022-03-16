@@ -67,7 +67,7 @@ public class OuttakeSubsystem extends SubsystemBase {
                 .withProperties(Map.of("min", 0.8, "max", 1.2, "default value", 1))
                 .getEntry();
 
-        shooterActiveNTE = Shuffleboard.getTab("852 - Dashboard")
+        shooterActiveNTE = Shuffleboard.getTab("852 - Dashboard") //how to add values to shuffleboard
                 .add("Shooter Active", false)
                 .getEntry();
 
