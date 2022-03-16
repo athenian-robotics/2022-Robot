@@ -1,7 +1,9 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.lib.limelight.LimelightDataLatch;
@@ -14,9 +16,13 @@ import java.util.LinkedList;
 public class LimelightSubsystem extends SubsystemBase {
     public final LimelightDataLatchManager latchManager = new LimelightDataLatchManager();
     final NetworkTable limelight;
+    final NetworkTableEntry xOffsetNTE;
 
     public LimelightSubsystem(String tableName) {
         this.limelight = NetworkTableInstance.getDefault().getTable(tableName);
+        xOffsetNTE = Shuffleboard.getTab("852 - Dashboard")
+                .add("X Offset", 0)
+                .getEntry();
     }
 
     public void addLatch(LimelightDataLatch latch) {
@@ -27,6 +33,7 @@ public class LimelightSubsystem extends SubsystemBase {
 
     public void periodic() {
         latchManager.update(limelight.getEntry("llpython").getNumberArray(new Number[]{-1, -1, -1, -1, -1, -1, -1, -9}));
+        xOffsetNTE.setDouble((double) limelight.getEntry("llpython").getNumberArray(new Number[]{-1, -1, -1, -1, -1, -1, -1, -9})[1]);
         SmartDashboard.putNumber("xOffset", (double) limelight.getEntry("llpython").getNumberArray(new Number[]{-1, -1, -1, -1, -1, -1, -1, -9})[1]);
     }
 
