@@ -33,7 +33,7 @@ public class SetHoodAngleWithLimelight extends CommandBase {
     public boolean isFinished() {
         try {
             return latch.unlocked();
-        } catch (GoalNotFoundException ignored) {return true;}
+        } catch (GoalNotFoundException e) {return true;}
     }
 
     @Override

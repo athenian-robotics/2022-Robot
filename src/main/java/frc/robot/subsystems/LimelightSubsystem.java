@@ -17,11 +17,15 @@ public class LimelightSubsystem extends SubsystemBase {
     public final LimelightDataLatchManager latchManager = new LimelightDataLatchManager();
     final NetworkTable limelight;
     final NetworkTableEntry xOffsetNTE;
+    final NetworkTableEntry distanceNTE;
 
     public LimelightSubsystem(String tableName) {
         this.limelight = NetworkTableInstance.getDefault().getTable(tableName);
         xOffsetNTE = Shuffleboard.getTab("852 - Dashboard")
                 .add("X Offset", 0)
+                .getEntry();
+        distanceNTE = Shuffleboard.getTab("852 - Dashboard")
+                .add("Distance to Target", 0)
                 .getEntry();
     }
 
@@ -32,9 +36,12 @@ public class LimelightSubsystem extends SubsystemBase {
     public void disable() {latchManager.clearPool();}
 
     public void periodic() {
-        latchManager.update(limelight.getEntry("llpython").getNumberArray(new Number[]{-1, -1, -1, -1, -1, -1, -1, -9}));
-        xOffsetNTE.setDouble((double) limelight.getEntry("llpython").getNumberArray(new Number[]{-1, -1, -1, -1, -1, -1, -1, -9})[1]);
-        SmartDashboard.putNumber("xOffset", (double) limelight.getEntry("llpython").getNumberArray(new Number[]{-1, -1, -1, -1, -1, -1, -1, -9})[1]);
+        Double[] lloutput = (Double[]) limelight.getEntry("llpython").getNumberArray(new Number[]{-1, -1, -1, -1, -1, -1, -1, -9});
+        latchManager.update(lloutput);
+        xOffsetNTE.setDouble(lloutput[1]);
+        distanceNTE.setDouble(lloutput[0]);
+        SmartDashboard.putNumber("xOffset", lloutput[1]);
+        SmartDashboard.putNumber("zDistance", lloutput[0]);
     }
 
 
@@ -43,11 +50,11 @@ public class LimelightSubsystem extends SubsystemBase {
         private final LinkedList<LimelightDataLatch> latchPool = new LinkedList<>();
 
         //Updates every pooled latch if there's new data
-        public void update(Number[] limelightOutputArray) {
-            if (limelightOutputArray.length == 8 && (double) limelightOutputArray[7] == (double) 1) {
+        public void update(Double[] limelightOutputArray) {
+            if (limelightOutputArray.length == 8 && limelightOutputArray[7] == (double) 1) {
                 while (latchPool.size() != 0) {
                     LimelightDataLatch currentLatch = latchPool.pollFirst();
-                    currentLatch.unlock((double) limelightOutputArray[currentLatch.limelightDataType.llpythonIndex]);
+                    currentLatch.unlock(limelightOutputArray[currentLatch.limelightDataType.llpythonIndex]);
                 }
             } else {
                 latchPool.removeIf(LimelightDataLatch::expired);

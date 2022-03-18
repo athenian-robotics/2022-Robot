@@ -24,47 +24,18 @@ public class ColorWheelUtils {
     public WheelColors currentColor() {
         WheelColors currentColor;
         Color detectedColor = colorSensor.getColor();
+        SmartDashboard.putNumber("red", detectedColor.red);
+        SmartDashboard.putNumber("blue", detectedColor.blue);
+        SmartDashboard.putNumber("green", detectedColor.green);
         double checkColorRed = detectedColor.red * 255;
         double checkColorGreen = detectedColor.green * 255;
         double checkColorBlue = detectedColor.blue * 255;
 
-        //Range for RED
-        if ((checkColorRed >= checkColorGreen + 30) && (checkColorRed >= checkColorBlue + 30)) {
-            updateString("RED");
-            currentColor = RED;
-            isRed = true;
-        }
-        //Range for BLUE
-        else if ((checkColorBlue >= checkColorGreen) && (checkColorBlue - 60 <= checkColorGreen)
-                || (checkColorBlue <= checkColorGreen) && (checkColorBlue + 60 >= checkColorGreen)) {
-            updateString("BLUE");
-            currentColor = BLUE;
-            isBlue = true;
-        }
-        //Range for YELLOW
-        else if ((checkColorRed >= 90) && (checkColorRed <= checkColorGreen) && (checkColorRed + 20 >= checkColorGreen)) {
-            updateString("YELLOW");
-            currentColor = YELLOW;
-            isYellow = true;
-        }
-        //Assume GREEN
-        else {
-            updateString("GREEN");
-            currentColor = GREEN;
-            isGreen = true;
-        }
-        //Update the color value,
-        updateColorsOnDashboard();
+        //blue is weighted higher because blue balls have red .2 and blue .3 and red balls have red .4 and blue .2
+        currentColor = checkColorRed > checkColorBlue*1.3? RED : BLUE;
         resetIsColorBooleans();
+        updateString(currentColor.name());
         return currentColor;
-    }
-
-    public void updateColorsOnDashboard() {
-        //Update boolean boxes for each color for visual representation
-        SmartDashboard.putBoolean("RED", isRed);
-        SmartDashboard.putBoolean("BLUE", isBlue);
-        SmartDashboard.putBoolean("YELLOW", isYellow);
-        SmartDashboard.putBoolean("GREEN", isGreen);
     }
 
     public double currentProximity() {return colorSensor.getProximity();}

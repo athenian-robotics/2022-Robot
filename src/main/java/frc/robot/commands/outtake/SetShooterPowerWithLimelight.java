@@ -33,7 +33,7 @@ public class SetShooterPowerWithLimelight extends CommandBase {
     public boolean isFinished() {
        try { //jump to end() as soon as we get data! If we receive none in time, we'll use the default given by shooterDataTable.getSpecs(0.0d).getPower()
             return latch.unlocked();
-        } catch (GoalNotFoundException ignored) {return true;}
+        } catch (GoalNotFoundException e) {return true;}
     }
 
     @Override

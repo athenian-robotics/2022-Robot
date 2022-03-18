@@ -5,6 +5,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
@@ -26,6 +27,7 @@ import frc.robot.subsystems.*;
 
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
+import java.util.function.BooleanSupplier;
 
 
 public class RobotContainer {
@@ -50,6 +52,8 @@ public class RobotContainer {
     public static IntakeSubsystem intake = new IntakeSubsystem();
     public static ClimberSubsystem climb = new ClimberSubsystem();
     public static OuttakeSubsystem outtake = new OuttakeSubsystem();
+    //MISC
+    public static DriverStation.Alliance alliance = DriverStation.Alliance.Blue;
     public static ShooterDataTable shooterDataTable;
 
     // Sets up controllers, configures controllers, and sets the default drive mode (tank or arcade)
@@ -78,7 +82,7 @@ public class RobotContainer {
   // Configures xbox buttons to commands
   private void configureButtonBindings() {
       /*  SUBSYSTEM COMMANDS (Main, functional commands) */
-      xboxHamburger.whenPressed(new ShootTwo(climb, drivetrain, indexer, intake, outtake, limelight, shooterDataTable));
+      xboxHamburger.whenPressed(new ShootBalls(climb, drivetrain, indexer, intake, outtake, limelight, shooterDataTable));
 
       FightStick.fightStickA.whenPressed(new ToggleIntake(intake)); // Toggle intake wheels and pneumatics
       xboxX.whenPressed(new ShootTwo(climb, drivetrain, indexer, intake, outtake, limelight, shooterDataTable));
@@ -136,6 +140,8 @@ public class RobotContainer {
         limelight.disable();
         outtake.disable();
     }
+
+    public void setAlliance(DriverStation.Alliance alliance) {RobotContainer.alliance = alliance;}
 
     // Returns the robot's main autonomous command
     public Command getAutonomousCommand() {

@@ -61,7 +61,7 @@ public final class Constants {
         public static final int intakeToIndexerMotorPort = 13;
         public static final double indexerSpeed = 0.25; //0.25
         public static final double intakeToIndexerSpeed = 0.2;
-        public static final int intakeToIndexerResidualIndexTimeMillis = 750;
+        public static final int intakeToIndexerResidualIndexTimeMillis = 700;
         //CLIMBER
         public static final int leftClimberMotorPort = 15;
         public static final int rightClimberMotorPort = 16;
@@ -79,8 +79,7 @@ public final class Constants {
         public static final double maximumTurretAngle = 90;
         public static final double minimumTurretAngle = -210;
         // MAX MECHANISM SPEEDS
-        public static final double idleOuttakeSpeed = 0.35;
-        public static final double intakeSpeed = 0.3; //0 to 1
+        public static final double intakeSpeed = 0.3; //0.3
 
         // Climber motor ports ...
     }

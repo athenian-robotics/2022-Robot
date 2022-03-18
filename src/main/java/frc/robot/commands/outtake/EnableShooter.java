@@ -13,7 +13,7 @@ public class EnableShooter extends CommandBase {
     }
 
     @Override
-    public void execute() {
+    public void initialize() {
         outtakeSubsystem.setRPS(outtakeSubsystem.shuffleboardShooterPower);
     }
 
