@@ -24,7 +24,7 @@ public class ShootBalls extends SequentialCommandGroup {
                     //Prepare
                     new DisableDrivetrain(drivetrain),
                     new DisableIntake(intake),
-                    //Align to shoot and guarantee a ball indexed
+                    //Guarantee ball indexed and limelight data
                     new ParallelDeadlineGroup(
                             new ParallelCommandGroup(
                                     new ConditionalCommand(
@@ -35,53 +35,59 @@ public class ShootBalls extends SequentialCommandGroup {
                             ),
                           new ManualAdjustTurret(outtake)
                     ),
+                    //Align and shoot first
                     new SetHoodAngleWithLimelight(shooterDataTable, limelight, outtake),
                     new SetShooterPowerWithLimelight(shooterDataTable, limelight, outtake),
                     new ParallelDeadlineGroup(
-                            new SequentialCommandGroup(
+                            new ConditionalCommand(
+                                    new SequentialCommandGroup(
+                                            new GuaranteeLimelightDataEquals(limelight, LimelightDataType.HORIZONTAL_OFFSET, 0, 1).withTimeout(2),
+                                            new ParallelCommandGroup(
+                                                    new PulseIntakeToIndexerMotor(intake).withTimeout(0.3),
+                                                    new ShootIndexedBallForever(indexer, outtake).withTimeout(1.5)
+                                            ), new RunIntakeWithoutPneumatics(intake, indexer).withTimeout(0.75)
+                                    ),
                                     new ConditionalCommand(
                                             new SequentialCommandGroup(
-                                                    new GuaranteeLimelightDataEquals(limelight, LimelightDataType.HORIZONTAL_OFFSET, 0, 1).withTimeout(2),
+                                                    new SetShooterPower(outtake, 15),
                                                     new ParallelCommandGroup(
                                                             new PulseIntakeToIndexerMotor(intake).withTimeout(0.3),
                                                             new ShootIndexedBallForever(indexer, outtake).withTimeout(1.5)
                                                     ), new RunIntakeWithoutPneumatics(intake, indexer).withTimeout(0.75)
                                             ),
-                                            new ConditionalCommand(
-                                                    new SequentialCommandGroup(
-                                                            new SetShooterPower(outtake, 15),
-                                                            new ParallelCommandGroup(
-                                                                    new PulseIntakeToIndexerMotor(intake).withTimeout(0.3),
-                                                                    new ShootIndexedBallForever(indexer, outtake).withTimeout(1.5)
-                                                            ), new RunIntakeWithoutPneumatics(intake, indexer).withTimeout(0.75)
-                                                    ),
-                                                    new WaitCommand(0),
-                                                    indexer::ballPrimed
-                                            ),
-                                            indexer::allianceBallIndexed
+                                            new WaitCommand(0),
+                                            indexer::ballPrimed
+                                    ),
+                                    indexer::allianceBallIndexed
+                            ),
+                            new AlwaysTurretTurnToGoalWithLimelight(limelight, outtake)
+                    ),
+                    //Align and shoot second
+                    new SetHoodAngleWithLimelight(shooterDataTable, limelight, outtake),
+                    new SetShooterPowerWithLimelight(shooterDataTable, limelight, outtake),
+                    new ParallelDeadlineGroup(
+                            new ConditionalCommand(
+                                    new SequentialCommandGroup(
+                                            new GuaranteeLimelightDataEquals(limelight, LimelightDataType.HORIZONTAL_OFFSET, 0, 1).withTimeout(2),
+                                            new ParallelCommandGroup(
+                                                    new PulseIntakeToIndexerMotor(intake).withTimeout(0.3),
+                                                    new ShootIndexedBallForever(indexer, outtake).withTimeout(1.5)
+                                            ), new RunIntakeWithoutPneumatics(intake, indexer).withTimeout(0.75)
                                     ),
                                     new ConditionalCommand(
                                             new SequentialCommandGroup(
-                                                    new GuaranteeLimelightDataEquals(limelight, LimelightDataType.HORIZONTAL_OFFSET, 0, 1).withTimeout(2),
+                                                    new SetShooterPower(outtake, 15),
                                                     new ParallelCommandGroup(
                                                             new PulseIntakeToIndexerMotor(intake).withTimeout(0.3),
                                                             new ShootIndexedBallForever(indexer, outtake).withTimeout(1.5)
-                                                    )
+                                                    ), new RunIntakeWithoutPneumatics(intake, indexer).withTimeout(0.75)
                                             ),
-                                            new ConditionalCommand(
-                                                    new SequentialCommandGroup(
-                                                            new SetShooterPower(outtake, 15),
-                                                            new ParallelCommandGroup(
-                                                                    new PulseIntakeToIndexerMotor(intake).withTimeout(0.3),
-                                                                    new ShootIndexedBallForever(indexer, outtake).withTimeout(1.5)
-                                                            )
-                                                    ),
-                                                    new WaitCommand(0),
-                                                    indexer::ballPrimed
-                                            ),
-                                            indexer::allianceBallIndexed
-                                    )
-                            ), new AlwaysTurretTurnToGoalWithLimelight(limelight, outtake)
+                                            new WaitCommand(0),
+                                            indexer::ballPrimed
+                                    ),
+                                    indexer::allianceBallIndexed
+                            ),
+                            new AlwaysTurretTurnToGoalWithLimelight(limelight, outtake)
                     ),
                     //Return to teleop
                     new DisableShooter(outtake),

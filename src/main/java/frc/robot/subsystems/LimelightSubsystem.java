@@ -15,7 +15,7 @@ import java.util.LinkedList;
 //YOU DON'T NEED TO REQUIRE LIMELIGHTSUBSYSTEM IN COMMANDS!
 public class LimelightSubsystem extends SubsystemBase {
     public final LimelightDataLatchManager latchManager = new LimelightDataLatchManager();
-    final NetworkTable limelight;
+    NetworkTable limelight; //used to be final?
     final NetworkTableEntry xOffsetNTE;
     final NetworkTableEntry distanceNTE;
 
@@ -32,6 +32,13 @@ public class LimelightSubsystem extends SubsystemBase {
     public void addLatch(LimelightDataLatch latch) {
         latchManager.addLatch(latch);
     }
+
+    public boolean checkGoalNotFound()
+        {
+        Double[] lloutput = (Double[]) limelight.getEntry("llpython").getNumberArray(new Number[]{-1, -1, -1, -1, -1, -1, -1, -9});
+        return lloutput[7] == (double) -1;
+        };
+
 
     public void disable() {latchManager.clearPool();}
 

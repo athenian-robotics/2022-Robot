@@ -44,16 +44,6 @@ public class OuttakeSubsystem extends SubsystemBase {
         shooterMotorBack.setInverted(false);
         turretMotor.setInverted(false);
 
-        turretAnglePID = new PIDController(0.007, 0.001, 0.001);
-        turretAnglePID.setSetpoint(0); //Always trying to minimize our offset
-        turretAnglePID.setTolerance(0.5);
-
-        limelightTurretAnglePID = new PIDController(0.007, 0.001, 0.0012);
-                //(0.006, 0.00085, 0.004);
-        limelightTurretAnglePID.setSetpoint(0);
-        limelightTurretAnglePID.setTolerance(1);
-
-
         turretMotor.setNeutralMode(NeutralMode.Coast);
         shooterMotorFront.setNeutralMode(NeutralMode.Coast);
         shooterMotorBack.setNeutralMode(NeutralMode.Coast);
@@ -79,6 +69,16 @@ public class OuttakeSubsystem extends SubsystemBase {
         turretAngleNTE = Shuffleboard.getTab("852 - Dashboard")
                 .add("Hood Angle", 8)
                 .getEntry();
+
+
+        turretAnglePID = new PIDController(0.007, 0.001, 0.001);
+        turretAnglePID.setSetpoint(0); //Always trying to minimize our offset
+        turretAnglePID.setTolerance(0.5);
+
+        limelightTurretAnglePID = new PIDController(0.007, 0.001, 0.0012);
+//        //(0.006, 0.00085, 0.004);
+        limelightTurretAnglePID.setSetpoint(0);
+        limelightTurretAnglePID.setTolerance(1);
 
         shooterMotorFront.configVoltageCompSaturation(12);
         shooterMotorBack.configVoltageCompSaturation(12);
@@ -178,10 +178,10 @@ public class OuttakeSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Shooter RPS", sys.getVelocity());
 
         shooterActiveNTE.setBoolean(shooterRunning);
-        shuffleboardShooterPower=shooterNTE.getDouble(0);
-        setHoodAngle(turretAngleNTE.getDouble(8));
-//        shooterNTE.setDouble(shooterRPS);
-//        turretAngleNTE.setDouble(getHoodAngle());
+        //shuffleboardShooterPower=shooterNTE.getDouble(0);
+        //setHoodAngle(turretAngleNTE.getDouble(8));
+        shooterNTE.setDouble(shooterRPS);
+        turretAngleNTE.setDouble(getHoodAngle());
         shuffleboardShooterAdjustment = shooterAdjustmentNTE.getDouble(1);
 
         if (shooterRunning) {

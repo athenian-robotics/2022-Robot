@@ -1,5 +1,6 @@
 package frc.robot.commands.outtake;
 
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -25,12 +26,19 @@ public class ShootTwo extends SequentialCommandGroup {
                     new DisableIntake(intake),
                     //Align to shoot
                     new ParallelDeadlineGroup(new GuaranteeLimelightData(limelight), new ManualAdjustTurret(outtake)),
-                    //new SetHoodAngleWithLimelight(shooterDataTable, limelight, outtake),
-                    //new SetShooterPowerWithLimelight(shooterDataTable, limelight, outtake),
+                    new SetHoodAngleWithLimelight(shooterDataTable, limelight, outtake),
+                    new SetShooterPowerWithLimelight(shooterDataTable, limelight, outtake),
                     new AlwaysTurretTurnToGoalWithLimelight(limelight, outtake).withTimeout(0.75),
                     new ParallelDeadlineGroup(
                         new SequentialCommandGroup(
-                                new GuaranteeLimelightDataEquals(limelight, LimelightDataType.HORIZONTAL_OFFSET, 0, 1),
+                                //new ConditionalCommand(
+                                        new GuaranteeLimelightDataEquals(limelight, LimelightDataType.HORIZONTAL_OFFSET, 0, 1),
+                                        //new SequentialCommandGroup(
+                                            //new SetHoodAngleWithLimelight(shooterDataTable, limelight, outtake),
+                                            //new SetShooterPowerWithLimelight(shooterDataTable, limelight, outtake)
+                                            //),
+                                        //limelight::checkGoalNotFound
+                                        //),
                                 //Shoot 1st
                                 new ParallelCommandGroup(
                                         new PulseIntakeToIndexerMotor(intake).withTimeout(0.3),
@@ -43,8 +51,8 @@ public class ShootTwo extends SequentialCommandGroup {
                                         new PulseIntakeToIndexerMotor(intake).withTimeout(0.3),
                                         new ShootIndexedBallForever(indexer, outtake).withTimeout(1.5)
                                 )
-                        ),
-                            new AlwaysTurretTurnToGoalWithLimelight(limelight, outtake)
+                        )//,
+                            //new AlwaysTurretTurnToGoalWithLimelight(limelight, outtake)
                     ),
                     //Return to teleop
                     new DisableShooter(outtake),
