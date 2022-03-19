@@ -16,17 +16,9 @@ import java.util.LinkedList;
 public class LimelightSubsystem extends SubsystemBase {
     public final LimelightDataLatchManager latchManager = new LimelightDataLatchManager();
     NetworkTable limelight; //used to be final?
-    final NetworkTableEntry xOffsetNTE;
-    final NetworkTableEntry distanceNTE;
 
     public LimelightSubsystem(String tableName) {
         this.limelight = NetworkTableInstance.getDefault().getTable(tableName);
-        xOffsetNTE = Shuffleboard.getTab("852 - Dashboard")
-                .add("X Offset", 0)
-                .getEntry();
-        distanceNTE = Shuffleboard.getTab("852 - Dashboard")
-                .add("Distance to Target", 0)
-                .getEntry();
     }
 
     public void addLatch(LimelightDataLatch latch) {
@@ -45,10 +37,8 @@ public class LimelightSubsystem extends SubsystemBase {
     public void periodic() {
         Double[] lloutput = (Double[]) limelight.getEntry("llpython").getNumberArray(new Number[]{-1, -1, -1, -1, -1, -1, -1, -9});
         latchManager.update(lloutput);
-        xOffsetNTE.setDouble(lloutput[1]);
-        distanceNTE.setDouble(lloutput[0]);
-        SmartDashboard.putNumber("xOffset", lloutput[1]);
-        SmartDashboard.putNumber("zDistance", lloutput[0]);
+        SmartDashboard.putNumber("X Offset", lloutput[1]);
+        SmartDashboard.putNumber("Distance from Target", lloutput[0]);
     }
 
 
