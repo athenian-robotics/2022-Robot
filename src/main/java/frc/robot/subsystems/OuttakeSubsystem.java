@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.lib.controllers.SimplePositionSystem;
 import frc.robot.lib.controllers.SimpleVelocitySystem;
 
 import java.util.Map;
@@ -37,6 +38,7 @@ public class OuttakeSubsystem extends SubsystemBase {
     public double shuffleboardShooterAdjustment;
 
     private final SimpleVelocitySystem sys;
+    private final SimplePositionSystem syst;
     private double shooterRPS = 0;
 
     public OuttakeSubsystem() {
@@ -77,6 +79,7 @@ public class OuttakeSubsystem extends SubsystemBase {
                 Constants.looptime);
 
         setTurretAngle(0); //assume default position is turret starting counterclockwise backwards
+        syst = new SimplePositionSystem(Constants.Turret.ks, Constants.Turret.kv, Constants.Turret.ka, Constants.Turret.maxError, Constants.Turret.maxControlEffort, Constants.Turret.modelDeviation, Constants.Turret.encoderDeviation, Constants.looptime);
     }
 
     public void setShooterPower(double power) { // Enables both wheels
@@ -102,9 +105,10 @@ public class OuttakeSubsystem extends SubsystemBase {
 
     public void turnTurret(double power) {
         if (getTurretAngle() < maximumTurretAngle && power > 0 || getTurretAngle() > minimumTurretAngle && power < 0) {
-            turretMotor.set(ControlMode.PercentOutput, power > turretTurnSpeed ? turretTurnSpeed : power < -turretTurnSpeed ? -turretTurnSpeed : power);
+            turretMotor.set(ControlMode.PercentOutput, power > turretTurnSpeed ? turretTurnSpeed : Math.max(power, -turretTurnSpeed));
         } else turretMotor.set(ControlMode.PercentOutput, 0);
     }
+
 
     public void setHoodAngle(double angle) {
         if (angle >= minimumHoodAngle && angle <= maximumHoodAngle) {
