@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.commands.drive.DisableDrivetrain;
 import frc.robot.commands.indexer.ShootIndexedBallForever;
+import frc.robot.commands.indexer.ShootIndexedBallsForever;
 import frc.robot.commands.intake.DisableIntake;
 import frc.robot.commands.intake.PulseIntakeToIndexerMotor;
 import frc.robot.commands.intake.RunIntakeWithoutPneumatics;
@@ -31,28 +32,14 @@ public class ShootTwo extends SequentialCommandGroup {
                     new AlwaysTurretTurnToGoalWithLimelight(limelight, outtake).withTimeout(0.75),
                     new ParallelDeadlineGroup(
                         new SequentialCommandGroup(
-                                //new ConditionalCommand(
-                                        new GuaranteeLimelightDataEquals(limelight, LimelightDataType.HORIZONTAL_OFFSET, 0, 1),
-                                        //new SequentialCommandGroup(
-                                            //new SetHoodAngleWithLimelight(shooterDataTable, limelight, outtake),
-                                            //new SetShooterPowerWithLimelight(shooterDataTable, limelight, outtake)
-                                            //),
-                                        //limelight::checkGoalNotFound
-                                        //),
+                                new GuaranteeLimelightDataEquals(limelight, LimelightDataType.HORIZONTAL_OFFSET, 0, 1),
                                 //Shoot 1st
                                 new ParallelCommandGroup(
                                         new PulseIntakeToIndexerMotor(intake).withTimeout(0.3),
-                                        new ShootIndexedBallForever(indexer, outtake).withTimeout(1.5)
+                                        new ShootIndexedBallsForever(indexer, intake).withTimeout(1.5)
+                                    )
                                 ),
-                                //Index next ball (may or may not be there) TODO remove withTimeout() on RunIntakeWithoutPneumatics()
-                                new RunIntakeWithoutPneumatics(intake, indexer).withTimeout(1.5),
-                                //Shoot 2nd
-                                new ParallelCommandGroup(
-                                        new PulseIntakeToIndexerMotor(intake).withTimeout(0.3),
-                                        new ShootIndexedBallForever(indexer, outtake).withTimeout(1.5)
-                                )
-                        )//,
-                            //new AlwaysTurretTurnToGoalWithLimelight(limelight, outtake)
+                        new AlwaysTurretTurnToGoalWithLimelight(limelight, outtake)
                     ),
                     //Return to teleop
                     new DisableShooter(outtake),
