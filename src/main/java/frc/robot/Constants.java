@@ -113,4 +113,14 @@ public final class Constants {
         public static double encoderDeviation = 0.02;
         public static double hoodToHub = 0.9207;
     }
+    public static final class Turret {
+        public static final double ks = 0.83559;
+        public static final double ka = 0.00056228;
+        public static final double kv = 0.027068;
+
+        public static double maxError = .5;
+        public static double maxControlEffort = 2;
+        public static double modelDeviation = 0.075;
+        public static double encoderDeviation = 0.02;
+    }
 }
