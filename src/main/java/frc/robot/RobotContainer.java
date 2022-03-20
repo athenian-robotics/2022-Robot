@@ -6,10 +6,16 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.auto.AutoRoutine0;
+import frc.robot.commands.auto.AutoRoutine1;
+import frc.robot.commands.auto.AutoRoutine2;
 import frc.robot.commands.auto.AutoRoutine6;
 import frc.robot.commands.climb.LeftTelescopeSetSpeed;
 import frc.robot.commands.climb.SetBothTelescopePositions;
@@ -46,6 +52,7 @@ public class RobotContainer {
     public static Trigger xboxLS;
     public static XboxController.Axis xboxRS;
     public static XboxController xboxController = new XboxController(Constants.OIConstants.xboxControllerPort);
+    SendableChooser<SequentialCommandGroup> chooser = new SendableChooser<>();
     // SUBSYSTEMS
     public static LimelightSubsystem limelight = new LimelightSubsystem("limelight-arc");
     public static DrivetrainSubsystem drivetrain = new DrivetrainSubsystem();
@@ -73,6 +80,11 @@ public class RobotContainer {
         }catch(Exception e){
             System.out.println("file not found, or class not found");
         }
+
+        SmartDashboard.putData("AutoChooser", chooser);
+        chooser.setDefaultOption("0: 2.5 Meters Forward", new AutoRoutine0(drivetrain));
+        chooser.addOption("1: 5 Ball Auto - Bottom Left Start", new AutoRoutine1(climb, drivetrain, indexer, intake, outtake, limelight, shooterDataTable));
+        chooser.addOption("2: 3 Ball Auto - Top Left Start", new AutoRoutine2(climb, drivetrain, indexer, intake, outtake, limelight, shooterDataTable));
 
         xboxButtonSetup();
         configureButtonBindings();
@@ -140,7 +152,7 @@ public class RobotContainer {
 
     // Returns the robot's main autonomous command
     public Command getAutonomousCommand() {
-        return new AutoRoutine6(drivetrain);
+        return chooser.getSelected();
     }
 }
 

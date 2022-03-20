@@ -22,6 +22,7 @@ public class AutoRoutine2 extends SequentialCommandGroup {
                 new WaitCommand(0.75),
                 new ToggleIntake(intake),
                 new ShootTwo(climber, drivetrain, indexer, intake, outtake, limelight, shooterDataTable),
+                //new ShootBalls(climber, drivetrain, indexer, intake, outtake, limelight, shooterDataTable),
                 new AutoRoutine2Part2(drivetrain), //drives to the right to get another ball
                 new ToggleIntake(intake),
                 new WaitCommand(0.75),
@@ -31,6 +32,7 @@ public class AutoRoutine2 extends SequentialCommandGroup {
                         new AutoRoutine2Part3(drivetrain) //bumps opponent ball and gets into a shooting position
                 ),
                 new ShootOne(climber, drivetrain, indexer, intake, outtake, limelight, shooterDataTable)
+                //new ShootBalls(climber, drivetrain, indexer, intake, outtake, limelight, shooterDataTable)
         );
     }
 }
