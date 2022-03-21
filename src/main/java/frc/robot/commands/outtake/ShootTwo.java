@@ -35,8 +35,8 @@ public class ShootTwo extends SequentialCommandGroup {
                     new ParallelDeadlineGroup(
                         new SequentialCommandGroup(
                                 new ParallelDeadlineGroup(
-                                new GuaranteeLimelightDataEquals(limelight, LimelightDataType.HORIZONTAL_OFFSET, 0, 1),
-                                new ManualAdjustTurret(outtake)
+                                    new GuaranteeLimelightDataEquals(limelight, LimelightDataType.HORIZONTAL_OFFSET, 0, 1),
+                                    new ManualAdjustTurret(outtake)
                                 ),
                                 //Shoot Balls
                                     new ShootIndexedBallsForever(indexer, intake).withTimeout(2)
