@@ -32,7 +32,6 @@ public class AutoRoutine2 extends SequentialCommandGroup {
                         new AutoRoutine2Part3(drivetrain) //bumps opponent ball and gets into a shooting position
                 ),
                 new ShootOne(climber, drivetrain, indexer, intake, outtake, limelight, shooterDataTable)
-                //new ShootBalls(climber, drivetrain, indexer, intake, outtake, limelight, shooterDataTable)
         );
     }
 }

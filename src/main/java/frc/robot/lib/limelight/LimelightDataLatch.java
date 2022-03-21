@@ -30,6 +30,7 @@ public class LimelightDataLatch {
     }
 
     public void unlock(double value) {
+        System.out.println(value);
         this.value = value;
         unlocked = true;
     }

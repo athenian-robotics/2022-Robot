@@ -5,6 +5,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -35,6 +36,7 @@ import frc.robot.subsystems.*;
 
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
+import java.util.function.BooleanSupplier;
 
 
 public class RobotContainer {
@@ -60,12 +62,14 @@ public class RobotContainer {
     public static IntakeSubsystem intake = new IntakeSubsystem();
     public static ClimberSubsystem climb = new ClimberSubsystem();
     public static OuttakeSubsystem outtake = new OuttakeSubsystem();
+    //MISC
+    public static DriverStation.Alliance alliance = DriverStation.Alliance.Blue;
     public static ShooterDataTable shooterDataTable;
 
     // Sets up controllers, configures controllers, and sets the default drive mode (tank or arcade)
     public RobotContainer() {
         drivetrain.setDefaultCommand(new ArcadeDrive(drivetrain, xboxController)); // Check for Arcade or Tank
-        outtake.setDefaultCommand(new TurretTurnToGoalWithLimelight(limelight, outtake)); // Check fight stick y-axis for manual hood adjustment
+        outtake.setDefaultCommand(new AlwaysTurretTurnToGoalWithLimelight(limelight, outtake)); // Check fight stick y-axis for manual hood adjustment
         indexer.setDefaultCommand(new QueueBalls(indexer, intake)); //Turns on indexer when sees a ball, sets it to
         // off
         // when there are no balls in sight
@@ -93,7 +97,8 @@ public class RobotContainer {
   // Configures xbox buttons to commands
   private void configureButtonBindings() {
       /*  SUBSYSTEM COMMANDS (Main, functional commands) */
-      //xboxHamburger.whenPressed(new ShootOneBall(drivetrain, indexer, intake, limelight, outtake, shooterDataTable));
+      xboxHamburger.whenPressed(new ShootBalls(climb, drivetrain, indexer, intake, outtake, limelight, shooterDataTable));
+
       FightStick.fightStickA.whenPressed(new ToggleIntake(intake)); // Toggle intake wheels and pneumatics
       xboxX.whenPressed(new ShootTwo(climb, drivetrain, indexer, intake, outtake, limelight, shooterDataTable));
       FightStick.fightStickL3.whenHeld(new PulseIndexer(intake, indexer, true)); // Toggle indexer (tower portion)
@@ -107,6 +112,7 @@ public class RobotContainer {
       //FightStick.fightStickRT.whileActiveOnce(new RightTelescopeSetSpeed(climb, -telescopeSpeed));
       FightStick.fightStickX.whenHeld(new LeftTelescopeSetSpeed(climb, 0.2));
       xboxB.whenHeld(new RunIntakeWithoutPneumatics(intake, indexer));
+      xboxY.whenPressed(new AlwaysTurretTurnToGoalWithLimelight(limelight, outtake));
 
       /* MISC COMMANDS (Random lib of commands. Written using functional commands because most are just one line ) */
       // have fun with this - jason and jacob '22   ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ
@@ -149,6 +155,8 @@ public class RobotContainer {
         limelight.disable();
         outtake.disable();
     }
+
+    public void setAlliance(DriverStation.Alliance alliance) {RobotContainer.alliance = alliance;}
 
     // Returns the robot's main autonomous command
     public Command getAutonomousCommand() {

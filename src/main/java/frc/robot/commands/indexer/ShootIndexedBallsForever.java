@@ -3,32 +3,30 @@ package frc.robot.commands.indexer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.OuttakeSubsystem;
 
 
-//For use only with Command.withTimeout(int seconds) or Button.whenHeld(Command ...). WILL NOT STOP AUTOMATICALLY
-public class PulseIndexer extends CommandBase {
+//Must be ended manually!
+public class ShootIndexedBallsForever extends CommandBase {
     private final IndexerSubsystem indexerSubsystem;
     private final IntakeSubsystem intakeSubsystem;
-    private final boolean up;
 
-    public PulseIndexer(IntakeSubsystem intakeSubsystem, IndexerSubsystem indexerSubsystem, boolean up) {
-        this.intakeSubsystem = intakeSubsystem;
+    public ShootIndexedBallsForever(IndexerSubsystem indexerSubsystem, IntakeSubsystem intakeSubsystem) {
         this.indexerSubsystem = indexerSubsystem;
-        this.up = up;
+        this.intakeSubsystem = intakeSubsystem;
         addRequirements(this.indexerSubsystem, this.intakeSubsystem);
     }
 
     @Override
     public void initialize() {
-        if (up) {
-            indexerSubsystem.startIndexer();
-        } else {
-            indexerSubsystem.reverseIndexer();
-        }
+        intakeSubsystem.startIntakeToIndexerMotor();
+        indexerSubsystem.startIndexer();
+        indexerSubsystem.ballIndexed = false;
     }
 
     @Override
     public void end(boolean interrupted) {
         indexerSubsystem.stopIndexer();
+        intakeSubsystem.stopIntakeToIndexerMotor();
     }
 }

@@ -1,7 +1,10 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.lib.limelight.LimelightDataLatch;
 
@@ -12,7 +15,7 @@ import java.util.LinkedList;
 //YOU DON'T NEED TO REQUIRE LIMELIGHTSUBSYSTEM IN COMMANDS!
 public class LimelightSubsystem extends SubsystemBase {
     public final LimelightDataLatchManager latchManager = new LimelightDataLatchManager();
-    final NetworkTable limelight;
+    NetworkTable limelight; //used to be final?
 
     public LimelightSubsystem(String tableName) {
         this.limelight = NetworkTableInstance.getDefault().getTable(tableName);
@@ -22,10 +25,20 @@ public class LimelightSubsystem extends SubsystemBase {
         latchManager.addLatch(latch);
     }
 
+    public boolean checkGoalNotFound()
+        {
+        Double[] lloutput = (Double[]) limelight.getEntry("llpython").getNumberArray(new Number[]{-1, -1, -1, -1, -1, -1, -1, -9});
+        return lloutput[7] == (double) -1;
+        };
+
+
     public void disable() {latchManager.clearPool();}
 
     public void periodic() {
-        latchManager.update((Double[]) limelight.getEntry("llpython").getNumberArray(new Number[]{-1, -1, -1, -1, -1, -1, -1, -9}));
+        Double[] lloutput = (Double[]) limelight.getEntry("llpython").getNumberArray(new Number[]{-1, -1, -1, -1, -1, -1, -1, -9});
+        latchManager.update(lloutput);
+        SmartDashboard.putNumber("X Offset", lloutput[1]);
+        SmartDashboard.putNumber("Distance from Target", lloutput[0]);
     }
 
 
@@ -35,18 +48,18 @@ public class LimelightSubsystem extends SubsystemBase {
 
         //Updates every pooled latch if there's new data
         public void update(Double[] limelightOutputArray) {
-            if (limelightOutputArray.length == 8)
-                if ((double) limelightOutputArray[7] == (double) 1) {
-                    while (latchPool.size() != 0) {
-                        LimelightDataLatch currentLatch = latchPool.pollFirst();
-                        currentLatch.unlock(limelightOutputArray[currentLatch.limelightDataType.llpythonIndex]);
-                    } return;
+            if (limelightOutputArray.length == 8 && limelightOutputArray[7] == (double) 1) {
+                while (latchPool.size() != 0) {
+                    LimelightDataLatch currentLatch = latchPool.pollFirst();
+                    currentLatch.unlock(limelightOutputArray[currentLatch.limelightDataType.llpythonIndex]);
                 }
-            latchPool.removeIf(LimelightDataLatch::expired);
+            } else {
+                latchPool.removeIf(LimelightDataLatch::expired);
+            }
         }
 
         private void addLatch(LimelightDataLatch latch) {
-            latchPool.addLast(latch);
+            latchPool.addFirst(latch);
         }
 
         private void clearPool() {

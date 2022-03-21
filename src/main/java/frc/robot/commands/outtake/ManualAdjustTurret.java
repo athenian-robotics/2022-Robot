@@ -18,9 +18,9 @@ public class ManualAdjustTurret extends CommandBase {
 
     @Override
     public void execute() {
-        if (FightStick.fightStickJoystick.getX() < 0) { //TURRET ADJUSTMENT FALCON
+        if (FightStick.fightStickJoystick.getX() < 0.5) { //TURRET ADJUSTMENT FALCON
             outtakeSubsystem.turnTurret(-turretTurnSpeed);
-        } else if (FightStick.fightStickJoystick.getX() > 0) {
+        } else if (FightStick.fightStickJoystick.getX() > 0.5) {
             outtakeSubsystem.turnTurret(turretTurnSpeed);
         } else {
             outtakeSubsystem.turnTurret(0);

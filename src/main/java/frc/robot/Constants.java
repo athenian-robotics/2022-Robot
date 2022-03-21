@@ -61,14 +61,14 @@ public final class Constants {
         public static final int intakeToIndexerMotorPort = 13;
         public static final double indexerSpeed = 0.25; //0.25
         public static final double intakeToIndexerSpeed = 0.2;
-        public static final int intakeToIndexerResidualIndexTimeMillis = 750;
+        public static final int intakeToIndexerResidualIndexTimeMillis = 700;
         //CLIMBER
         public static final int leftClimberMotorPort = 15;
         public static final int rightClimberMotorPort = 16;
         public static final double telescopeSpeed = 0.2;
         // TURRET
         public static final int turretMotorPort = 10;
-        public static final double turretTurnSpeed = 0.2;
+        public static final double turretTurnSpeed = 0.12;
         // SHOOTER
         public static final int shooterMotorPortA = 7;
         public static final int shooterMotorPortB = 8;
@@ -79,8 +79,7 @@ public final class Constants {
         public static final double maximumTurretAngle = 90;
         public static final double minimumTurretAngle = -210;
         // MAX MECHANISM SPEEDS
-        public static final double idleOuttakeSpeed = 0.35;
-        public static final double intakeSpeed = 0.3; //0 to 1
+        public static final double intakeSpeed = 0.3; //0.3
 
         // Climber motor ports ...
     }
@@ -113,5 +112,15 @@ public final class Constants {
         public static double modelDeviation = 0.075;
         public static double encoderDeviation = 0.02;
         public static double hoodToHub = 0.9207;
+    }
+    public static final class Turret {
+        public static final double ks = 0.83559;
+        public static final double ka = 0.00056228;
+        public static final double kv = 0.027068;
+
+        public static double maxError = .5;
+        public static double maxControlEffort = 2;
+        public static double modelDeviation = 0.075;
+        public static double encoderDeviation = 0.02;
     }
 }

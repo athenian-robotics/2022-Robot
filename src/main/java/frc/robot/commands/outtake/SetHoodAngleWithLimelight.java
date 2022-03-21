@@ -15,6 +15,8 @@ public class SetHoodAngleWithLimelight extends CommandBase {
     private final LimelightSubsystem limelightSubsystem;
     private final OuttakeSubsystem outtakeSubsystem;
     private final LimelightDataLatch latch;
+    private double angle;
+    private long timeout = Long.MAX_VALUE;
 
     public SetHoodAngleWithLimelight(ShooterDataTable shooterDataTable, LimelightSubsystem limelightSubsystem, OuttakeSubsystem outtakeSubsystem) {
         this.shooterDataTable = shooterDataTable;
@@ -33,7 +35,9 @@ public class SetHoodAngleWithLimelight extends CommandBase {
     public boolean isFinished() {
         try {
             return latch.unlocked();
-        } catch (GoalNotFoundException ignored) {return true;}
+        } catch (GoalNotFoundException e) {
+            return true;
+        }
     }
 
     @Override

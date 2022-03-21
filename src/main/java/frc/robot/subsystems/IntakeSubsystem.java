@@ -113,7 +113,6 @@ public class IntakeSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         SmartDashboard.putBoolean("Intake Active", isRunning);
-        intakeNTE.setBoolean(isRunning);
     }
 }
 

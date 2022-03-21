@@ -21,7 +21,6 @@ public class AutoRoutine1 extends SequentialCommandGroup {
                 new AutoRoutine1Part1(drivetrain), //moves down to ball under starting position
                 new ToggleIntake(intake),
                 new ShootOne(climber, drivetrain, indexer, intake, outtake, limelight, shooterDataTable),
-                //new ShootBalls(climber, drivetrain, indexer, intake, outtake, limelight, shooterDataTable),
                 new ToggleIntake(intake),
                 new ParallelCommandGroup(
                         new TurretTurnToAngle(outtake, 78.14),
@@ -31,7 +30,6 @@ public class AutoRoutine1 extends SequentialCommandGroup {
                 new WaitCommand(0.75),
                 new ToggleIntake(intake),
                 new ShootTwo(climber, drivetrain, indexer, intake, outtake, limelight, shooterDataTable),
-                //new ShootBalls(climber, drivetrain, indexer, intake, outtake, limelight, shooterDataTable),
                 new AutoRoutine1Part3(drivetrain), //drives to human player terminal
                 new ToggleIntake(intake),
                 new WaitCommand(1),
@@ -41,7 +39,6 @@ public class AutoRoutine1 extends SequentialCommandGroup {
                         new AutoRoutine1Part4(drivetrain) //drives back closer to the goal
                 ),
                 new ShootTwo(climber, drivetrain, indexer, intake, outtake, limelight, shooterDataTable)
-                //new ShootBalls(climber, drivetrain, indexer, intake, outtake, limelight, shooterDataTable)
         );
     }
 }

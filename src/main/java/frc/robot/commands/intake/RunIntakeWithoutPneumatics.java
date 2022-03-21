@@ -6,6 +6,7 @@ import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 
 
+//MUST BE ENDED MANUALLY
 public class RunIntakeWithoutPneumatics extends CommandBase {
     private final IntakeSubsystem intakeSubsystem;
     private final IndexerSubsystem indexerSubsystem;
