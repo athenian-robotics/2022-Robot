@@ -23,6 +23,8 @@ public class IndexerSubsystem extends SubsystemBase {
     private final TalonFX indexerMotor = new TalonFX(indexerMotorPort);
     private final ColorWheelUtils colorWheelUtils = new ColorWheelUtils();
 
+    private final NetworkTableEntry indexerNTE;
+
     public WheelColors currentColor = WheelColors.GREEN;
     public double currentProximity = 0;
     public boolean ballIndexed = false;
@@ -31,6 +33,10 @@ public class IndexerSubsystem extends SubsystemBase {
 
     public IndexerSubsystem() {
         indexerMotor.setInverted(false);
+
+        indexerNTE = Shuffleboard.getTab("852 - Dashboard")
+                .add("Indexer Active", false)
+                .getEntry();
     }
 
     public void startIndexer() {

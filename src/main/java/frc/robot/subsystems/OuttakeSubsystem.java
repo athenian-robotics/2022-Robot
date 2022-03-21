@@ -29,6 +29,7 @@ public class OuttakeSubsystem extends SubsystemBase {
     private final Servo leftHoodAngleServo = new Servo(2);
     private final Servo rightHoodAngleServo = new Servo(3);
 
+
     private final NetworkTableEntry shooterAdjustmentNTE;
     public final PIDController turretAnglePID;
     public final PIDController limelightTurretAnglePID;
@@ -168,8 +169,6 @@ public class OuttakeSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Turret Angle", getTurretAngle());
         SmartDashboard.putNumber("Shooter Power", shooterRPS);
 
-        //shuffleboardShooterPower=shooterNTE.getDouble(0);
-        //setHoodAngle(turretAngleNTE.getDouble(8));
         shuffleboardShooterAdjustment = shooterAdjustmentNTE.getDouble(1);
 
         if (shooterRunning) {
