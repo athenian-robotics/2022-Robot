@@ -12,7 +12,6 @@ public class AlwaysTurretTurnToGoalWithLimelight extends CommandBase {
     private final LimelightSubsystem limelightSubsystem;
     private final OuttakeSubsystem outtakeSubsystem;
     private LimelightDataLatch offsetLatch;
-    private double offset = Double.MAX_VALUE;
 
     public AlwaysTurretTurnToGoalWithLimelight(LimelightSubsystem limelightSubsystem, OuttakeSubsystem outtakeSubsystem) {
         this.limelightSubsystem = limelightSubsystem;
@@ -23,23 +22,23 @@ public class AlwaysTurretTurnToGoalWithLimelight extends CommandBase {
 
     @Override
     public void initialize() {
-        outtakeSubsystem.limelightTurretAnglePID.reset();
         limelightSubsystem.addLatch(offsetLatch.reset());
-        offset = Double.MAX_VALUE;
     }
 
     @Override
     public void execute() {
         try {
             if (offsetLatch.unlocked()) {
-                offset = offsetLatch.open();
-                outtakeSubsystem.getTurretAngle();
-                outtakeSubsystem.turnTurret(-outtakeSubsystem.limelightTurretAnglePID.calculate(offset));
+                outtakeSubsystem.setTurretPosition(offsetLatch.open() + outtakeSubsystem.getTurretAngle());
                 throw new GoalNotFoundException(); //shortcut to latch reset  vvv  (since we've expended it)
             }
         } catch (GoalNotFoundException e) {
-            offsetLatch = new LimelightDataLatch(LimelightDataType.HORIZONTAL_OFFSET, 5);
-            limelightSubsystem.addLatch(offsetLatch); //assuming we want to look for the goal forever
+            limelightSubsystem.addLatch(offsetLatch.reset()); //assuming we want to look for the goal forever
         }
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        outtakeSubsystem.stopTurret();
     }
 }

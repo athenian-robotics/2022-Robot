@@ -56,7 +56,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
         drive = new DifferentialDrive(leftMotors, rightMotors); // Initialize Differential Drive
 
         // Configure encoders
-        rightEncoder = new Encoder(rightEncoderChannelA, rightEncoderchannelB, true, Encoder.EncodingType.k2X);
+        rightEncoder = new Encoder(rightEncoderChannelA, rightEncoderchannelB, false, Encoder.EncodingType.k2X);
         leftEncoder = new Encoder(leftEncoderChannelA, leftEncoderChannelB, false, Encoder.EncodingType.k2X);
         leftEncoder.setDistancePerPulse(wheelDiameter * 0.0254 * Math.PI * driveGearRatio / 2048); // 6-inch wheel, to meters, PI for circumference, gear conversion, 2048 ticks per rotation
         rightEncoder.setDistancePerPulse(wheelDiameter * 0.0254 * Math.PI * driveGearRatio / 2048); // 6-inch wheel, to meters, PI for circumference, gear conversion, 2048 ticks per rotation
@@ -64,6 +64,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
         //Configure solenoids
         driveShifterRight.set(DoubleSolenoid.Value.kReverse);
         driveShifterLeft.set(DoubleSolenoid.Value.kReverse);
+
+        odometry = new DifferentialDriveOdometry(new Rotation2d(getHeading()));
     }
 
     /**
@@ -140,9 +142,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
      * @param rot Robot's rotation as a Rotation2d object
      */
     public void resetOdometry(Pose2d pose, Rotation2d rot) {
-        //setGyroOffset(rot.getDegrees());
+        setGyroOffset(-rot.getDegrees());
         odometry.resetPosition(pose, rot);
-        // resetEncoderCounts();
+        resetEncoders();
     }
 
     public int getLeftEncoderCount() { return this.leftEncoder.get(); } // Returns left encoder raw count
@@ -217,7 +219,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Right Drive Encoder: ", getRightEncoderCount());
         SmartDashboard.putNumber("Left Drive Distance: ", getLeftDistanceDriven());
         SmartDashboard.putNumber("Right Drive Distance: ", getRightDistanceDriven());
-             //odometry.update(Rotation2d.fromDegrees(gyro.getAngle()), leftEncoder.getDistance(), rightEncoder.getDistance());
+        odometry.update(Rotation2d.fromDegrees(getHeading()), leftEncoder.getDistance(), rightEncoder.getDistance());
     }
 }
 

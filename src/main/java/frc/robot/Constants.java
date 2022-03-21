@@ -40,7 +40,7 @@ public final class Constants {
          * MISC CONSTANTS
          **/
         public static final double trackWidth = Units.inchesToMeters(28);
-        public static final double driveGearRatio = 4 / 3.0;
+        public static final double driveGearRatio = 1;
         public static final double wheelDiameter = 6.0; // 6 in.
 
         public static final double minDriveSpeed = 0.1;
@@ -69,6 +69,7 @@ public final class Constants {
         // TURRET
         public static final int turretMotorPort = 10;
         public static final double turretTurnSpeed = 0.12;
+        public static final double slowTurretTurnSpeed = 0.09;
         // SHOOTER
         public static final int shooterMotorPortA = 7;
         public static final int shooterMotorPortB = 8;
@@ -111,15 +112,15 @@ public final class Constants {
         public static double maxControlEffort = 12;
         public static double modelDeviation = 0.075;
         public static double encoderDeviation = 0.02;
-        public static double hoodToHub = 0.9207;
     }
+
     public static final class Turret {
-        public static final double ks = 0.83559;
-        public static final double ka = 0.00056228;
-        public static final double kv = 0.027068;
+        public static final double ks = 0.74398;
+        public static final double ka = 0.00049495;
+        public static final double kv = 0.0032092;
 
         public static double maxError = .5;
-        public static double maxControlEffort = 2;
+        public static double maxControlEffort = 12;
         public static double modelDeviation = 0.075;
         public static double encoderDeviation = 0.02;
     }

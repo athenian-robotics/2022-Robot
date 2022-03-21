@@ -25,8 +25,10 @@ public class ShootOne extends SequentialCommandGroup {
                     new DisableIntake(intake),
                     //Align to shoot
                     new ParallelDeadlineGroup(new GuaranteeLimelightData(limelight), new ManualAdjustTurret(outtake)),
-                    new SetHoodAngleWithLimelight(shooterDataTable, limelight, outtake),
+                    new ParallelCommandGroup(
                     new SetShooterPowerWithLimelight(shooterDataTable, limelight, outtake),
+                    new SetHoodAngleWithLimelightTimeSafe(shooterDataTable, limelight, outtake)
+                        ),
                     new AlwaysTurretTurnToGoalWithLimelight(limelight, outtake).withTimeout(0.75),
                     new ParallelDeadlineGroup(
                         new SequentialCommandGroup(
@@ -40,8 +42,10 @@ public class ShootOne extends SequentialCommandGroup {
                             new AlwaysTurretTurnToGoalWithLimelight(limelight, outtake)
                     ),
                     //Return to teleop
-                    new DisableShooter(outtake),
-                    new SetHoodAngle(outtake, Constants.MechanismConstants.defaultHoodAngle)
+                    new ParallelCommandGroup(
+                            new SetShooterPowerWithLimelight(shooterDataTable, limelight, outtake),
+                            new SetHoodAngleWithLimelightTimeSafe(shooterDataTable, limelight, outtake)
+                    )
             );
     }
 }

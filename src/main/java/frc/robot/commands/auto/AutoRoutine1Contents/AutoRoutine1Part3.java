@@ -62,7 +62,7 @@ public class AutoRoutine1Part3 extends CommandBase {
                 drivetrainSubsystem);
 
         // Reset odometry to the starting pose of the trajectory.
-        drivetrainSubsystem.resetOdometry(exampleTrajectory.getInitialPose());
+        //drivetrainSubsystem.resetOdometry(exampleTrajectory.getInitialPose());
         // Run path following command, then stop at the end.
     }
 

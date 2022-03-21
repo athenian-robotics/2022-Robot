@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.lib.controllers.FightStick;
 import frc.robot.subsystems.OuttakeSubsystem;
 
+import static frc.robot.Constants.MechanismConstants.slowTurretTurnSpeed;
 import static frc.robot.Constants.MechanismConstants.turretTurnSpeed;
 
 
@@ -13,16 +14,21 @@ public class ManualAdjustTurret extends CommandBase {
 
     public ManualAdjustTurret(OuttakeSubsystem outtakeSubsystem) {
         this.outtakeSubsystem = outtakeSubsystem;
-        addRequirements(this.outtakeSubsystem);
+        addRequirements();
     }
 
     @Override
     public void execute() {
-        if (FightStick.fightStickJoystick.getX() < 0.5) { //TURRET ADJUSTMENT FALCON
+        if (FightStick.fightStickJoystick.getX() < -0.5) { //TURRET ADJUSTMENT FALCON
             outtakeSubsystem.turnTurret(-turretTurnSpeed);
         } else if (FightStick.fightStickJoystick.getX() > 0.5) {
             outtakeSubsystem.turnTurret(turretTurnSpeed);
-        } else {
+        }else if (FightStick.fightStickJoystick.getY() < -0.5) { //TURRET ADJUSTMENT FALCON
+                outtakeSubsystem.turnTurret(-slowTurretTurnSpeed);
+        } else if (FightStick.fightStickJoystick.getY() > 0.5) {
+                outtakeSubsystem.turnTurret(slowTurretTurnSpeed);
+            }
+        else {
             outtakeSubsystem.turnTurret(0);
         }
     }

@@ -36,8 +36,10 @@ public class ShootBalls extends SequentialCommandGroup {
                           new ManualAdjustTurret(outtake)
                     ),
                     //Align and shoot first
-                    new SetHoodAngleWithLimelight(shooterDataTable, limelight, outtake),
-                    new SetShooterPowerWithLimelight(shooterDataTable, limelight, outtake),
+                    new ParallelCommandGroup(
+                            new SetShooterPowerWithLimelight(shooterDataTable, limelight, outtake),
+                            new SetHoodAngleWithLimelightTimeSafe(shooterDataTable, limelight, outtake)
+                    ),
                     new ParallelDeadlineGroup(
                             new ConditionalCommand(
                                     new SequentialCommandGroup(
@@ -63,8 +65,10 @@ public class ShootBalls extends SequentialCommandGroup {
                             new AlwaysTurretTurnToGoalWithLimelight(limelight, outtake)
                     ),
                     //Align and shoot second
-                    new SetHoodAngleWithLimelight(shooterDataTable, limelight, outtake),
-                    new SetShooterPowerWithLimelight(shooterDataTable, limelight, outtake),
+                    new ParallelCommandGroup(
+                            new SetShooterPowerWithLimelight(shooterDataTable, limelight, outtake),
+                            new SetHoodAngleWithLimelightTimeSafe(shooterDataTable, limelight, outtake)
+                    ),
                     new ParallelDeadlineGroup(
                             new ConditionalCommand(
                                     new SequentialCommandGroup(
@@ -90,8 +94,10 @@ public class ShootBalls extends SequentialCommandGroup {
                             new AlwaysTurretTurnToGoalWithLimelight(limelight, outtake)
                     ),
                     //Return to teleop
-                    new DisableShooter(outtake),
-                    new SetHoodAngle(outtake, Constants.MechanismConstants.defaultHoodAngle)
+                    new ParallelCommandGroup(
+                            new DisableShooter(outtake),
+                            new SetHoodAngle(outtake, Constants.MechanismConstants.defaultHoodAngle)
+                    )
             );
     }
 }

@@ -19,6 +19,7 @@ public class ShootIndexedBallsForever extends CommandBase {
 
     @Override
     public void initialize() {
+        intakeSubsystem.startIntake();
         intakeSubsystem.startIntakeToIndexerMotor();
         indexerSubsystem.startIndexer();
         indexerSubsystem.ballIndexed = false;
@@ -27,6 +28,7 @@ public class ShootIndexedBallsForever extends CommandBase {
     @Override
     public void end(boolean interrupted) {
         indexerSubsystem.stopIndexer();
+        intakeSubsystem.stopIntake();
         intakeSubsystem.stopIntakeToIndexerMotor();
     }
 }

@@ -2,22 +2,21 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.lib.controllers.SimplePositionSystem;
 import frc.robot.lib.controllers.SimpleVelocitySystem;
 
 import java.util.Map;
 
+import static com.ctre.phoenix.motorcontrol.TalonFXControlMode.PercentOutput;
 import static frc.robot.Constants.MechanismConstants.*;
 
 public class OuttakeSubsystem extends SubsystemBase {
@@ -31,15 +30,15 @@ public class OuttakeSubsystem extends SubsystemBase {
 
 
     private final NetworkTableEntry shooterAdjustmentNTE;
-    public final PIDController turretAnglePID;
-    public final PIDController limelightTurretAnglePID;
+
+    private final PIDController turretPID;
 
     public boolean shooterRunning = false;
+    public boolean turretRunning = false;
     public double shuffleboardShooterPower;
     public double shuffleboardShooterAdjustment;
 
     private final SimpleVelocitySystem sys;
-    private final SimplePositionSystem syst;
     private double shooterRPS = 0;
 
     public OuttakeSubsystem() {
@@ -47,10 +46,13 @@ public class OuttakeSubsystem extends SubsystemBase {
         shooterMotorBack.setInverted(false);
         turretMotor.setInverted(false);
 
-        turretMotor.setNeutralMode(NeutralMode.Coast);
+        turretMotor.setNeutralMode(NeutralMode.Brake);
         shooterMotorFront.setNeutralMode(NeutralMode.Coast);
         shooterMotorBack.setNeutralMode(NeutralMode.Coast);
         shooterMotorBack.follow(shooterMotorFront);
+
+        turretPID = new PIDController(0.007,0.001,0.001);
+        turretPID.setTolerance(0.5);
 
         leftHoodAngleServo.setBounds(2.0, 1.8, 1.5, 1.2, 1.0); //Manufacturer specified for Actuonix linear servos
         rightHoodAngleServo.setBounds(2.0, 1.8, 1.5, 1.2, 1.0); //Manufacturer specified for Actuonix linear servos
@@ -58,29 +60,20 @@ public class OuttakeSubsystem extends SubsystemBase {
         shooterAdjustmentNTE = Shuffleboard.getTab("852 - Dashboard")
                 .add("Shooter Power Adjustment", 1)
                 .withWidget(BuiltInWidgets.kNumberSlider)
-                .withProperties(Map.of("min", 0.8, "max", 1.2, "default value", 1))
+                .withProperties(Map.of("min", 0.75, "max", 1.25, "default value", 1))
                 .getEntry();
-
-        turretAnglePID = new PIDController(0.007, 0.001, 0.001);
-        turretAnglePID.setSetpoint(0); //Always trying to minimize our offset
-        turretAnglePID.setTolerance(0.5);
-
-        limelightTurretAnglePID = new PIDController(0.007, 0.001, 0.0012);
-//        //(0.006, 0.00085, 0.004);
-        limelightTurretAnglePID.setSetpoint(0);
-        limelightTurretAnglePID.setTolerance(1);
 
         shooterMotorFront.configVoltageCompSaturation(12);
         shooterMotorBack.configVoltageCompSaturation(12);
         shooterMotorFront.enableVoltageCompensation(true);
         shooterMotorBack.enableVoltageCompensation(true);
+
         sys = new SimpleVelocitySystem(Constants.Shooter.ks, Constants.Shooter.kv, Constants.Shooter.ka,
                 Constants.Shooter.maxError, Constants.Shooter.maxControlEffort,
                 Constants.Shooter.modelDeviation, Constants.Shooter.encoderDeviation,
                 Constants.looptime);
 
-        setTurretAngle(0); //assume default position is turret starting counterclockwise backwards
-        syst = new SimplePositionSystem(Constants.Turret.ks, Constants.Turret.kv, Constants.Turret.ka, Constants.Turret.maxError, Constants.Turret.maxControlEffort, Constants.Turret.modelDeviation, Constants.Turret.encoderDeviation, Constants.looptime);
+        setTurretStartingAngle(-180); //assume default position is turret starting facing backwards counterclockwise
     }
 
     public void setShooterPower(double power) { // Enables both wheels
@@ -107,9 +100,10 @@ public class OuttakeSubsystem extends SubsystemBase {
     public void turnTurret(double power) {
         if (getTurretAngle() < maximumTurretAngle && power > 0 || getTurretAngle() > minimumTurretAngle && power < 0) {
             turretMotor.set(ControlMode.PercentOutput, power > turretTurnSpeed ? turretTurnSpeed : Math.max(power, -turretTurnSpeed));
+        } else if (power == 0.0) {
+            stopTurret();
         } else turretMotor.set(ControlMode.PercentOutput, 0);
     }
-
 
     public void setHoodAngle(double angle) {
         if (angle >= minimumHoodAngle && angle <= maximumHoodAngle) {
@@ -134,25 +128,21 @@ public class OuttakeSubsystem extends SubsystemBase {
     }
 
     public void stopTurret() {
-        turretMotor.set(TalonFXControlMode.PercentOutput, 0);
-        turretAnglePID.reset();
+        turretMotor.set(PercentOutput, 0);
+        turretRunning = false;
     }
 
-    public double getFrontShooterAcceleration() {
-        return shooterMotorFront.getErrorDerivative();
-    }
-
-    public double getBackShooterAcceleration() {
-        return shooterMotorBack.getErrorDerivative();
-    }
-
-    public void setTurretAngle(double position) {
+    public void setTurretStartingAngle(double position) {
         //Primarily for use in auto routines where we need to know where the shooter starts
         turretMotor.setSelectedSensorPosition(2048 * position / 36);
     }
 
     public double getTurretAngle() {
         return turretMotor.getSelectedSensorPosition() * 36 / 2048;
+    }
+
+    public void setTurretPosition(double position){
+        turretPID.setSetpoint(position); turretRunning = true;
     }
 
     public void disable() {
@@ -170,6 +160,9 @@ public class OuttakeSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Shooter Power", shooterRPS);
 
         shuffleboardShooterAdjustment = shooterAdjustmentNTE.getDouble(1);
+
+        if (turretRunning)
+            turnTurret(turretPID.calculate(getTurretAngle()));
 
         if (shooterRunning) {
             sys.update(getWheelSpeed());

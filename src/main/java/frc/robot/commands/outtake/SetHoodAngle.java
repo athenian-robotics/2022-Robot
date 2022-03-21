@@ -10,7 +10,7 @@ public class SetHoodAngle extends InstantCommand {
 
     public SetHoodAngle(OuttakeSubsystem outtakeSubsystem, double angle) {
         this.outtakeSubsystem = outtakeSubsystem; this.angle = angle;
-        addRequirements(this.outtakeSubsystem);
+        addRequirements();
     }
 
     @Override

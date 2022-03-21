@@ -1,6 +1,7 @@
 package frc.robot.commands.auto;
 
 import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -49,7 +50,7 @@ public class AutoRoutine6 extends CommandBase {
 
         // An example trajectory to follow.  All units in meters.
         // create a new trajectory 1 meter forward
-        Trajectory exampleTrajectory = PathPlanner.loadPath("New Path", 3, 3);
+        PathPlannerTrajectory exampleTrajectory = PathPlanner.loadPath("New Path", 3, 3);
 
         this.ramseteCommand = new RamseteCommand(
                 exampleTrajectory,

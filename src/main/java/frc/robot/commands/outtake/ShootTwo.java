@@ -27,23 +27,27 @@ public class ShootTwo extends SequentialCommandGroup {
                     new DisableIntake(intake),
                     //Align to shoot
                     new ParallelDeadlineGroup(new GuaranteeLimelightData(limelight), new ManualAdjustTurret(outtake)),
-                    new SetHoodAngleWithLimelight(shooterDataTable, limelight, outtake),
-                    new SetShooterPowerWithLimelight(shooterDataTable, limelight, outtake),
+                    new ParallelCommandGroup(
+                            new SetShooterPowerWithLimelight(shooterDataTable, limelight, outtake),
+                            new SetHoodAngleWithLimelightTimeSafe(shooterDataTable, limelight, outtake)
+                    ),
                     new AlwaysTurretTurnToGoalWithLimelight(limelight, outtake).withTimeout(0.75),
                     new ParallelDeadlineGroup(
                         new SequentialCommandGroup(
+                                new ParallelDeadlineGroup(
                                 new GuaranteeLimelightDataEquals(limelight, LimelightDataType.HORIZONTAL_OFFSET, 0, 1),
-                                //Shoot 1st
-                                new ParallelCommandGroup(
-                                        new PulseIntakeToIndexerMotor(intake).withTimeout(0.3),
-                                        new ShootIndexedBallsForever(indexer, intake).withTimeout(1.5)
-                                    )
+                                new ManualAdjustTurret(outtake)
+                                ),
+                                //Shoot Balls
+                                    new ShootIndexedBallsForever(indexer, intake).withTimeout(2)
                                 ),
                         new AlwaysTurretTurnToGoalWithLimelight(limelight, outtake)
                     ),
                     //Return to teleop
-                    new DisableShooter(outtake),
-                    new SetHoodAngle(outtake, Constants.MechanismConstants.defaultHoodAngle)
+                    new ParallelCommandGroup(
+                            new DisableShooter(outtake),
+                            new SetHoodAngle(outtake, Constants.MechanismConstants.defaultHoodAngle)
+                    )
             );
     }
 }
