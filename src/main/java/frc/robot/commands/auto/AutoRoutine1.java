@@ -16,7 +16,9 @@ import frc.robot.lib.shooterData.ShooterDataTable;
 import frc.robot.subsystems.*;
 
 public class AutoRoutine1 extends SequentialCommandGroup {
-    public AutoRoutine1(ClimberSubsystem climber, DrivetrainSubsystem drivetrain, IndexerSubsystem indexer, IntakeSubsystem intake, OuttakeSubsystem outtake, LimelightSubsystem limelight, ShooterDataTable shooterDataTable) {
+    public AutoRoutine1(ClimberSubsystem climber, DrivetrainSubsystem drivetrain, IndexerSubsystem indexer,
+                        IntakeSubsystem intake, OuttakeSubsystem outtake, LimelightSubsystem limelight,
+                        ShooterDataTable shooterDataTable) {
         addCommands(
                 new AutoRoutine1Part1(drivetrain), //moves down to ball under starting position
                 new ToggleIntake(intake),

@@ -1,10 +1,14 @@
 package frc.robot.lib.limelight;
 
 
-//A LimelightDataLatch allows a command to put in a request for Limelight data, check if it has arrived, and retrieve it when it's ready.
-//Throws a GoalNotFoundException when it times out without receiving data. timeoutSeconds is customizable but has a default value of a quarter second.
-//Unlocked DataLatches (unlocked() == true) MUST BE RESET AND RESCHEDULED to retrieve new data. The simplest way is to call limelightSubsystem.addLatch(YOUR_LATCH.reset());
-//I've left open() free of GoalNotFoundException because I trust you to always check unlocked() == true before opening the latch
+//A LimelightDataLatch allows a command to put in a request for Limelight data, check if it has arrived, and retrieve
+// it when it's ready.
+//Throws a GoalNotFoundException when it times out without receiving data. timeoutSeconds is customizable but has a
+// default value of a quarter second.
+//Unlocked DataLatches (unlocked() == true) MUST BE RESET AND RESCHEDULED to retrieve new data. The simplest way is
+// to call limelightSubsystem.addLatch(YOUR_LATCH.reset());
+//I've left open() free of GoalNotFoundException because I trust you to always check unlocked() == true before
+// opening the latch
 public class LimelightDataLatch {
     public final LimelightDataType limelightDataType;
     private final long timeoutMillis;
@@ -36,7 +40,8 @@ public class LimelightDataLatch {
 
     public boolean unlocked() throws GoalNotFoundException {
         if (System.currentTimeMillis() - timeoutTimerStartMillis > timeoutMillis) {
-            expired = true; throw new GoalNotFoundException();
+            expired = true;
+            throw new GoalNotFoundException();
         } else {
             return unlocked;
         }
@@ -47,7 +52,9 @@ public class LimelightDataLatch {
     }
 
     public double open() {
-        if (!unlocked) System.out.println("ERROR! Latch " + this + " for " + limelightDataType.toString() + " was opened before it was unlocked!");
+        if (!unlocked)
+            System.out.println("ERROR! Latch " + this + " for " + limelightDataType.toString() + " was opened before " +
+                    "it was unlocked!");
         return value;
     }
 

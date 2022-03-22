@@ -13,7 +13,8 @@ public class AlwaysTurretTurnToGoalWithLimelight extends CommandBase {
     private final OuttakeSubsystem outtakeSubsystem;
     private LimelightDataLatch offsetLatch;
 
-    public AlwaysTurretTurnToGoalWithLimelight(LimelightSubsystem limelightSubsystem, OuttakeSubsystem outtakeSubsystem) {
+    public AlwaysTurretTurnToGoalWithLimelight(LimelightSubsystem limelightSubsystem,
+                                               OuttakeSubsystem outtakeSubsystem) {
         this.limelightSubsystem = limelightSubsystem;
         this.outtakeSubsystem = outtakeSubsystem;
         offsetLatch = new LimelightDataLatch(LimelightDataType.HORIZONTAL_OFFSET, 5);

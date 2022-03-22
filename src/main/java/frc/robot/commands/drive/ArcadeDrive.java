@@ -21,7 +21,7 @@ public class ArcadeDrive extends CommandBase {
     @Override
     public void execute() {
         drivetrain.arcadeDrive(controller.getLeftY(), // Throttle (Xbox Controller: Left stick, Y axis)
-                               -controller.getRightX()); // Rotation (Xbox controller: Right stick, X axis)
+                -controller.getRightX()); // Rotation (Xbox controller: Right stick, X axis)
     }
 
     @Override

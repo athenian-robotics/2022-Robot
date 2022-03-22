@@ -17,9 +17,14 @@ public class ColorWheelUtils {
 
     public ColorWheelUtils() {}
 
-    private void updateString(String currentColor) { SmartDashboard.putString("Current Color", currentColor); }
+    private void updateString(String currentColor) {SmartDashboard.putString("Current Color", currentColor);}
 
-    private void resetIsColorBooleans() { isRed = false; isBlue = false; isGreen = false; isYellow = false; }
+    private void resetIsColorBooleans() {
+        isRed = false;
+        isBlue = false;
+        isGreen = false;
+        isYellow = false;
+    }
 
     public WheelColors currentColor() {
         WheelColors currentColor;

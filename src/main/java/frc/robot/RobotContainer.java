@@ -22,7 +22,10 @@ import frc.robot.commands.indexer.PulseIndexer;
 import frc.robot.commands.indexer.QueueBalls;
 import frc.robot.commands.intake.RunIntakeWithoutPneumatics;
 import frc.robot.commands.intake.ToggleIntake;
-import frc.robot.commands.outtake.*;
+import frc.robot.commands.outtake.AlwaysTurretTurnToGoalWithLimelight;
+import frc.robot.commands.outtake.DisableShooter;
+import frc.robot.commands.outtake.EnableShooter;
+import frc.robot.commands.outtake.ShootTwo;
 import frc.robot.lib.controllers.FightStick;
 import frc.robot.lib.shooterData.ShooterDataTable;
 import frc.robot.subsystems.*;
@@ -77,7 +80,7 @@ public class RobotContainer {
                 shooterDataTable = (ShooterDataTable) obj;
                 System.out.println("Checking 2.5m data in shooterDataTable: " + shooterDataTable.getSpecs(2.5));
             }
-        }catch(Exception e){
+        } catch (Exception e) {
             System.out.println("file not found, or class not found");
         }
 
@@ -113,15 +116,15 @@ public class RobotContainer {
       xboxB.whenHeld(new RunIntakeWithoutPneumatics(intake, indexer));
       xboxY.whenPressed(new AlwaysTurretTurnToGoalWithLimelight(limelight, outtake));
 
-      /* MISC COMMANDS (Random lib of commands. Written using functional commands because most are just one line ) */
-      // have fun with this - jason and jacob '22   ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ
-      xboxSquares.whenPressed(new FunctionalCommand(  // Toggle drive mode
-              () -> {
-                  if (drivetrain.getDefaultCommand() instanceof ArcadeDrive)
-                      drivetrain.setDefaultCommand(new TankDrive(drivetrain, xboxController));
-                  else drivetrain.setDefaultCommand(new ArcadeDrive(drivetrain, xboxController));
-              }, () -> {
-      }, interrupted -> {
+        /* MISC COMMANDS (Random lib of commands. Written using functional commands because most are just one line ) */
+        // have fun with this - jason and jacob '22   ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ
+        xboxSquares.whenPressed(new FunctionalCommand(  // Toggle drive mode
+                () -> {
+                    if (drivetrain.getDefaultCommand() instanceof ArcadeDrive)
+                        drivetrain.setDefaultCommand(new TankDrive(drivetrain, xboxController));
+                    else drivetrain.setDefaultCommand(new ArcadeDrive(drivetrain, xboxController));
+                }, () -> {
+        }, interrupted -> {
         }, () -> true, drivetrain));
         xboxLP.whenPressed(new FunctionalCommand(() -> drivetrain.shiftDown(), () -> {
         }, interrupted -> {

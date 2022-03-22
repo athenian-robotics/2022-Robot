@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.lib.limelight.LimelightDataLatch;
 
-import java.util.Iterator;
 import java.util.LinkedList;
 
 

@@ -16,7 +16,8 @@ public class SetShooterPowerWithLimelight extends CommandBase {
     private final OuttakeSubsystem outtakeSubsystem;
     private final LimelightDataLatch latch;
 
-    public SetShooterPowerWithLimelight(ShooterDataTable shooterDataTable, LimelightSubsystem limelightSubsystem, OuttakeSubsystem outtakeSubsystem) {
+    public SetShooterPowerWithLimelight(ShooterDataTable shooterDataTable, LimelightSubsystem limelightSubsystem,
+                                        OuttakeSubsystem outtakeSubsystem) {
         this.shooterDataTable = shooterDataTable;
         this.limelightSubsystem = limelightSubsystem;
         this.outtakeSubsystem = outtakeSubsystem;
@@ -31,7 +32,8 @@ public class SetShooterPowerWithLimelight extends CommandBase {
 
     @Override
     public boolean isFinished() {
-       try { //jump to end() as soon as we get data! If we receive none in time, we'll use the default given by shooterDataTable.getSpecs(0.0d).getPower()
+        try { //jump to end() as soon as we get data! If we receive none in time, we'll use the default given by
+            // shooterDataTable.getSpecs(0.0d).getPower()
             return latch.unlocked();
         } catch (GoalNotFoundException e) {return true;}
     }

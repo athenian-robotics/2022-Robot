@@ -21,11 +21,12 @@ import static com.ctre.phoenix.motorcontrol.TalonFXControlMode.PercentOutput;
 import static frc.robot.Constants.MechanismConstants.*;
 
 public class OuttakeSubsystem extends SubsystemBase {
+    public final PIDController turretAnglePID;
+    public final PIDController limelightTurretAnglePID;
     // Setup motors, pid controller, and booleans
     private final TalonFX shooterMotorFront = new TalonFX(shooterMotorPortA);
     private final TalonFX shooterMotorBack = new TalonFX(shooterMotorPortB);
     private final TalonFX turretMotor = new TalonFX(turretMotorPort);
-
     private final Servo leftHoodAngleServo = new Servo(2);
     private final Servo rightHoodAngleServo = new Servo(3);
 
@@ -93,7 +94,7 @@ public class OuttakeSubsystem extends SubsystemBase {
     public void setRPS(double rps) {
         sys.set(rps * shuffleboardShooterAdjustment);
         shooterRunning = true;
-        shooterRPS = rps*shuffleboardShooterAdjustment;
+        shooterRPS = rps * shuffleboardShooterAdjustment;
     }
 
     public void setShooterFront(double power) {
@@ -120,13 +121,11 @@ public class OuttakeSubsystem extends SubsystemBase {
 
     public void setHoodAngle(double angle) {
         if (angle >= minimumHoodAngle && angle <= maximumHoodAngle) {
-            leftHoodAngleServo.setAngle(180 * (angle - minimumHoodAngle) / (maximumHoodAngle - minimumHoodAngle)); // 0 - 180 DEGREES
-            rightHoodAngleServo.setAngle(180 * (angle - minimumHoodAngle) / (maximumHoodAngle - minimumHoodAngle)); // 0 - 180 DEGREES
+            leftHoodAngleServo.setAngle(180 * (angle - minimumHoodAngle) / (maximumHoodAngle - minimumHoodAngle)); //
+            // 0 - 180 DEGREES
+            rightHoodAngleServo.setAngle(180 * (angle - minimumHoodAngle) / (maximumHoodAngle - minimumHoodAngle));
+            // 0 - 180 DEGREES
         }
-    }
-
-    public double getHoodAngle() { //Takes the average of the angles (0-1) and scales it into a degree measurement
-        return ((maximumHoodAngle - minimumHoodAngle) * (leftHoodAngleServo.getAngle() + rightHoodAngleServo.getAngle()) / 360) + minimumHoodAngle;
     }
 
     public void stopShooter() { // Disables shooter

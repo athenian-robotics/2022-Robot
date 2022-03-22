@@ -21,9 +21,12 @@ public class IntakeSubsystem extends SubsystemBase {
     // Configure intake motor, solenoid, and booleans
     private final TalonFX intakeMotor = new TalonFX(Constants.MechanismConstants.intakeMotorPort);
 
-    private final CANSparkMax intakeToIndexerMotor = new CANSparkMax(intakeToIndexerMotorPort, CANSparkMaxLowLevel.MotorType.kBrushless);
-    private final DoubleSolenoid rightIntakePneumatic = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, pneumaticPortRightA, pneumaticPortRightB);
-    private final DoubleSolenoid leftIntakePneumatic = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, pneumaticPortLeftA, pneumaticPortLeftB);
+    private final CANSparkMax intakeToIndexerMotor = new CANSparkMax(intakeToIndexerMotorPort,
+            CANSparkMaxLowLevel.MotorType.kBrushless);
+    private final DoubleSolenoid rightIntakePneumatic = new DoubleSolenoid(PneumaticsModuleType.CTREPCM,
+            pneumaticPortRightA, pneumaticPortRightB);
+    private final DoubleSolenoid leftIntakePneumatic = new DoubleSolenoid(PneumaticsModuleType.CTREPCM,
+            pneumaticPortLeftA, pneumaticPortLeftB);
 
     private final NetworkTableEntry intakeNTE;
 
@@ -54,11 +57,14 @@ public class IntakeSubsystem extends SubsystemBase {
         isRunning = false;
     }
 
-    public void toggleIntake() { if (isRunning) stopIntake(); else startIntake(); } // Toggles intake
+    public void toggleIntake() {
+        if (isRunning) stopIntake();
+        else startIntake();
+    } // Toggles intake
 
     public void invertIntake() { // Inverts intake wheel direction
         isInverted = !this.isInverted;
-        int sign = isInverted ? 1: -1;
+        int sign = isInverted ? 1 : -1;
         if (isRunning) intakeMotor.set(ControlMode.PercentOutput, sign * Constants.MechanismConstants.intakeSpeed);
     }
 

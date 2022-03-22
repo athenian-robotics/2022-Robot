@@ -18,7 +18,8 @@ public class SetHoodAngleWithLimelight extends CommandBase {
     private double angle;
     private long timeout = Long.MAX_VALUE;
 
-    public SetHoodAngleWithLimelight(ShooterDataTable shooterDataTable, LimelightSubsystem limelightSubsystem, OuttakeSubsystem outtakeSubsystem) {
+    public SetHoodAngleWithLimelight(ShooterDataTable shooterDataTable, LimelightSubsystem limelightSubsystem,
+                                     OuttakeSubsystem outtakeSubsystem) {
         this.shooterDataTable = shooterDataTable;
         this.limelightSubsystem = limelightSubsystem;
         this.outtakeSubsystem = outtakeSubsystem;

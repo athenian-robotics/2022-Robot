@@ -51,7 +51,9 @@ public final class Constants {
     }
 
     public static final class OIConstants {
-        /** XBOX CONTROLLER PORTS **/
+        /**
+         * XBOX CONTROLLER PORTS
+         **/
         public static final int xboxControllerPort = 1;
         public static final int fightStickPort = 0;
     }
@@ -125,6 +127,17 @@ public final class Constants {
 
         public static double maxError = .5;
         public static double maxControlEffort = 12;
+        public static double modelDeviation = 0.075;
+        public static double encoderDeviation = 0.02;
+    }
+
+    public static final class Turret {
+        public static final double ks = 0.83559;
+        public static final double ka = 0.00056228;
+        public static final double kv = 0.027068;
+
+        public static double maxError = .5;
+        public static double maxControlEffort = 2;
         public static double modelDeviation = 0.075;
         public static double encoderDeviation = 0.02;
     }

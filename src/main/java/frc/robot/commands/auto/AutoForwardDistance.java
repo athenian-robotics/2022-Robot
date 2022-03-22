@@ -33,7 +33,7 @@ public class AutoForwardDistance extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return ((leftEnc.getDistance() + rightEnc.getDistance()) / 2  >= setpoint + 0.01);
+        return ((leftEnc.getDistance() + rightEnc.getDistance()) / 2 >= setpoint + 0.01);
     }
 
     @Override

@@ -125,4 +125,10 @@ public class ClimberSubsystem extends SubsystemBase {
         //setLeftMotor(climbPercentNTE.getDouble(0));
         //setRightMotor(climbPercentNTE.getDouble(0));
     }
+
+    public void set(int i) {
+        // set motors to encoder count
+
+        climbMotorLeft.set(ControlMode.Position, i);
+    }
 }

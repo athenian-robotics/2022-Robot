@@ -6,8 +6,8 @@ import frc.robot.subsystems.IntakeSubsystem;
 
 public class PulseIntakeToIndexerMotor extends CommandBase {
     private final IntakeSubsystem intakeSubsystem;
-    private long start;
     private final long milliseconds;
+    private long start;
 
     public PulseIntakeToIndexerMotor(IntakeSubsystem intakeSubsystem) {
         this.intakeSubsystem = intakeSubsystem;
@@ -17,7 +17,7 @@ public class PulseIntakeToIndexerMotor extends CommandBase {
 
     public PulseIntakeToIndexerMotor(IntakeSubsystem intakeSubsystem, double seconds) {
         this.intakeSubsystem = intakeSubsystem;
-        this.milliseconds = (long) ((long) 1000*seconds);
+        this.milliseconds = (long) ((long) 1000 * seconds);
         addRequirements(this.intakeSubsystem);
     }
 

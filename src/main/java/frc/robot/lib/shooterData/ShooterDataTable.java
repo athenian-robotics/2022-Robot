@@ -15,7 +15,6 @@ public class ShooterDataTable implements Serializable {
     private static final double K = 3.333334;
     private static final int LINEAR = 1;
 
-    static final long serialVersionUID = 8520L;
 
 
     //Sets up the data table and pushes in empty specs
@@ -97,10 +96,12 @@ public class ShooterDataTable implements Serializable {
             out.flush();
 
             out.close();
-        }catch(IOException e){
+        } catch (IOException e) {
             System.out.println(e + " encountered. " + "Wow, such empty");
         }
     }
+
+
 
 }
 
