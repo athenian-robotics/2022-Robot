@@ -65,6 +65,7 @@ public final class Constants {
         //CLIMBER
         public static final int leftClimberMotorPort = 15;
         public static final int rightClimberMotorPort = 16;
+        public static final int climbWinchMotorPort = 17;
         public static final double telescopeSpeed = 0.2;
         // TURRET
         public static final int turretMotorPort = 10;

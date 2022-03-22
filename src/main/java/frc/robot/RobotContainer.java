@@ -151,7 +151,7 @@ public class RobotContainer {
         outtake.disable();
     }
 
-    public void setAlliance(DriverStation.Alliance alliance) {RobotContainer.alliance = alliance;}
+    public void setAlliance(DriverStation.Alliance alliance) {if (alliance != DriverStation.Alliance.Invalid) RobotContainer.alliance = alliance;}
 
     // Returns the robot's main autonomous command
     public Command getAutonomousCommand() {
