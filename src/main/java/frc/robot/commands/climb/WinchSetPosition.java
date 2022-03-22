@@ -4,14 +4,15 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ClimberSubsystem;
 
 import static frc.robot.Constants.MechanismConstants.telescopeSpeed;
+import static frc.robot.Constants.MechanismConstants.winchSpeed;
 
 
-public class SetRightTelescopePosition extends CommandBase {
+public class WinchSetPosition extends CommandBase {
     private final ClimberSubsystem climberSubsystem;
     private final double position;
     private final boolean direction;
 
-    public SetRightTelescopePosition(ClimberSubsystem climberSubsystem, double position) {
+    public WinchSetPosition(ClimberSubsystem climberSubsystem, double position) {
         if (position < 0 || position > 1) this.cancel();
 
         this.climberSubsystem = climberSubsystem;
@@ -23,16 +24,16 @@ public class SetRightTelescopePosition extends CommandBase {
 
     @Override
     public void initialize() {
-        climberSubsystem.setRightMotor(direction ? telescopeSpeed : -telescopeSpeed);
+        climberSubsystem.setWinch(direction ? winchSpeed : -winchSpeed);
     }
 
     @Override
     public boolean isFinished() {
-        return direction ? climberSubsystem.getRightHeightPercent() > position : climberSubsystem.getRightHeightPercent() < position;
+        return direction ? climberSubsystem.getWinchPercent() > position : climberSubsystem.getWinchPercent() < position;
     }
 
     @Override
     public void end(boolean interrupted) {
-        climberSubsystem.setRightMotor(0);
+        climberSubsystem.setWinch(0);
     }
 }

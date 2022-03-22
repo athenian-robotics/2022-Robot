@@ -16,7 +16,7 @@ public class WinchSetSpeed extends CommandBase {
 
     @Override
     public void initialize() {
-        climberSubsystem.setWinchPower(power);
+        climberSubsystem.setWinch(power);
     }
 
     @Override

@@ -86,9 +86,9 @@ public class RobotContainer {
 
         SmartDashboard.putData("AutoChooser", chooser);
         chooser.setDefaultOption("0: 2.5 Meters Forward", new AutoRoutine0(drivetrain));
-        chooser.addOption("1: 5 Ball Auto - Bottom Left Start", new AutoRoutine1(climb, drivetrain, indexer, intake, outtake, limelight, shooterDataTable));
-        chooser.addOption("2: 3 Ball Auto - Top Left Start", new AutoRoutine2(climb, drivetrain, indexer, intake, outtake, limelight, shooterDataTable));
-        chooser.addOption("3: 2 Ball Auto - Bottom Left Start", new AutoRoutine3(climb, drivetrain, indexer, intake, outtake, limelight, shooterDataTable));
+        //chooser.addOption("1: 5 Ball Auto - Bottom Left Start", new AutoRoutine1(climb, drivetrain, indexer, intake, outtake, limelight, shooterDataTable));
+        //chooser.addOption("2: 3 Ball Auto - Top Left Start", new AutoRoutine2(climb, drivetrain, indexer, intake, outtake, limelight, shooterDataTable));
+        //chooser.addOption("3: 2 Ball Auto - Bottom Left Start", new AutoRoutine3(climb, drivetrain, indexer, intake, outtake, limelight, shooterDataTable));
 
         xboxButtonSetup();
         configureButtonBindings();
@@ -98,7 +98,7 @@ public class RobotContainer {
   private void configureButtonBindings() {
       /*  SUBSYSTEM COMMANDS (Main, functional commands) */
       xboxHamburger.whenPressed(new ShootBalls(climb, drivetrain, indexer, intake, outtake, limelight, shooterDataTable));
-      xboxA.whenPressed(new TurretTurnToAngle(outtake, -90));
+      //xboxA.whenPressed(new TurretTurnToAngle(outtake, -90));
       FightStick.fightStickA.whenPressed(new ToggleIntake(intake)); // Toggle intake wheels and pneumatics
       xboxX.whenPressed(new ShootTwo(climb, drivetrain, indexer, intake, outtake, limelight, shooterDataTable));
       FightStick.fightStickL3.whenHeld(new WinchSetSpeed(climb, winchSpeed)); // Toggle indexer (tower portion)
@@ -112,9 +112,10 @@ public class RobotContainer {
       //FightStick.fightStickLT.whileActiveOnce(new LeftTelescopeSetSpeed(climb, -telescopeSpeed));
       //FightStick.fightStickRB.whenHeld(new RunIntakeWithoutPneumatics(intake, indexer));
       //FightStick.fightStickRT.whileActiveOnce(new RightTelescopeSetSpeed(climb, -telescopeSpeed));
-      FightStick.fightStickX.whenHeld(new RightTelescopeSetSpeed(climb, -0.2));
+      //FightStick.fightStickX.whenHeld(new RightTelescopeSetSpeed(climb, -0.2));
       xboxB.whenHeld(new RunIntakeWithoutPneumatics(intake, indexer));
       xboxY.whenPressed(new AlwaysTurretTurnToGoalWithLimelight(limelight, outtake));
+      FightStick.fightStickX.whenPressed(new Traverse(climb));
 
         /* MISC COMMANDS (Random lib of commands. Written using functional commands because most are just one line ) */
         // have fun with this - jason and jacob '22   ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ
@@ -153,7 +154,7 @@ public class RobotContainer {
     public void disableAll() {
         drivetrain.disable();
         indexer.disable();
-        intake.disable();
+        //intake.disable();
         limelight.disable();
         outtake.disable();
     }
