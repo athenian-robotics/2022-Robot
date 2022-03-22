@@ -1,6 +1,7 @@
 package frc.robot.commands.auto.AutoRoutine0Contents;
 
 import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -16,15 +17,11 @@ import frc.robot.subsystems.DrivetrainSubsystem;
 
 public class AutoRoutine0Part1 extends CommandBase {
     private final RamseteCommand ramseteCommand;
-    private final DrivetrainSubsystem drivetrainSubsystem;
-    private Trajectory exampleTrajectory;
 
     public AutoRoutine0Part1(DrivetrainSubsystem drivetrainSubsystem) {
         // each subsystem used by the command must be passed into the
         // addRequirements() method (which takes a vararg of Subsystem)
         addRequirements(drivetrainSubsystem);
-
-        this.drivetrainSubsystem = drivetrainSubsystem;
 
         // Create a voltage constraint to ensure we don't accelerate too fast
         var autoVoltageConstraint =
@@ -34,7 +31,7 @@ public class AutoRoutine0Part1 extends CommandBase {
                                 Constants.AutoConstants.kvVoltSecondsPerMeter,
                                 Constants.AutoConstants.kaVoltSecondsSquaredPerMeter),
                         Constants.AutoConstants.kDriveKinematics,
-                        12);
+                        Constants.AutoConstants.maxVolts);
 
         // Create config for trajectory
         TrajectoryConfig config =
@@ -47,7 +44,7 @@ public class AutoRoutine0Part1 extends CommandBase {
                         .addConstraint(autoVoltageConstraint);
 
         // An example trajectory to follow.  All units in meters.
-        this.exampleTrajectory = PathPlanner.loadPath("2.5 Meters Forward", 2, 1);
+        PathPlannerTrajectory exampleTrajectory = PathPlanner.loadPath("2.5 Meters Forward", 0.5, 0.5);
 
         this.ramseteCommand = new RamseteCommand(
                 exampleTrajectory,
@@ -66,8 +63,7 @@ public class AutoRoutine0Part1 extends CommandBase {
                 drivetrainSubsystem);
 
 //        // Reset odometry to the starting pose of the trajectory.
-//        drivetrainSubsystem.resetGyro();
-//        drivetrainSubsystem.resetOdometry(exampleTrajectory.getInitialPose(), exampleTrajectory.getInitialPose().getRotation());
+        drivetrainSubsystem.resetOdometry(exampleTrajectory.getInitialPose());
         // Run path following command, then stop at the end.
     }
 
@@ -76,8 +72,6 @@ public class AutoRoutine0Part1 extends CommandBase {
      */
     @Override
     public void initialize() {
-//        drivetrainSubsystem.resetGyro();
-//        drivetrainSubsystem.resetOdometry(exampleTrajectory.getInitialPose(), exampleTrajectory.getInitialPose().getRotation());
         ramseteCommand.initialize();
     }
 

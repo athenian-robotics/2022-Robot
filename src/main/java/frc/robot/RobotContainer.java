@@ -15,8 +15,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.auto.*;
-import frc.robot.commands.climb.LeftTelescopeSetSpeed;
-import frc.robot.commands.climb.SetBothTelescopePositions;
+import frc.robot.commands.climb.*;
 import frc.robot.commands.drive.ArcadeDrive;
 import frc.robot.commands.drive.TankDrive;
 import frc.robot.commands.indexer.PulseIndexer;
@@ -31,6 +30,9 @@ import frc.robot.subsystems.*;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 import java.util.function.BooleanSupplier;
+
+import static frc.robot.Constants.MechanismConstants.telescopeSpeed;
+import static frc.robot.Constants.MechanismConstants.winchSpeed;
 
 
 public class RobotContainer {
@@ -63,7 +65,7 @@ public class RobotContainer {
     // Sets up controllers, configures controllers, and sets the default drive mode (tank or arcade)
     public RobotContainer() {
         drivetrain.setDefaultCommand(new ArcadeDrive(drivetrain, xboxController)); // Check for Arcade or Tank
-        outtake.setDefaultCommand(new AlwaysTurretTurnToGoalWithLimelightOrManualControl(limelight, outtake)); // Check fight stick y-axis for manual hood adjustment
+        //outtake.setDefaultCommand(new AlwaysTurretTurnToGoalWithLimelightOrManualControl(limelight, outtake)); // Check fight stick y-axis for manual hood adjustment
         indexer.setDefaultCommand(new QueueBalls(indexer, intake)); //Turns on indexer when sees a ball, sets it to
         // off
         // when there are no balls in sight
@@ -80,7 +82,7 @@ public class RobotContainer {
         }
 
         SmartDashboard.putData("AutoChooser", chooser);
-        chooser.setDefaultOption("0: 2.5 Meters Forward", new AutoRoutine0(climb, drivetrain, indexer, intake, outtake, limelight, shooterDataTable));
+        chooser.setDefaultOption("0: 2.5 Meters Forward", new AutoRoutine0(drivetrain));
         chooser.addOption("1: 5 Ball Auto - Bottom Left Start", new AutoRoutine1(climb, drivetrain, indexer, intake, outtake, limelight, shooterDataTable));
         chooser.addOption("2: 3 Ball Auto - Top Left Start", new AutoRoutine2(climb, drivetrain, indexer, intake, outtake, limelight, shooterDataTable));
         chooser.addOption("3: 2 Ball Auto - Bottom Left Start", new AutoRoutine3(climb, drivetrain, indexer, intake, outtake, limelight, shooterDataTable));
@@ -96,16 +98,18 @@ public class RobotContainer {
       xboxA.whenPressed(new TurretTurnToAngle(outtake, -90));
       FightStick.fightStickA.whenPressed(new ToggleIntake(intake)); // Toggle intake wheels and pneumatics
       xboxX.whenPressed(new ShootTwo(climb, drivetrain, indexer, intake, outtake, limelight, shooterDataTable));
-      FightStick.fightStickL3.whenHeld(new PulseIndexer(intake, indexer, true)); // Toggle indexer (tower portion)
-      FightStick.fightStickR3.whenHeld(new PulseIndexer(intake,indexer,false)); //Toggle Indexer down (tower portion)
-      FightStick.fightStickB.whenPressed(new EnableShooter(outtake)); // Enable shooter wheels
-      FightStick.fightStickY.whenPressed(new DisableShooter(outtake)); // Disable shooter wheels
-      FightStick.fightStickLB.whenPressed(new SetBothTelescopePositions(climb, 0));
+      FightStick.fightStickL3.whenHeld(new WinchSetSpeed(climb, winchSpeed)); // Toggle indexer (tower portion)
+      FightStick.fightStickR3.whenHeld(new WinchSetSpeed(climb, -winchSpeed)); //Toggle Indexer down (tower portion)
+      //FightStick.fightStickB.whenPressed(new EnableShooter(outtake)); // Enable shooter wheels
+      //FightStick.fightStickY.whenPressed(new DisableShooter(outtake)); // Disable shooter wheels
+      FightStick.fightStickLB.whenHeld(new SetBothTelescopeSpeed(climb, -telescopeSpeed));
+      FightStick.fightStickRB.whenHeld(new SetBothTelescopeSpeed(climb, telescopeSpeed));
+      //FightStick.fightStickLB.whenPressed(new SetBothTelescopePositions(climb, 0));
+      //FightStick.fightStickRB.whenPressed(new SetBothTelescopePositions(climb, 1));
       //FightStick.fightStickLT.whileActiveOnce(new LeftTelescopeSetSpeed(climb, -telescopeSpeed));
-      FightStick.fightStickRB.whenPressed(new SetBothTelescopePositions(climb, 1));
       //FightStick.fightStickRB.whenHeld(new RunIntakeWithoutPneumatics(intake, indexer));
       //FightStick.fightStickRT.whileActiveOnce(new RightTelescopeSetSpeed(climb, -telescopeSpeed));
-      FightStick.fightStickX.whenHeld(new LeftTelescopeSetSpeed(climb, 0.2));
+      FightStick.fightStickX.whenHeld(new RightTelescopeSetSpeed(climb, -0.2));
       xboxB.whenHeld(new RunIntakeWithoutPneumatics(intake, indexer));
       xboxY.whenPressed(new AlwaysTurretTurnToGoalWithLimelight(limelight, outtake));
 

@@ -8,8 +8,9 @@ import frc.robot.commands.outtake.ShootTwo;
 import frc.robot.lib.shooterData.ShooterDataTable;
 import frc.robot.subsystems.*;
 
+
 public class AutoRoutine0 extends SequentialCommandGroup {
-    public AutoRoutine0(ClimberSubsystem climber, DrivetrainSubsystem drivetrain, IndexerSubsystem indexer, IntakeSubsystem intake, OuttakeSubsystem outtake, LimelightSubsystem limelight, ShooterDataTable shooterDataTable) {
+    public AutoRoutine0(DrivetrainSubsystem drivetrain){
         addCommands(
                 new AutoRoutine6(drivetrain)
         );

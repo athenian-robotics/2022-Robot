@@ -36,7 +36,7 @@ public class AutoRoutine6 extends CommandBase {
                                 Constants.AutoConstants.kvVoltSecondsPerMeter,
                                 Constants.AutoConstants.kaVoltSecondsSquaredPerMeter),
                         Constants.AutoConstants.kDriveKinematics,
-                        12);
+                        Constants.AutoConstants.maxVolts);
 
         // Create config for trajectory
         TrajectoryConfig config =

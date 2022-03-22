@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.lib.controllers.SimplePositionSystem;
 import frc.robot.lib.controllers.SimpleVelocitySystem;
 
 import java.util.Map;
@@ -39,6 +40,7 @@ public class OuttakeSubsystem extends SubsystemBase {
     public double shuffleboardShooterAdjustment;
 
     private final SimpleVelocitySystem sys;
+    private final SimplePositionSystem sysT;
     private double shooterRPS = 0;
 
     public OuttakeSubsystem() {
@@ -72,6 +74,9 @@ public class OuttakeSubsystem extends SubsystemBase {
                 Constants.Shooter.maxError, Constants.Shooter.maxControlEffort,
                 Constants.Shooter.modelDeviation, Constants.Shooter.encoderDeviation,
                 Constants.looptime);
+        sysT = new SimplePositionSystem(Constants.Turret.ks, Constants.Turret.kv, Constants.Turret.ka,
+                Constants.Turret.maxError, Constants.Turret.maxControlEffort, Constants.Turret.modelDeviation,
+                Constants.Turret.encoderDeviation, Constants.looptime);
 
         setTurretStartingAngle(-180); //assume default position is turret starting facing backwards counterclockwise
     }
@@ -97,12 +102,20 @@ public class OuttakeSubsystem extends SubsystemBase {
         shooterMotorFront.set(ControlMode.PercentOutput, power);
     }
 
+    public void turnTurretOffset(double offset) {
+        sysT.set(getTurretAngle() + offset);
+    }
+
     public void turnTurret(double power) {
         if (getTurretAngle() < maximumTurretAngle && power > 0 || getTurretAngle() > minimumTurretAngle && power < 0) {
             turretMotor.set(ControlMode.PercentOutput, power > turretTurnSpeed ? turretTurnSpeed : Math.max(power, -turretTurnSpeed));
         } else if (power == 0.0) {
             stopTurret();
         } else turretMotor.set(ControlMode.PercentOutput, 0);
+    }
+
+    public void setTurretVolts(double volts) {
+        //turretMotor.set(ControlMode.Position, );
     }
 
     public void setHoodAngle(double angle) {
@@ -162,8 +175,8 @@ public class OuttakeSubsystem extends SubsystemBase {
         shuffleboardShooterAdjustment = shooterAdjustmentNTE.getDouble(1);
 
         if (turretRunning)
-            turnTurret(turretPID.calculate(getTurretAngle()));
-
+            sysT.update(getTurretAngle());
+            setTurretVolts(sysT.getOutput());
         if (shooterRunning) {
             sys.update(getWheelSpeed());
             setShooterPower(sys.getOutput());

@@ -9,16 +9,18 @@ import edu.wpi.first.math.util.Units;
 
 public final class Constants {
     public static final double looptime = 0.02;
+
     public static final class AutoConstants {
-        public static double ksVolts = 0.2455; //0.49117
-        public static double kvVoltSecondsPerMeter = 1.3023; //3.4251
-        public static double kaVoltSecondsSquaredPerMeter = 0.091565; //0.0915650
+        public static double ksVolts = 0.58447;
+        public static double kvVoltSecondsPerMeter = 3.449;
+        public static double kaVoltSecondsSquaredPerMeter = 0.2608;
         public static DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(DriveConstants.trackWidth);
+        public static double maxVolts = 7.0;
         public static double maxAutoSpeed = 3.0; // meters per second
         public static double maxAutoAcceleration = 3.0; // meters per second per second
         public static double kRamseteB = 2.0;
         public static double kRamseteZeta = 0.7;
-        public static double kPDriveVel = 0.0; //1.9736
+        public static double kPDriveVel = 4.5729;
         public static double maxAutoTurn = 0.55;
     }
 
@@ -33,8 +35,8 @@ public final class Constants {
 
         public static final int rightEncoderChannelA = 2;
         public static final int rightEncoderchannelB = 3;
-        public static final int leftEncoderChannelA = 1;
-        public static final int leftEncoderChannelB = 0;
+        public static final int leftEncoderChannelA = 0;
+        public static final int leftEncoderChannelB = 1;
 
         /**
          * MISC CONSTANTS
@@ -65,7 +67,9 @@ public final class Constants {
         //CLIMBER
         public static final int leftClimberMotorPort = 15;
         public static final int rightClimberMotorPort = 16;
+        public static final int climbWinchMotorPort = 17;
         public static final double telescopeSpeed = 0.2;
+        public static final double winchSpeed = 0.2;
         // TURRET
         public static final int turretMotorPort = 10;
         public static final double turretTurnSpeed = 0.12;

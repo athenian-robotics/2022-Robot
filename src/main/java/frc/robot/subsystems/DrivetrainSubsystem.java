@@ -56,16 +56,17 @@ public class DrivetrainSubsystem extends SubsystemBase {
         drive = new DifferentialDrive(leftMotors, rightMotors); // Initialize Differential Drive
 
         // Configure encoders
-        rightEncoder = new Encoder(rightEncoderChannelA, rightEncoderchannelB, false, Encoder.EncodingType.k2X);
+        rightEncoder = new Encoder(rightEncoderChannelA, rightEncoderchannelB, true, Encoder.EncodingType.k2X);
         leftEncoder = new Encoder(leftEncoderChannelA, leftEncoderChannelB, false, Encoder.EncodingType.k2X);
-        leftEncoder.setDistancePerPulse(wheelDiameter * 0.0254 * Math.PI * driveGearRatio / 2048); // 6-inch wheel, to meters, PI for circumference, gear conversion, 2048 ticks per rotation
-        rightEncoder.setDistancePerPulse(wheelDiameter * 0.0254 * Math.PI * driveGearRatio / 2048); // 6-inch wheel, to meters, PI for circumference, gear conversion, 2048 ticks per rotation
+        leftEncoder.setDistancePerPulse(Math.PI*2*(.1524/2) / 2048); // 6-inch wheel, to meters, PI for circumference, gear conversion, 2048 ticks per rotation
+        rightEncoder.setDistancePerPulse(Math.PI*2*(.1524/2) / 2048); // 6-inch wheel, to meters, PI for circumference, gear conversion, 2048 ticks per rotation
+        resetEncoders();
 
         //Configure solenoids
         driveShifterRight.set(DoubleSolenoid.Value.kReverse);
         driveShifterLeft.set(DoubleSolenoid.Value.kReverse);
 
-        odometry = new DifferentialDriveOdometry(new Rotation2d(getHeading()));
+        odometry = new DifferentialDriveOdometry(gyro.getRotation2d());
     }
 
     /**
@@ -171,7 +172,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     public void resetOdometry(Pose2d pose) { // Reset's robot odometry
         resetEncoders();
-        odometry.resetPosition(pose, Rotation2d.fromDegrees(getHeading()));
+        odometry.resetPosition(pose, gyro.getRotation2d());
     }
 
     private void resetEncoders() { // Resets the drive encoders
@@ -219,7 +220,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Right Drive Encoder: ", getRightEncoderCount());
         SmartDashboard.putNumber("Left Drive Distance: ", getLeftDistanceDriven());
         SmartDashboard.putNumber("Right Drive Distance: ", getRightDistanceDriven());
-        odometry.update(Rotation2d.fromDegrees(getHeading()), leftEncoder.getDistance(), rightEncoder.getDistance());
+        odometry.update(gyro.getRotation2d(), leftEncoder.getDistance(), rightEncoder.getDistance());
     }
 }
 
