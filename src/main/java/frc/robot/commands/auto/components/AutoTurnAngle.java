@@ -8,10 +8,10 @@ import frc.robot.subsystems.DrivetrainSubsystem;
 public class AutoTurnAngle extends CommandBase {
     // Setup PID Variables
     private final DrivetrainSubsystem drivetrainSubsystem;
-    private int leftSign = 1;
-    private int rightSign = 1;
     private final double tolerance;
     private final double angleToTurn;
+    private int leftSign = 1;
+    private int rightSign = 1;
     private double power = 0.0;
     private double setpoint = 0.0;
     private double Kp = 0.01;
@@ -36,7 +36,8 @@ public class AutoTurnAngle extends CommandBase {
 
     @Override
     public void execute() {
-        power = Math.min(Math.abs(pid.calculate(drivetrainSubsystem.getGyroYaw())), Constants.AutoConstants.maxAutoTurn); // Scale under max constant
+        power = Math.min(Math.abs(pid.calculate(drivetrainSubsystem.getGyroYaw())),
+                Constants.AutoConstants.maxAutoTurn); // Scale under max constant
         leftSign = Math.abs(setpoint - drivetrainSubsystem.getGyroYaw()) > 180 ? -1 : 1; // Fastest direction
         rightSign = Math.abs(setpoint - drivetrainSubsystem.getGyroYaw()) > 180 ? 1 : -1; // Fastest direction
         power = Math.abs(power) < 0.01 ? 0 : power; // Deadband

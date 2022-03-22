@@ -19,7 +19,10 @@ import frc.robot.commands.indexer.PulseIndexer;
 import frc.robot.commands.indexer.QueueBalls;
 import frc.robot.commands.intake.RunIntakeWithoutPneumatics;
 import frc.robot.commands.intake.ToggleIntake;
-import frc.robot.commands.outtake.*;
+import frc.robot.commands.outtake.AlwaysTurretTurnToGoalWithLimelight;
+import frc.robot.commands.outtake.DisableShooter;
+import frc.robot.commands.outtake.EnableShooter;
+import frc.robot.commands.outtake.ShootTwo;
 import frc.robot.lib.controllers.FightStick;
 import frc.robot.lib.shooterData.ShooterDataTable;
 import frc.robot.subsystems.*;
@@ -55,7 +58,8 @@ public class RobotContainer {
     // Sets up controllers, configures controllers, and sets the default drive mode (tank or arcade)
     public RobotContainer() {
         drivetrain.setDefaultCommand(new ArcadeDrive(drivetrain, xboxController)); // Check for Arcade or Tank
-        outtake.setDefaultCommand(new AlwaysTurretTurnToGoalWithLimelight(limelight, outtake)); // Check fight stick y-axis for manual hood adjustment
+        outtake.setDefaultCommand(new AlwaysTurretTurnToGoalWithLimelight(limelight, outtake)); // Check fight stick
+        // y-axis for manual hood adjustment
         indexer.setDefaultCommand(new QueueBalls(indexer, intake)); //Turns on indexer when sees a ball, sets it to
         // off
         // when there are no balls in sight
@@ -67,7 +71,7 @@ public class RobotContainer {
                 shooterDataTable = (ShooterDataTable) obj;
                 System.out.println("Checking 2.5m data in shooterDataTable: " + shooterDataTable.getSpecs(2.5));
             }
-        }catch(Exception e){
+        } catch (Exception e) {
             System.out.println("file not found, or class not found");
         }
 
@@ -75,35 +79,37 @@ public class RobotContainer {
         configureButtonBindings();
     }
 
-  // Configures xbox buttons to commands
-  private void configureButtonBindings() {
-      /*  SUBSYSTEM COMMANDS (Main, functional commands) */
-      xboxHamburger.whenPressed(new ShootTwo(climb, drivetrain, indexer, intake, outtake, limelight, shooterDataTable));
+    // Configures xbox buttons to commands
+    private void configureButtonBindings() {
+        /*  SUBSYSTEM COMMANDS (Main, functional commands) */
+        xboxHamburger.whenPressed(new ShootTwo(climb, drivetrain, indexer, intake, outtake, limelight,
+                shooterDataTable));
 
-      FightStick.fightStickA.whenPressed(new ToggleIntake(intake)); // Toggle intake wheels and pneumatics
-      xboxX.whenPressed(new ShootTwo(climb, drivetrain, indexer, intake, outtake, limelight, shooterDataTable));
-      FightStick.fightStickL3.whenHeld(new PulseIndexer(intake, indexer, true)); // Toggle indexer (tower portion)
-      FightStick.fightStickR3.whenHeld(new PulseIndexer(intake,indexer,false)); //Toggle Indexer down (tower portion)
-      FightStick.fightStickB.whenPressed(new EnableShooter(outtake)); // Enable shooter wheels
-      FightStick.fightStickY.whenPressed(new DisableShooter(outtake)); // Disable shooter wheels
-      FightStick.fightStickLB.whenPressed(new SetBothTelescopePositions(climb, 0));
-      //FightStick.fightStickLT.whileActiveOnce(new LeftTelescopeSetSpeed(climb, -telescopeSpeed));
-      FightStick.fightStickRB.whenPressed(new SetBothTelescopePositions(climb, 1));
-      //FightStick.fightStickRB.whenHeld(new RunIntakeWithoutPneumatics(intake, indexer));
-      //FightStick.fightStickRT.whileActiveOnce(new RightTelescopeSetSpeed(climb, -telescopeSpeed));
-      FightStick.fightStickX.whenHeld(new LeftTelescopeSetSpeed(climb, 0.2));
-      xboxB.whenHeld(new RunIntakeWithoutPneumatics(intake, indexer));
-      xboxY.whenPressed(new AlwaysTurretTurnToGoalWithLimelight(limelight, outtake));
+        FightStick.fightStickA.whenPressed(new ToggleIntake(intake)); // Toggle intake wheels and pneumatics
+        xboxX.whenPressed(new ShootTwo(climb, drivetrain, indexer, intake, outtake, limelight, shooterDataTable));
+        FightStick.fightStickL3.whenHeld(new PulseIndexer(intake, indexer, true)); // Toggle indexer (tower portion)
+        FightStick.fightStickR3.whenHeld(new PulseIndexer(intake, indexer, false)); //Toggle Indexer down (tower
+        // portion)
+        FightStick.fightStickB.whenPressed(new EnableShooter(outtake)); // Enable shooter wheels
+        FightStick.fightStickY.whenPressed(new DisableShooter(outtake)); // Disable shooter wheels
+        FightStick.fightStickLB.whenPressed(new SetBothTelescopePositions(climb, 0));
+        //FightStick.fightStickLT.whileActiveOnce(new LeftTelescopeSetSpeed(climb, -telescopeSpeed));
+        FightStick.fightStickRB.whenPressed(new SetBothTelescopePositions(climb, 1));
+        //FightStick.fightStickRB.whenHeld(new RunIntakeWithoutPneumatics(intake, indexer));
+        //FightStick.fightStickRT.whileActiveOnce(new RightTelescopeSetSpeed(climb, -telescopeSpeed));
+        FightStick.fightStickX.whenHeld(new LeftTelescopeSetSpeed(climb, 0.2));
+        xboxB.whenHeld(new RunIntakeWithoutPneumatics(intake, indexer));
+        xboxY.whenPressed(new AlwaysTurretTurnToGoalWithLimelight(limelight, outtake));
 
-      /* MISC COMMANDS (Random lib of commands. Written using functional commands because most are just one line ) */
-      // have fun with this - jason and jacob '22   ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ
-      xboxSquares.whenPressed(new FunctionalCommand(  // Toggle drive mode
-              () -> {
-                  if (drivetrain.getDefaultCommand() instanceof ArcadeDrive)
-                      drivetrain.setDefaultCommand(new TankDrive(drivetrain, xboxController));
-                  else drivetrain.setDefaultCommand(new ArcadeDrive(drivetrain, xboxController));
-              }, () -> {
-      }, interrupted -> {
+        /* MISC COMMANDS (Random lib of commands. Written using functional commands because most are just one line ) */
+        // have fun with this - jason and jacob '22   ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ
+        xboxSquares.whenPressed(new FunctionalCommand(  // Toggle drive mode
+                () -> {
+                    if (drivetrain.getDefaultCommand() instanceof ArcadeDrive)
+                        drivetrain.setDefaultCommand(new TankDrive(drivetrain, xboxController));
+                    else drivetrain.setDefaultCommand(new ArcadeDrive(drivetrain, xboxController));
+                }, () -> {
+        }, interrupted -> {
         }, () -> true, drivetrain));
         xboxLP.whenPressed(new FunctionalCommand(() -> drivetrain.shiftDown(), () -> {
         }, interrupted -> {

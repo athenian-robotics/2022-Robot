@@ -1,7 +1,6 @@
 package frc.robot.commands.outtake;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
 import frc.robot.subsystems.OuttakeSubsystem;
 
 import static frc.robot.Constants.MechanismConstants.maximumTurretAngle;

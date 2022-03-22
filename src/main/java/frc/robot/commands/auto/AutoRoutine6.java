@@ -4,19 +4,13 @@ import com.pathplanner.lib.PathPlanner;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import frc.robot.Constants;
 import frc.robot.subsystems.DrivetrainSubsystem;
-
-import java.util.List;
 
 
 public class AutoRoutine6 extends CommandBase {
@@ -35,7 +29,7 @@ public class AutoRoutine6 extends CommandBase {
                                 Constants.AutoConstants.kvVoltSecondsPerMeter,
                                 Constants.AutoConstants.kaVoltSecondsSquaredPerMeter),
                         Constants.AutoConstants.kDriveKinematics,
-                        12);
+                        Constants.AutoConstants.maxVolts);
 
         // Create config for trajectory
         TrajectoryConfig config =
@@ -49,7 +43,7 @@ public class AutoRoutine6 extends CommandBase {
 
         // An example trajectory to follow.  All units in meters.
         // create a new trajectory 1 meter forward
-        Trajectory exampleTrajectory = PathPlanner.loadPath("New Path", 3, 3);
+        Trajectory exampleTrajectory = PathPlanner.loadPath("New Path", 0.5, 0.5);
 
         this.ramseteCommand = new RamseteCommand(
                 exampleTrajectory,

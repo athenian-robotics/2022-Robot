@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.lib.limelight.LimelightDataLatch;
 
-import java.util.Iterator;
 import java.util.LinkedList;
 
 
@@ -32,9 +31,12 @@ public class LimelightSubsystem extends SubsystemBase {
     public void disable() {latchManager.clearPool();}
 
     public void periodic() {
-        latchManager.update(limelight.getEntry("llpython").getNumberArray(new Number[]{-1, -1, -1, -1, -1, -1, -1, -9}));
-        xOffsetNTE.setDouble((double) limelight.getEntry("llpython").getNumberArray(new Number[]{-1, -1, -1, -1, -1, -1, -1, -9})[1]);
-        SmartDashboard.putNumber("xOffset", (double) limelight.getEntry("llpython").getNumberArray(new Number[]{-1, -1, -1, -1, -1, -1, -1, -9})[1]);
+        latchManager.update(limelight.getEntry("llpython").getNumberArray(new Number[] {-1, -1, -1, -1, -1, -1, -1,
+                -9}));
+        xOffsetNTE.setDouble((double) limelight.getEntry("llpython").getNumberArray(new Number[] {-1, -1, -1, -1, -1,
+                -1, -1, -9})[1]);
+        SmartDashboard.putNumber("xOffset", (double) limelight.getEntry("llpython").getNumberArray(new Number[] {-1,
+                -1, -1, -1, -1, -1, -1, -9})[1]);
     }
 
 

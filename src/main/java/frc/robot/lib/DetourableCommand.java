@@ -4,11 +4,15 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 
-//Adds the ability to sidestep within an order-sensitive command execution scenario by temporarily replacing the current command with another.
-//Calling the detour() method will immediately start executing the secondary command and the original won't start executing again until the secondary command ends.
+//Adds the ability to sidestep within an order-sensitive command execution scenario by temporarily replacing the
+// current command with another.
+//Calling the detour() method will immediately start executing the secondary command and the original won't start
+// executing again until the secondary command ends.
 //DetourableCommands can detour() several times and can detour to other DetourableCommands. ඞ ඞ ඞ
-//A DetourableCommand ends when the default Command ends while executing or when the secondary command ends and endAfterDetour is set to true.
-//Classes that extend DetourableCommand will need to implement the standard Command methods with an underscore before their names instead of overriding the standard functions.
+//A DetourableCommand ends when the default Command ends while executing or when the secondary command ends and
+// endAfterDetour is set to true.
+//Classes that extend DetourableCommand will need to implement the standard Command methods with an underscore before
+// their names instead of overriding the standard functions.
 public abstract class DetourableCommand extends CommandBase {
     private final DetourableCommand m_detourableCommand;
     private Command m_detourCommand;
@@ -66,8 +70,11 @@ public abstract class DetourableCommand extends CommandBase {
     }
 
     public abstract void _initialize();
+
     public abstract void _execute();
+
     public abstract boolean _isFinished();
+
     public abstract void _end(boolean interrupted);
 }
 

@@ -37,7 +37,8 @@ public class SetBothTelescopePositions extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return atGoal(climber.getLeftHeightPercent(), leftDirection) && atGoal(climber.getRightHeightPercent(), rightDirection);
+        return atGoal(climber.getLeftHeightPercent(), leftDirection) && atGoal(climber.getRightHeightPercent(),
+                rightDirection);
     }
 
     @Override

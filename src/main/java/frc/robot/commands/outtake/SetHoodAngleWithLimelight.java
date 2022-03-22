@@ -16,7 +16,8 @@ public class SetHoodAngleWithLimelight extends CommandBase {
     private final OuttakeSubsystem outtakeSubsystem;
     private final LimelightDataLatch latch;
 
-    public SetHoodAngleWithLimelight(ShooterDataTable shooterDataTable, LimelightSubsystem limelightSubsystem, OuttakeSubsystem outtakeSubsystem) {
+    public SetHoodAngleWithLimelight(ShooterDataTable shooterDataTable, LimelightSubsystem limelightSubsystem,
+                                     OuttakeSubsystem outtakeSubsystem) {
         this.shooterDataTable = shooterDataTable;
         this.limelightSubsystem = limelightSubsystem;
         this.outtakeSubsystem = outtakeSubsystem;

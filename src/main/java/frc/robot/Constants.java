@@ -9,17 +9,20 @@ import edu.wpi.first.math.util.Units;
 
 public final class Constants {
     public static final double looptime = 0.02;
+
     public static final class AutoConstants {
-        public static double ksVolts = 0.2455; //0.49117
-        public static double kvVoltSecondsPerMeter = 1.3023; //3.4251
-        public static double kaVoltSecondsSquaredPerMeter = 0.091565; //0.0915650
-        public static DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(DriveConstants.trackWidth);
+        public static double ksVolts = .55834; //0.49117
+        public static double kvVoltSecondsPerMeter = 3.3207; //3.4251
+        public static double kaVoltSecondsSquaredPerMeter = 0.510125; //0.0915650
+        public static DifferentialDriveKinematics kDriveKinematics =
+                new DifferentialDriveKinematics(DriveConstants.trackWidth);
         public static double maxAutoSpeed = 3.0; // meters per second
         public static double maxAutoAcceleration = 3.0; // meters per second per second
         public static double kRamseteB = 2.0;
         public static double kRamseteZeta = 0.7;
-        public static double kPDriveVel = 0.0; //1.9736
+        public static double kPDriveVel = 4.5729; //1.9736
         public static double maxAutoTurn = 0.55;
+        public static double maxVolts = 7;
     }
 
     public static final class DriveConstants {
@@ -33,8 +36,8 @@ public final class Constants {
 
         public static final int rightEncoderChannelA = 2;
         public static final int rightEncoderchannelB = 3;
-        public static final int leftEncoderChannelA = 1;
-        public static final int leftEncoderChannelB = 0;
+        public static final int leftEncoderChannelA = 0;
+        public static final int leftEncoderChannelB = 1;
 
         /**
          * MISC CONSTANTS
@@ -49,7 +52,9 @@ public final class Constants {
     }
 
     public static final class OIConstants {
-        /** XBOX CONTROLLER PORTS **/
+        /**
+         * XBOX CONTROLLER PORTS
+         **/
         public static final int xboxControllerPort = 1;
         public static final int fightStickPort = 0;
     }
@@ -113,5 +118,16 @@ public final class Constants {
         public static double modelDeviation = 0.075;
         public static double encoderDeviation = 0.02;
         public static double hoodToHub = 0.9207;
+    }
+
+    public static final class Turret {
+        public static final double ks = 0.83559;
+        public static final double ka = 0.00056228;
+        public static final double kv = 0.027068;
+
+        public static double maxError = .5;
+        public static double maxControlEffort = 2;
+        public static double modelDeviation = 0.075;
+        public static double encoderDeviation = 0.02;
     }
 }

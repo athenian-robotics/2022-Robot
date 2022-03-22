@@ -45,16 +45,6 @@ public class ClimberSubsystem extends SubsystemBase {
         climbMotorRight.set(ControlMode.PercentOutput, power);
     }
 
-    public void setLeftHeightPercent(double percent) {
-        if (percent < 0 || percent > 1) return;
-        leftPIDController.setSetpoint(percent);
-    }
-
-    public void setRightHeightPercent(double percent) {
-        if (percent < 0 || percent > 1) return;
-        rightPIDController.setSetpoint(percent);
-    }
-
     private double getLeftHeightEncoderCount() {
         return climbMotorLeft.getSelectedSensorPosition();
     }
@@ -64,11 +54,21 @@ public class ClimberSubsystem extends SubsystemBase {
     }
 
     public double getLeftHeightPercent() {
-        return getLeftHeightEncoderCount()/333600;
+        return getLeftHeightEncoderCount() / 333600;
+    }
+
+    public void setLeftHeightPercent(double percent) {
+        if (percent < 0 || percent > 1) return;
+        leftPIDController.setSetpoint(percent);
     }
 
     public double getRightHeightPercent() {
-        return getRightHeightEncoderCount()/333600;
+        return getRightHeightEncoderCount() / 333600;
+    }
+
+    public void setRightHeightPercent(double percent) {
+        if (percent < 0 || percent > 1) return;
+        rightPIDController.setSetpoint(percent);
     }
 
     public void disable() {
@@ -81,5 +81,11 @@ public class ClimberSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("right telescope height", getRightHeightPercent());
         SmartDashboard.putNumber("left telescope encoder count", getLeftHeightEncoderCount());
         SmartDashboard.putNumber("right telescope encoder count", getRightHeightEncoderCount());
+    }
+
+    public void set(int i) {
+        // set motors to encoder count
+
+        climbMotorLeft.set(ControlMode.Position, i);
     }
 }

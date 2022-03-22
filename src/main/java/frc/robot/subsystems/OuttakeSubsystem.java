@@ -19,24 +19,20 @@ import java.util.Map;
 import static frc.robot.Constants.MechanismConstants.*;
 
 public class OuttakeSubsystem extends SubsystemBase {
+    public final PIDController turretAnglePID;
+    public final PIDController limelightTurretAnglePID;
     // Setup motors, pid controller, and booleans
     private final TalonFX shooterMotorFront = new TalonFX(shooterMotorPortA);
     private final TalonFX shooterMotorBack = new TalonFX(shooterMotorPortB);
     private final TalonFX turretMotor = new TalonFX(turretMotorPort);
-
     private final Servo leftHoodAngleServo = new Servo(2);
     private final Servo rightHoodAngleServo = new Servo(3);
-
     private final NetworkTableEntry shooterNTE, turretAngleNTE, shooterAdjustmentNTE, shooterActiveNTE;
-    public final PIDController turretAnglePID;
-    public final PIDController limelightTurretAnglePID;
-
+    private final SimpleVelocitySystem sys;
     public boolean shooterRunning = false;
     public double shuffleboardShooterPower;
     public double shuffleboardShooterAdjustment;
-
     public double shuffleBoardTurretAngle;
-    private final SimpleVelocitySystem sys;
     private double shooterRPS = 0;
 
     public OuttakeSubsystem() {
@@ -48,8 +44,8 @@ public class OuttakeSubsystem extends SubsystemBase {
         turretAnglePID.setSetpoint(0); //Always trying to minimize our offset
         turretAnglePID.setTolerance(0.5);
 
-        limelightTurretAnglePID = new PIDController(0.0065, 0.001, 0.0012);
-                //(0.006, 0.00085, 0.004);
+        limelightTurretAnglePID = new PIDController(1.3518, 0.001, 0.037025);
+        //(0.006, 0.00085, 0.004);
         limelightTurretAnglePID.setSetpoint(0);
         limelightTurretAnglePID.setTolerance(1);
 
@@ -90,6 +86,7 @@ public class OuttakeSubsystem extends SubsystemBase {
                 Constants.Shooter.modelDeviation, Constants.Shooter.encoderDeviation,
                 Constants.looptime);
 
+
         setTurretPosition(0); //assume default position is turret starting counterclockwise backwards
     }
 
@@ -105,7 +102,7 @@ public class OuttakeSubsystem extends SubsystemBase {
     public void setRPS(double rps) {
         sys.set(rps * shuffleboardShooterAdjustment);
         shooterRunning = true;
-        shooterRPS = rps*shuffleboardShooterAdjustment;
+        shooterRPS = rps * shuffleboardShooterAdjustment;
     }
 
     public void setShooterFront(double power) {
@@ -115,19 +112,22 @@ public class OuttakeSubsystem extends SubsystemBase {
 
     public void turnTurret(double power) {
         if (getTurretAngle() < maximumTurretAngle && power > 0 || getTurretAngle() > minimumTurretAngle && power < 0) {
-            turretMotor.set(ControlMode.PercentOutput, power > turretTurnSpeed ? turretTurnSpeed : power < -turretTurnSpeed ? -turretTurnSpeed : power);
+            turretMotor.set(ControlMode.PercentOutput, power > turretTurnSpeed ? turretTurnSpeed :
+                    Math.max(power, -turretTurnSpeed));
         } else turretMotor.set(ControlMode.PercentOutput, 0);
-    }
-
-    public void setHoodAngle(double angle) {
-        if (angle >= minimumHoodAngle && angle <= maximumHoodAngle) {
-            leftHoodAngleServo.setAngle(180 * (angle - minimumHoodAngle) / (maximumHoodAngle - minimumHoodAngle)); // 0 - 180 DEGREES
-            rightHoodAngleServo.setAngle(180 * (angle - minimumHoodAngle) / (maximumHoodAngle - minimumHoodAngle)); // 0 - 180 DEGREES
-        }
     }
 
     public double getHoodAngle() { //Takes the average of the angles (0-1) and scales it into a degree measurement
         return ((maximumHoodAngle - minimumHoodAngle) * (leftHoodAngleServo.getAngle() + rightHoodAngleServo.getAngle()) / 360) + minimumHoodAngle;
+    }
+
+    public void setHoodAngle(double angle) {
+        if (angle >= minimumHoodAngle && angle <= maximumHoodAngle) {
+            leftHoodAngleServo.setAngle(180 * (angle - minimumHoodAngle) / (maximumHoodAngle - minimumHoodAngle)); //
+            // 0 - 180 DEGREES
+            rightHoodAngleServo.setAngle(180 * (angle - minimumHoodAngle) / (maximumHoodAngle - minimumHoodAngle));
+            // 0 - 180 DEGREES
+        }
     }
 
     public void stopShooter() { // Disables shooter
