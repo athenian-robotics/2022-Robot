@@ -13,6 +13,7 @@ public class AutoRoutine3 extends SequentialCommandGroup {
         addCommands(
                 new ToggleIntake(intake),
                 new AutoRoutine1Part1(drivetrain),
+                new ToggleIntake(intake),
                 new ShootTwo(climber, drivetrain, indexer, intake, outtake, limelight, shooterDataTable)
         );
     }

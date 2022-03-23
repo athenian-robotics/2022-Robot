@@ -23,25 +23,25 @@ public class ShootTwo extends SequentialCommandGroup {
         if (climber.getLeftHeightPercent() > 0.1 || climber.getRightHeightPercent() > 0.1) this.cancel();
             addCommands(
                     //Prepare
-                    new DisableDrivetrain(drivetrain),
+                    //new DisableDrivetrain(drivetrain),
                     new DisableIntake(intake),
                     //Align to shoot
-                    new ParallelDeadlineGroup(new GuaranteeLimelightData(limelight), new ManualAdjustTurret(outtake)),
+                    new ParallelDeadlineGroup(new GuaranteeLimelightData(limelight).withTimeout(0.5), new ManualAdjustTurret(outtake)),
                     new ParallelCommandGroup(
                             new SetShooterPowerWithLimelight(shooterDataTable, limelight, outtake),
                             new SetHoodAngleWithLimelightTimeSafe(shooterDataTable, limelight, outtake)
                     ),
-                    new AlwaysTurretTurnToGoalWithLimelight(limelight, outtake).withTimeout(0.75),
+                    //new AlwaysTurretTurnToGoalWithLimelightOrManualControl(limelight, outtake).withTimeout(0.75),
                     new ParallelDeadlineGroup(
                         new SequentialCommandGroup(
                                 new ParallelDeadlineGroup(
-                                    new GuaranteeLimelightDataEquals(limelight, LimelightDataType.HORIZONTAL_OFFSET, 0, 1),
+                                    new GuaranteeLimelightDataEquals(limelight, LimelightDataType.HORIZONTAL_OFFSET, 0, 0.05).withTimeout(0.75),
                                     new ManualAdjustTurret(outtake)
                                 ),
                                 //Shoot Balls
                                     new ShootIndexedBallsForever(indexer, intake).withTimeout(2)
-                                ),
-                        new AlwaysTurretTurnToGoalWithLimelight(limelight, outtake)
+                                )
+                    //     new AlwaysTurretTurnToGoalWithLimelightOrManualControl(limelight, outtake)
                     ),
                     //Return to teleop
                     new ParallelCommandGroup(

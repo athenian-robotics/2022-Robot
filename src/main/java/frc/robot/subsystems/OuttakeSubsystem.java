@@ -3,6 +3,8 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.networktables.NetworkTableEntry;
@@ -24,14 +26,17 @@ public class OuttakeSubsystem extends SubsystemBase {
     // Setup motors, pid controller, and booleans
     private final TalonFX shooterMotorFront = new TalonFX(shooterMotorPortA);
     private final TalonFX shooterMotorBack = new TalonFX(shooterMotorPortB);
-    private final TalonFX turretMotor = new TalonFX(turretMotorPort);
+    private final WPI_TalonFX turretMotor = new WPI_TalonFX(turretMotorPort);
     private final Servo leftHoodAngleServo = new Servo(2);
     private final Servo rightHoodAngleServo = new Servo(3);
+
+    ArmFeedforward feed;
+
+    PIDController pid = new PIDController(.0556, 0.0027, 0.0087); //8
 
 
     private final NetworkTableEntry shooterAdjustmentNTE;
 
-    private final PIDController turretPID;
 
     public boolean shooterRunning = false;
     public boolean turretRunning = false;
@@ -39,8 +44,9 @@ public class OuttakeSubsystem extends SubsystemBase {
     public double shuffleboardShooterAdjustment;
 
     private final SimpleVelocitySystem sys;
-    private final SimplePositionSystem sysT;
     private double shooterRPS = 0;
+    private double angle;
+    private double volts;
 
     public OuttakeSubsystem() {
         shooterMotorFront.setInverted(false);
@@ -52,14 +58,14 @@ public class OuttakeSubsystem extends SubsystemBase {
         shooterMotorBack.setNeutralMode(NeutralMode.Coast);
         shooterMotorBack.follow(shooterMotorFront);
 
-        turretPID = new PIDController(0.007,0.001,0.001);
-        turretPID.setTolerance(0.5);
 
         turretMotor.configClosedloopRamp(0.5);
         turretMotor.config_kP(0, 0.02);
 
         leftHoodAngleServo.setBounds(2.0, 1.8, 1.5, 1.2, 1.0); //Manufacturer specified for Actuonix linear servos
         rightHoodAngleServo.setBounds(2.0, 1.8, 1.5, 1.2, 1.0); //Manufacturer specified for Actuonix linear servos
+
+        feed = new ArmFeedforward(Constants.Turret.ks, 0.0047422, Constants.Turret.kv, Constants.Turret.ka);
 
         shooterAdjustmentNTE = Shuffleboard.getTab("852 - Dashboard")
                 .add("Shooter Power Adjustment", 1)
@@ -76,11 +82,7 @@ public class OuttakeSubsystem extends SubsystemBase {
                 Constants.Shooter.maxError, Constants.Shooter.maxControlEffort,
                 Constants.Shooter.modelDeviation, Constants.Shooter.encoderDeviation,
                 Constants.looptime);
-
-        sysT = new SimplePositionSystem(Constants.Turret.ks, Constants.Turret.kv, Constants.Turret.ka,
-                Constants.Turret.maxError, Constants.Turret.maxControlEffort, Constants.Turret.modelDeviation,
-                Constants.Turret.encoderDeviation, Constants.looptime);
-
+        pid.setTolerance(0.0001);
         setTurretStartingAngle(-180); //assume default position is turret starting facing backwards counterclockwise
     }
 
@@ -98,6 +100,8 @@ public class OuttakeSubsystem extends SubsystemBase {
         shooterRunning = true;
         shooterRPS = rps * shuffleboardShooterAdjustment;
     }
+
+
 
     public void setShooterFront(double power) {
         if (power > 1.0) power = 1.0;
@@ -148,12 +152,12 @@ public class OuttakeSubsystem extends SubsystemBase {
     }
 
     public double getTurretAngle() {
-        return turretMotor.getSelectedSensorPosition() * 36 / 2048;
+        return Math.toRadians(turretMotor.getSelectedSensorPosition() * 36 / 2048);
     }
 
-    public void setTurretPosition(double angle){
-        // system
-        turretMotor.set(ControlMode.Position, 2048 * angle / 36);
+    public void setTurretPosition(double fangle){
+        angle = fangle;
+        pid.setSetpoint(fangle);
         turretRunning = true;
     }
 
@@ -177,5 +181,13 @@ public class OuttakeSubsystem extends SubsystemBase {
             sys.update(getWheelSpeed());
             setShooterPower(sys.getOutput());
         }
+
+        if (turretRunning) {
+            turretMotor.setVoltage(pid.calculate(getTurretAngle())); // +
+        }
+    }
+
+    private void setTurret(double output) {
+        turretMotor.setVoltage(output);
     }
 }

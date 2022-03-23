@@ -14,12 +14,12 @@ import frc.robot.Constants;
 import frc.robot.subsystems.DrivetrainSubsystem;
 
 
-public class AutoRoutine1Part4 extends CommandBase {
+public class AutoRoutine1Part5 extends CommandBase {
     private final RamseteCommand ramseteCommand;
     private final DrivetrainSubsystem drivetrain;
     private final PathPlannerTrajectory trajectory;
 
-    public AutoRoutine1Part4(DrivetrainSubsystem drivetrainSubsystem) {
+    public AutoRoutine1Part5(DrivetrainSubsystem drivetrainSubsystem) {
         addRequirements(drivetrainSubsystem);
         drivetrain = drivetrainSubsystem;
 
@@ -45,7 +45,7 @@ public class AutoRoutine1Part4 extends CommandBase {
 
         // An example trajectory to follow.  All units in meters.
         // create a new trajectory 1 meter forward
-        PathPlannerTrajectory exampleTrajectory = PathPlanner.loadPath("Auto Routine 1 Part 4", Constants.AutoConstants.maxAutoSpeed, Constants.AutoConstants.maxAutoAcceleration, true);
+        PathPlannerTrajectory exampleTrajectory = PathPlanner.loadPath("Auto Routine 1 Part 5", Constants.AutoConstants.maxAutoSpeed, Constants.AutoConstants.maxAutoAcceleration);
         trajectory = exampleTrajectory;
 
         this.ramseteCommand = new RamseteCommand(

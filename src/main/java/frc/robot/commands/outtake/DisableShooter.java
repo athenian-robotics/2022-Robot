@@ -9,7 +9,7 @@ public class DisableShooter extends InstantCommand {
 
     public DisableShooter(OuttakeSubsystem outtakeSubsystem) {
         this.outtakeSubsystem = outtakeSubsystem;
-        addRequirements(this.outtakeSubsystem);
+        addRequirements();
     }
 
     @Override

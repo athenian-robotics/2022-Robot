@@ -40,7 +40,7 @@ public class SimplePositionSystem {
      * @param output The desired output of the system
      */
     public void set(double output) {
-        loop.setNextR(output, 0); // set output
+        loop.setNextR(VecBuilder.fill(output, output)); // set output
     }
 
     /**
@@ -56,7 +56,7 @@ public class SimplePositionSystem {
      * @return The percent output that the controller should run at
      */
     public double getOutput() {
-        return (loop.getU(0) - kS * Math.signum(loop.getNextR(0))) / maxControlEffort;
+        return loop.getU(0) / maxControlEffort;
     }
 
     /**

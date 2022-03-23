@@ -16,8 +16,8 @@ public final class Constants {
         public static double kaVoltSecondsSquaredPerMeter = 0.51012;
         public static DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(DriveConstants.trackWidth);
         public static double maxVolts = 7.0;
-        public static double maxAutoSpeed = 0.35; // meters per second
-        public static double maxAutoAcceleration = 0.35; // meters per second per second
+        public static double maxAutoSpeed = 5; // meters per second 5
+        public static double maxAutoAcceleration = 1.5; // meters per second per second  1.5
         public static double kRamseteB = 2.0;
         public static double kRamseteZeta = 0.7;
         public static double kPDriveVel = 4.5729;
@@ -90,7 +90,7 @@ public final class Constants {
         public static final double maximumTurretAngle = 90;
         public static final double minimumTurretAngle = -210;
         // MAX MECHANISM SPEEDS
-        public static final double intakeSpeed = 0.3; //0.3
+        public static final double intakeSpeed = 0.275; //0.3
 
         // Climber motor ports ...
     }
@@ -136,13 +136,13 @@ public final class Constants {
 //    }
 
     public static final class Turret {
-        public static final double ks = 0.83559;
-        public static final double ka = 0.00056228;
-        public static final double kv = 0.027068;
+        public static final double ks = 0.70514;
+        public static final double ka = 0.019842;
+        public static final double kv = 0.22251;
 
-        public static double maxError = .5;
+        public static double maxError = 0;
         public static double maxControlEffort = 2;
-        public static double modelDeviation = 0.075;
+        public static double modelDeviation = 0.0;
         public static double encoderDeviation = 0.02;
     }
 }

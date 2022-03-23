@@ -21,8 +21,8 @@ public class TankDrive extends CommandBase {
 
     @Override
     public void execute() {
-        drivetrain.tankDrive(xboxController.getLeftY(), // Left velocity (Xbox Controller: Left stick, Y axis)
-                xboxController.getRightY()); // Right velocity (Xbox Controller: Right stick, Y axis)
+        drivetrain.tankDrive(-xboxController.getLeftY(), // Left velocity (Xbox Controller: Left stick, Y axis)
+                -xboxController.getRightY()); // Right velocity (Xbox Controller: Right stick, Y axis)
     }
 
     @Override

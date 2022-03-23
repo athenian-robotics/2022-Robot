@@ -86,6 +86,7 @@ public class RobotContainer {
         chooser.addOption("1: 5 Ball Auto - Bottom Left Start", new AutoRoutine1(climb, drivetrain, indexer, intake, outtake, limelight, shooterDataTable));
         chooser.addOption("2: 3 Ball Auto - Top Left Start", new AutoRoutine2(climb, drivetrain, indexer, intake, outtake, limelight, shooterDataTable));
         chooser.addOption("3: 2 Ball Auto - Bottom Left Start", new AutoRoutine3(climb, drivetrain, indexer, intake, outtake, limelight, shooterDataTable));
+        chooser.addOption("4: 4 Ball Auto - Bottom Left Start", new AutoRoutine4(climb, drivetrain, indexer, intake, outtake, limelight, shooterDataTable));
 
         xboxButtonSetup();
         configureButtonBindings();
@@ -103,8 +104,12 @@ public class RobotContainer {
       FightStick.fightStickL3.whenHeld(new WinchSetSpeed(climb, -winchSpeed)); //Toggle Indexer down (tower portion)
       FightStick.fightStickR3.whenHeld(new WinchSetSpeed(climb, winchSpeed)); // Toggle indexer (tower portion)
       FightStick.fightStickLT.whenActive(new ShootLowGoal(climb, drivetrain, indexer, intake, outtake, limelight));
+      FightStick.fightStickRT.whenActive(new ShootHighGoalNextToTarget(climb, drivetrain, indexer, intake, outtake, limelight));
       //FightStick.fightStickRT.whenActive(new Traverse(climb));
-      xboxA.whenPressed(new ShootLowGoal(climb, drivetrain, indexer, intake, outtake, limelight));
+      xboxB.whenPressed(new ShootLowGoal(climb, drivetrain, indexer, intake, outtake, limelight));
+      xboxA.whenPressed(new ToggleIntake((intake)));
+      xboxRB.whenPressed(new ShootTwo(climb, drivetrain, indexer, intake, outtake, limelight, shooterDataTable));
+      xboxLB.whenPressed(new ShootBalls(climb, drivetrain, indexer, intake, outtake, limelight, shooterDataTable));
 
         /* MISC COMMANDS (Random lib of commands. Written using functional commands because most are just one line ) */
         // have fun with this - jason and jacob '22   ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ

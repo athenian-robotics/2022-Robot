@@ -22,7 +22,7 @@ public class SetShooterPowerWithLimelight extends CommandBase {
         this.limelightSubsystem = limelightSubsystem;
         this.outtakeSubsystem = outtakeSubsystem;
         this.latch = new LimelightDataLatch(LimelightDataType.DISTANCE);
-        addRequirements(this.outtakeSubsystem);
+        addRequirements();
     }
 
     @Override
