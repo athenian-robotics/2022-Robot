@@ -130,7 +130,7 @@ public final class Constants {
         public static final double kv = 0.0032092;
 
         public static double maxError = .5;
-        public static double maxControlEffort = 12;
+        public static double maxControlEffort = 2;
         public static double modelDeviation = 0.075;
         public static double encoderDeviation = 0.02;
     }

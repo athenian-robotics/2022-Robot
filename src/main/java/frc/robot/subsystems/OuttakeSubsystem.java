@@ -75,6 +75,7 @@ public class OuttakeSubsystem extends SubsystemBase {
                 Constants.Shooter.maxError, Constants.Shooter.maxControlEffort,
                 Constants.Shooter.modelDeviation, Constants.Shooter.encoderDeviation,
                 Constants.looptime);
+
         sysT = new SimplePositionSystem(Constants.Turret.ks, Constants.Turret.kv, Constants.Turret.ka,
                 Constants.Turret.maxError, Constants.Turret.maxControlEffort, Constants.Turret.modelDeviation,
                 Constants.Turret.encoderDeviation, Constants.looptime);
@@ -154,7 +155,9 @@ public class OuttakeSubsystem extends SubsystemBase {
     }
 
     public void setTurretPosition(double position){
-        turretPID.setSetpoint(position); turretRunning = true;
+        // system
+        sysT.set(position);
+        turretRunning = true;
     }
 
     public void disable() {
