@@ -55,6 +55,9 @@ public class OuttakeSubsystem extends SubsystemBase {
         turretPID = new PIDController(0.007,0.001,0.001);
         turretPID.setTolerance(0.5);
 
+        turretMotor.configClosedloopRamp(0.5);
+        turretMotor.config_kP(0, 0.02);
+
         leftHoodAngleServo.setBounds(2.0, 1.8, 1.5, 1.2, 1.0); //Manufacturer specified for Actuonix linear servos
         rightHoodAngleServo.setBounds(2.0, 1.8, 1.5, 1.2, 1.0); //Manufacturer specified for Actuonix linear servos
 
@@ -102,20 +105,12 @@ public class OuttakeSubsystem extends SubsystemBase {
         shooterMotorFront.set(ControlMode.PercentOutput, power);
     }
 
-    public void turnTurretOffset(double offset) {
-        sysT.set(getTurretAngle() + offset);
-    }
-
     public void turnTurret(double power) {
         if (getTurretAngle() < maximumTurretAngle && power > 0 || getTurretAngle() > minimumTurretAngle && power < 0) {
             turretMotor.set(ControlMode.PercentOutput, power > turretTurnSpeed ? turretTurnSpeed : Math.max(power, -turretTurnSpeed));
         } else if (power == 0.0) {
             stopTurret();
         } else turretMotor.set(ControlMode.PercentOutput, 0);
-    }
-
-    public void setTurretVolts(double volts) {
-        //turretMotor.set(ControlMode.Position, );
     }
 
     public void setHoodAngle(double angle) {
@@ -156,9 +151,9 @@ public class OuttakeSubsystem extends SubsystemBase {
         return turretMotor.getSelectedSensorPosition() * 36 / 2048;
     }
 
-    public void setTurretPosition(double position){
+    public void setTurretPosition(double angle){
         // system
-        sysT.set(position);
+        turretMotor.set(ControlMode.Position, 2048 * angle / 36);
         turretRunning = true;
     }
 
@@ -178,9 +173,6 @@ public class OuttakeSubsystem extends SubsystemBase {
 
         shuffleboardShooterAdjustment = shooterAdjustmentNTE.getDouble(1);
 
-        if (turretRunning)
-            sysT.update(getTurretAngle());
-            setTurretVolts(sysT.getOutput());
         if (shooterRunning) {
             sys.update(getWheelSpeed());
             setShooterPower(sys.getOutput());

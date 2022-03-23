@@ -16,8 +16,8 @@ public final class Constants {
         public static double kaVoltSecondsSquaredPerMeter = 0.51012;
         public static DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(DriveConstants.trackWidth);
         public static double maxVolts = 7.0;
-        public static double maxAutoSpeed = 0.5; // meters per second
-        public static double maxAutoAcceleration = 0.5; // meters per second per second
+        public static double maxAutoSpeed = 0.35; // meters per second
+        public static double maxAutoAcceleration = 0.35; // meters per second per second
         public static double kRamseteB = 2.0;
         public static double kRamseteZeta = 0.7;
         public static double kPDriveVel = 4.5729;

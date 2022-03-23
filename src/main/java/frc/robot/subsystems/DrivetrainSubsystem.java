@@ -68,7 +68,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
         driveShifterRight.set(DoubleSolenoid.Value.kReverse);
         driveShifterLeft.set(DoubleSolenoid.Value.kReverse);
 
-
         resetEncoders();
         odometry = new DifferentialDriveOdometry(gyro.getRotation2d());
     }
@@ -151,7 +150,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
      * Reset the robot's odometry
      *
      * @param pose Robot's pose as a Pose2d object
-     * @param rot  Robot's rotation as a Rotation2d object
      */
     public void resetOdometry(Pose2d pose) {
         resetEncoders();
