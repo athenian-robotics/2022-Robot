@@ -19,8 +19,6 @@ public class AutoRoutine0Part1 extends CommandBase {
     private final RamseteCommand ramseteCommand;
 
     public AutoRoutine0Part1(DrivetrainSubsystem drivetrainSubsystem) {
-        // each subsystem used by the command must be passed into the
-        // addRequirements() method (which takes a vararg of Subsystem)
         addRequirements(drivetrainSubsystem);
 
         // Create a voltage constraint to ensure we don't accelerate too fast

@@ -15,12 +15,13 @@ import frc.robot.subsystems.DrivetrainSubsystem;
 
 public class AutoRoutine1Part1 extends CommandBase {
     private final RamseteCommand ramseteCommand;
+    private final DrivetrainSubsystem drivetrain;
+
+    private final Trajectory trajectory;
 
     public AutoRoutine1Part1(DrivetrainSubsystem drivetrainSubsystem) {
-        // each subsystem used by the command must be passed into the
-        // addRequirements() method (which takes a vararg of Subsystem)
         addRequirements(drivetrainSubsystem);
-
+        drivetrain = drivetrainSubsystem;
         // Create a voltage constraint to ensure we don't accelerate too fast
         var autoVoltageConstraint =
                 new DifferentialDriveVoltageConstraint(
@@ -43,7 +44,8 @@ public class AutoRoutine1Part1 extends CommandBase {
 
         // An example trajectory to follow.  All units in meters.
         // create a new trajectory 1 meter forward
-        Trajectory exampleTrajectory = PathPlanner.loadPath("Auto Routine 1 Part 1", 2, 1);
+        Trajectory exampleTrajectory = PathPlanner.loadPath("Auto Routine 1 Part 1", 0.5, 0.5);
+        trajectory = exampleTrajectory;
 
         this.ramseteCommand = new RamseteCommand(
                 exampleTrajectory,
@@ -63,7 +65,7 @@ public class AutoRoutine1Part1 extends CommandBase {
 
         // Reset odometry to the starting pose of the trajectory.
 //        drivetrainSubsystem.resetGyro();
-//        drivetrainSubsystem.resetOdometry(exampleTrajectory.getInitialPose(), exampleTrajectory.getInitialPose().getRotation());
+        drivetrainSubsystem.resetOdometry(exampleTrajectory.getInitialPose());
         // Run path following command, then stop at the end.
     }
 

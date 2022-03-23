@@ -19,11 +19,7 @@ public class ShootLowGoal extends SequentialCommandGroup {
         new DisableDrivetrain(drivetrain),
                 new DisableIntake(intake),
                 //Align to shoot
-                new TurretTurnToAngle(outtake, 0),
-                new ParallelCommandGroup(
-                        new SetShooterPower(outtake, 25),
-                        new SetHoodAngleTimeSafe(outtake, 41)
-                ),
+                new SetShooterPower(outtake, 16),
                 //Shoot Balls
                 new ShootIndexedBallsForever(indexer, intake).withTimeout(2),
                 //Return to teleop

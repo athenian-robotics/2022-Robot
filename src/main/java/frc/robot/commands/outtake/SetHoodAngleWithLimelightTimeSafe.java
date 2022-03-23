@@ -15,7 +15,7 @@ public class SetHoodAngleWithLimelightTimeSafe extends SequentialCommandGroup {
     public SetHoodAngleWithLimelightTimeSafe(ShooterDataTable shooterDataTable, LimelightSubsystem limelightSubsystem, OuttakeSubsystem outtakeSubsystem) {
         super(
                 new SetHoodAngleWithLimelight(shooterDataTable, limelight, outtake),
-                new WaitCommand(Math.abs(outtake.getHoodAngle() - Constants.MechanismConstants.defaultHoodAngle)/8)
+                new WaitCommand((Math.abs(outtake.getHoodAngle() - Constants.MechanismConstants.defaultHoodAngle)/6.8) - 1.4)
         ); //We have to take the L with this calculation and assume that the hood angle starts at the default instead of taking a measurement
     }
 }

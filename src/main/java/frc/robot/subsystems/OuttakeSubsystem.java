@@ -21,8 +21,6 @@ import static com.ctre.phoenix.motorcontrol.TalonFXControlMode.PercentOutput;
 import static frc.robot.Constants.MechanismConstants.*;
 
 public class OuttakeSubsystem extends SubsystemBase {
-    public final PIDController turretAnglePID;
-    public final PIDController limelightTurretAnglePID;
     // Setup motors, pid controller, and booleans
     private final TalonFX shooterMotorFront = new TalonFX(shooterMotorPortA);
     private final TalonFX shooterMotorBack = new TalonFX(shooterMotorPortB);
@@ -127,6 +125,10 @@ public class OuttakeSubsystem extends SubsystemBase {
             rightHoodAngleServo.setAngle(180 * (angle - minimumHoodAngle) / (maximumHoodAngle - minimumHoodAngle));
             // 0 - 180 DEGREES
         }
+    }
+
+    public double getHoodAngle() { //Takes the average of the angles (0-1) and scales it into a degree measurement
+        return ((maximumHoodAngle - minimumHoodAngle) * (leftHoodAngleServo.getAngle() + rightHoodAngleServo.getAngle()) / 360) + minimumHoodAngle;
     }
 
     public void stopShooter() { // Disables shooter

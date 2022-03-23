@@ -11,13 +11,13 @@ public final class Constants {
     public static final double looptime = 0.02;
 
     public static final class AutoConstants {
-        public static double ksVolts = 0.58447;
-        public static double kvVoltSecondsPerMeter = 3.449;
-        public static double kaVoltSecondsSquaredPerMeter = 0.2608;
+        public static double ksVolts = 0.55834;
+        public static double kvVoltSecondsPerMeter = 3.3207;
+        public static double kaVoltSecondsSquaredPerMeter = 0.51012;
         public static DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(DriveConstants.trackWidth);
         public static double maxVolts = 7.0;
-        public static double maxAutoSpeed = 3.0; // meters per second
-        public static double maxAutoAcceleration = 3.0; // meters per second per second
+        public static double maxAutoSpeed = 0.5; // meters per second
+        public static double maxAutoAcceleration = 0.5; // meters per second per second
         public static double kRamseteB = 2.0;
         public static double kRamseteZeta = 0.7;
         public static double kPDriveVel = 4.5729;
@@ -63,7 +63,7 @@ public final class Constants {
         public static final int intakeMotorPort = 6;
         public static final int indexerMotorPort = 12;
         public static final int intakeToIndexerMotorPort = 13;
-        public static final double indexerSpeed = 0.25; //0.25
+        public static final double indexerSpeed = 0.35; //0.25
         public static final double intakeToIndexerSpeed = 0.2;
         public static final int intakeToIndexerResidualIndexTimeMillis = 700;
         //CLIMBER
@@ -124,16 +124,16 @@ public final class Constants {
         public static double encoderDeviation = 0.02;
     }
 
-    public static final class Turret {
-        public static final double ks = 0.74398;
-        public static final double ka = 0.00049495;
-        public static final double kv = 0.0032092;
-
-        public static double maxError = .5;
-        public static double maxControlEffort = 2;
-        public static double modelDeviation = 0.075;
-        public static double encoderDeviation = 0.02;
-    }
+//    public static final class Turret {
+//        public static final double ks = 0.74398;
+//        public static final double ka = 0.00049495;
+//        public static final double kv = 0.0032092;
+//
+//        public static double maxError = .5;
+//        public static double maxControlEffort = 2;
+//        public static double modelDeviation = 0.075;
+//        public static double encoderDeviation = 0.02;
+//    }
 
     public static final class Turret {
         public static final double ks = 0.83559;

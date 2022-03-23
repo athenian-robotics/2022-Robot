@@ -43,16 +43,16 @@ public class DrivetrainSubsystem extends SubsystemBase {
     public DrivetrainSubsystem() {
         // Initialize motors
         WPI_TalonFX[] driveMotors = {
-                new WPI_TalonFX(Constants.DriveConstants.leftRearDrivePort),
-                new WPI_TalonFX(Constants.DriveConstants.leftFrontDrivePort),
-                new WPI_TalonFX(Constants.DriveConstants.rightRearDrivePort),
-                new WPI_TalonFX(Constants.DriveConstants.rightFrontDrivePort)
+                new WPI_TalonFX(4),
+                new WPI_TalonFX(3),
+                new WPI_TalonFX(1),
+                new WPI_TalonFX(2)
         };
         configureDriveMotors(driveMotors); // Configure motors
 
         leftMotors = new MotorControllerGroup(driveMotors[0], driveMotors[1]);
         rightMotors = new MotorControllerGroup(driveMotors[2], driveMotors[3]);
-        rightMotors.setInverted(true);
+        leftMotors.setInverted(true);
 
         drive = new DifferentialDrive(leftMotors, rightMotors); // Initialize Differential Drive
 
@@ -61,7 +61,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
         leftEncoder = new Encoder(leftEncoderChannelA, leftEncoderChannelB, false);
         leftEncoder.setDistancePerPulse(2 * 3.14 * (.1524 / 2) / 2048); // 6-inch wheel, to meters, PI for
         // circumference, gear conversion, 2048 ticks per rotation
-        rightEncoder.setDistancePerPulse(2 * 3.14 * (.1524 / 2) / 2048); // 6-inch wheel, to meters, PI for
+        rightEncoder.setDistancePerPulse(2 * 3.14 * (.1524 / 2) / 2048) ; // 6-inch wheel, to meters, PI for
         // circumference, gear conversion, 2048 ticks per rotation
 
         //Configure solenoids
@@ -140,7 +140,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
             motor.configFactoryDefault(); // Initialize motor set up
             motor.configOpenloopRamp(0.7); // Ramp up (Trapezoid)
             motor.configClosedloopRamp(0.7); // Ramp down (Trapezoid)
-            motor.setNeutralMode(NeutralMode.Coast); // Default robot mode should be Coasting (So it doesn't wobble
+            motor.setNeutralMode(NeutralMode.Brake); // Default robot mode should be Coasting (So it doesn't wobble
             // cuz top heavy yaknow)
             motor.configForwardSoftLimitEnable(false);
             motor.configReverseSoftLimitEnable(false);
@@ -153,10 +153,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
      * @param pose Robot's pose as a Pose2d object
      * @param rot  Robot's rotation as a Rotation2d object
      */
-    public void resetOdometry(Pose2d pose, Rotation2d rot) {
-        setGyroOffset(-rot.getDegrees());
-        odometry.resetPosition(pose, rot);
+    public void resetOdometry(Pose2d pose) {
         resetEncoders();
+        odometry.resetPosition(pose, gyro.getRotation2d());
     }
 
     public int getLeftEncoderCount() {return this.leftEncoder.get();} // Returns left encoder raw count
@@ -182,12 +181,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
     public void setGyroOffset(double angle) {gyro.setAngleAdjustment(angle);}//  Sets the gyro's offset (units: degrees)
 
     public double getHeading() {return Math.IEEEremainder(-gyro.getAngle(), 360);} // Gets the gyro's heading, scaled
-    // within 360 degrees
-
-    public void resetOdometry(Pose2d pose) { // Reset's robot odometry
-        resetEncoders();
-        odometry.resetPosition(pose, gyro.getRotation2d());
-    }
 
     private void resetEncoders() { // Resets the drive encoders
         leftEncoder.reset();
@@ -235,7 +228,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Right Drive Encoder: ", getRightEncoderCount());
         SmartDashboard.putNumber("Left Drive Distance: ", getLeftDistanceDriven());
         SmartDashboard.putNumber("Right Drive Distance: ", getRightDistanceDriven());
-        gyro.getRotation2d();
 
         odometry.update(gyro.getRotation2d(),
                 leftEncoder.getDistance(),

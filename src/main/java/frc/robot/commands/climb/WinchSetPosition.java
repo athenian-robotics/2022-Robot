@@ -19,7 +19,7 @@ public class WinchSetPosition extends CommandBase {
         this.position = position;
         this.direction = position > climberSubsystem.getRightHeightPercent();
 
-        addRequirements(this.climberSubsystem);
+        addRequirements();
     }
 
     @Override
