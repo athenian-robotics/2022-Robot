@@ -42,7 +42,7 @@ public class OuttakeSubsystem extends SubsystemBase {
     public boolean turretRunning = false;
     public double shuffleboardShooterPower;
     public double shuffleboardShooterAdjustment;
-    public double currentShooterToleranceDegrees;
+    public double currentShooterToleranceDegrees = 1;
 
     private final SimpleVelocitySystem sys;
     private double shooterRPS = 0;
@@ -185,8 +185,7 @@ public class OuttakeSubsystem extends SubsystemBase {
         }
 
         if (turretRunning) {
-            turretMotor.setVoltage(turretPID.calculate(getTurretAngle())
-                    + feed.calculate(angle, Math.PI/2, Math.PI/2) /shuffleboardShooterAdjustment2); // + feed.calc
+            turretMotor.setVoltage(turretPID.calculate(getTurretAngle())); // + feed.calc
             try {
                 if (distanceLatch.unlocked()) {
                     currentShooterToleranceDegrees = 3/distanceLatch.open();

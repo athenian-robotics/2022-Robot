@@ -16,7 +16,7 @@ public final class Constants {
         public static final double kaVoltSecondsSquaredPerMeter = 0.51012;
         public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(DriveConstants.trackWidth);
         public static final double maxVolts = 7.0;
-        public static final double maxAutoSpeed = 5; // meters per second 5
+        public static final double maxAutoSpeed = 3; // meters per second 3
         public static final double maxAutoAcceleration = 1.5; // meters per second per second  1.5
         public static final double kRamseteB = 2.0;
         public static final double kRamseteZeta = 0.7;
@@ -70,7 +70,7 @@ public final class Constants {
         public static final int leftClimberMotorPort = 15;
         public static final int rightClimberMotorPort = 16;
         public static final int climbWinchMotorPort = 17;
-        public static final double telescopeSpeed = 0.2;
+        public static final double telescopeSpeed = 0.35;
         public static final double winchSpeed = 0.25;
         public static final int leftClimberMaxEncoderCount = 293302;
         public static final int rightClimberMaxEncoderCount = 298499;
