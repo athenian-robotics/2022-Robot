@@ -6,7 +6,6 @@ import frc.robot.subsystems.DrivetrainSubsystem;
 
 
 public class AutoForwardDistance extends CommandBase {
-    private final double metersToDrive;
     private final double setpoint;
     private final Encoder leftEnc;
     private final Encoder rightEnc;
@@ -17,7 +16,6 @@ public class AutoForwardDistance extends CommandBase {
         leftEnc = drivetrainSubsystem.leftEncoder;
         rightEnc = drivetrainSubsystem.rightEncoder;
         setpoint = ((leftEnc.getDistance() + rightEnc.getDistance()) / 2) + metersToDrive;
-        this.metersToDrive = metersToDrive;
         addRequirements(this.drivetrainSubsystem);
     }
 

@@ -19,8 +19,6 @@ public class ClimberSubsystem extends SubsystemBase {
     private final TalonFX climbMotorRight = new TalonFX(rightClimberMotorPort);
     private final TalonFX climbWinchMotor = new TalonFX(climbWinchMotorPort);
 
-    private NetworkTableEntry climbPercentNTE;
-
     public boolean climberActive = false;
 
     public ClimberSubsystem() {
@@ -35,7 +33,7 @@ public class ClimberSubsystem extends SubsystemBase {
         climbMotorRight.setSelectedSensorPosition(0);
         climbWinchMotor.setSelectedSensorPosition(0);
 
-        climbPercentNTE = Shuffleboard.getTab("852 - Dashboard")
+        NetworkTableEntry climbPercentNTE = Shuffleboard.getTab("852 - Dashboard")
                 .add("Climber Percent", 0)
                 .withWidget(BuiltInWidgets.kNumberSlider)
                 .withProperties(Map.of("min", 0, "max", 1))

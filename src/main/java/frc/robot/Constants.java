@@ -11,17 +11,17 @@ public final class Constants {
     public static final double looptime = 0.02;
 
     public static final class AutoConstants {
-        public static double ksVolts = 0.55834;
-        public static double kvVoltSecondsPerMeter = 3.3207;
-        public static double kaVoltSecondsSquaredPerMeter = 0.51012;
-        public static DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(DriveConstants.trackWidth);
-        public static double maxVolts = 7.0;
-        public static double maxAutoSpeed = 5; // meters per second 5
-        public static double maxAutoAcceleration = 1.5; // meters per second per second  1.5
-        public static double kRamseteB = 2.0;
-        public static double kRamseteZeta = 0.7;
-        public static double kPDriveVel = 4.5729;
-        public static double maxAutoTurn = 0.55;
+        public static final double ksVolts = 0.55834;
+        public static final double kvVoltSecondsPerMeter = 3.3207;
+        public static final double kaVoltSecondsSquaredPerMeter = 0.51012;
+        public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(DriveConstants.trackWidth);
+        public static final double maxVolts = 7.0;
+        public static final double maxAutoSpeed = 5; // meters per second 5
+        public static final double maxAutoAcceleration = 1.5; // meters per second per second  1.5
+        public static final double kRamseteB = 2.0;
+        public static final double kRamseteZeta = 0.7;
+        public static final double kPDriveVel = 4.5729;
+        public static final double maxAutoTurn = 0.55;
     }
 
     public static final class DriveConstants {
@@ -86,7 +86,7 @@ public final class Constants {
         // SHOOTER HOOD
         public static final double minimumHoodAngle = 8;
         public static final double maximumHoodAngle = 41;
-        public static final double defaultHoodAngle = 25;
+        public static final double defaultHoodAngle = 31;
         public static final double maximumTurretAngle = 90;
         public static final double minimumTurretAngle = -210;
         // MAX MECHANISM SPEEDS
@@ -118,31 +118,15 @@ public final class Constants {
         public static final double ka = 0.0091765;
         public static final double kv = 0.10818;
 
-        public static double maxError = 0.05;
-        public static double maxControlEffort = 12;
-        public static double modelDeviation = 0.075;
-        public static double encoderDeviation = 0.02;
+        public static final double maxError = 0.05;
+        public static final double maxControlEffort = 12;
+        public static final double modelDeviation = 0.075;
+        public static final double encoderDeviation = 0.02;
     }
-
-//    public static final class Turret {
-//        public static final double ks = 0.74398;
-//        public static final double ka = 0.00049495;
-//        public static final double kv = 0.0032092;
-//
-//        public static double maxError = .5;
-//        public static double maxControlEffort = 2;
-//        public static double modelDeviation = 0.075;
-//        public static double encoderDeviation = 0.02;
-//    }
 
     public static final class Turret {
         public static final double ks = 0.70514;
         public static final double ka = 0.019842;
         public static final double kv = 0.22251;
-
-        public static double maxError = 0;
-        public static double maxControlEffort = 2;
-        public static double modelDeviation = 0.0;
-        public static double encoderDeviation = 0.02;
     }
 }

@@ -4,30 +4,30 @@ import edu.wpi.first.wpilibj.Joystick;
 import frc.robot.Constants;
 
 public class FightStick {
-    public static Joystick fightStickJoystick = new Joystick(Constants.OIConstants.fightStickPort);
-    public static FightStickDigitalButton fightStickA = new FightStickDigitalButton(fightStickJoystick, 1,
+    public static final Joystick fightStickJoystick = new Joystick(Constants.OIConstants.fightStickPort);
+    public static final FightStickDigitalButton fightStickA = new FightStickDigitalButton(fightStickJoystick, 1,
             FightStickInput.input.medKick);
-    public static FightStickDigitalButton fightStickB = new FightStickDigitalButton(fightStickJoystick, 2,
+    public static final FightStickDigitalButton fightStickB = new FightStickDigitalButton(fightStickJoystick, 2,
             FightStickInput.input.heavyKick);
-    public static FightStickDigitalButton fightStickX = new FightStickDigitalButton(fightStickJoystick, 3,
+    public static final FightStickDigitalButton fightStickX = new FightStickDigitalButton(fightStickJoystick, 3,
             FightStickInput.input.medPunch);
-    public static FightStickDigitalButton fightStickY = new FightStickDigitalButton(fightStickJoystick, 4,
+    public static final FightStickDigitalButton fightStickY = new FightStickDigitalButton(fightStickJoystick, 4,
             FightStickInput.input.heavyPunch);
-    public static FightStickDigitalButton fightStickLB = new FightStickDigitalButton(fightStickJoystick, 5,
+    public static final FightStickDigitalButton fightStickLB = new FightStickDigitalButton(fightStickJoystick, 5,
             FightStickInput.input.lightPunch);
-    public static FightStickDigitalButton fightStickRB = new FightStickDigitalButton(fightStickJoystick, 6,
+    public static final FightStickDigitalButton fightStickRB = new FightStickDigitalButton(fightStickJoystick, 6,
             FightStickInput.input.R1);
     public static FightStickDigitalButton fightStickShare = new FightStickDigitalButton(fightStickJoystick, 7,
             FightStickInput.input.share);
     public static FightStickDigitalButton fightStickOption = new FightStickDigitalButton(fightStickJoystick, 8,
             FightStickInput.input.option);
-    public static FightStickDigitalButton fightStickL3 = new FightStickDigitalButton(fightStickJoystick, 9,
+    public static final FightStickDigitalButton fightStickL3 = new FightStickDigitalButton(fightStickJoystick, 9,
             FightStickInput.input.L3);
-    public static FightStickDigitalButton fightStickR3 = new FightStickDigitalButton(fightStickJoystick, 10,
+    public static final FightStickDigitalButton fightStickR3 = new FightStickDigitalButton(fightStickJoystick, 10,
             FightStickInput.input.R3);
-    public static FightStickAxisButton fightStickLT = new FightStickAxisButton(fightStickJoystick, 2,
+    public static final FightStickAxisButton fightStickLT = new FightStickAxisButton(fightStickJoystick, 2,
             FightStickInput.input.lightKick);
-    public static FightStickAxisButton fightStickRT = new FightStickAxisButton(fightStickJoystick, 3,
+    public static final FightStickAxisButton fightStickRT = new FightStickAxisButton(fightStickJoystick, 3,
             FightStickInput.input.R2);
 
     public static FightStickPOVDirection POVCenter = new FightStickPOVDirection(FightStickInput.input.POVcenter);

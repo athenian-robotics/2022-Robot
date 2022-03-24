@@ -28,12 +28,10 @@ public class IntakeSubsystem extends SubsystemBase {
     private final DoubleSolenoid leftIntakePneumatic = new DoubleSolenoid(PneumaticsModuleType.CTREPCM,
             pneumaticPortLeftA, pneumaticPortLeftB);
 
-    private final NetworkTableEntry intakeNTE;
-
     public boolean isRunning = false;
     public boolean isExtended = false;
     public boolean isInverted = false;
-    public boolean intakeToIndexerRunning = false;
+    public final boolean intakeToIndexerRunning = false;
 
     public IntakeSubsystem() {
         intakeMotor.configFactoryDefault(); // Initialize motor set up
@@ -42,7 +40,7 @@ public class IntakeSubsystem extends SubsystemBase {
         intakeMotor.configClosedloopRamp(0.1); // Ramp down (Trapezoid)
         intakeToIndexerMotor.setInverted(true);
 
-        intakeNTE = Shuffleboard.getTab("852 - Dashboard")
+        NetworkTableEntry intakeNTE = Shuffleboard.getTab("852 - Dashboard")
                 .add("Intake Active", false)
                 .getEntry();
     }

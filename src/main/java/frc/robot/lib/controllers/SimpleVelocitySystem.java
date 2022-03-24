@@ -13,31 +13,27 @@ import edu.wpi.first.math.system.plant.LinearSystemId;
  * Defines a simple velocity system using a kalman filter and a linear quadratic regulator
  */
 public class SimpleVelocitySystem {
-    private double kS;
+    private final double kS;
 
-    private double maxControlEffort; // volts
-    private double modelStandardDeviation;
-    private double encoderStandardDeviation;
+    private final double maxControlEffort; // volts
 
     private double filteredVelocity;
 
-    private LinearSystem<N1, N1, N1> system;
-    private LinearQuadraticRegulator<N1, N1, N1> regulator;
-    private KalmanFilter<N1, N1, N1> filter;
-    private LinearSystemLoop<N1, N1, N1> loop;
+    private final LinearSystem<N1, N1, N1> system;
+    private final LinearQuadraticRegulator<N1, N1, N1> regulator;
+    private final KalmanFilter<N1, N1, N1> filter;
+    private final LinearSystemLoop<N1, N1, N1> loop;
 
     public SimpleVelocitySystem(double kS, double kV, double kA, double maxError, double maxcontroleffort,
                                 double modelstandarddev, double encoderstandarddev, double looptime) {
         this.kS = kS;
         maxControlEffort = maxcontroleffort;
-        modelStandardDeviation = modelstandarddev;
-        encoderStandardDeviation = encoderstandarddev;
 
         system = LinearSystemId.identifyVelocitySystem(kV, kA);
         regulator = new LinearQuadraticRegulator<>(system, VecBuilder.fill(maxError),
                 VecBuilder.fill(maxControlEffort), looptime);
-        filter = new KalmanFilter<>(Nat.N1(), Nat.N1(), system, VecBuilder.fill(modelStandardDeviation),
-                VecBuilder.fill(encoderStandardDeviation), looptime);
+        filter = new KalmanFilter<>(Nat.N1(), Nat.N1(), system, VecBuilder.fill(modelstandarddev),
+                VecBuilder.fill(encoderstandarddev), looptime);
         loop = new LinearSystemLoop<>(system, regulator, filter, maxControlEffort, looptime);
     }
 

@@ -5,8 +5,8 @@ import java.io.Serializable;
 //Stores launch speed, hood angle, and power as doubles
 public class ShooterSpec implements Serializable {
     static final long serialVersionUID = 8521L;
-    private double hoodAngle;
-    private double power;
+    private final double hoodAngle;
+    private final double power;
 
     public ShooterSpec() {
         this.hoodAngle = 14.0;

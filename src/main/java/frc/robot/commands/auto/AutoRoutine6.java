@@ -1,7 +1,6 @@
 package frc.robot.commands.auto;
 
 import com.pathplanner.lib.PathPlanner;
-import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -15,12 +14,9 @@ import frc.robot.subsystems.DrivetrainSubsystem;
 
 
 public class AutoRoutine6 extends CommandBase {
-    private final DrivetrainSubsystem drivetrain;
     private final RamseteCommand ramseteCommand;
-    private final Trajectory trajectory;
 
     public AutoRoutine6(DrivetrainSubsystem drivetrainSubsystem) {
-        this.drivetrain = drivetrainSubsystem;
         addRequirements(drivetrainSubsystem);
 
         // Create a voltage constraint to ensure we don't accelerate too fast
@@ -46,7 +42,6 @@ public class AutoRoutine6 extends CommandBase {
         // An example trajectory to follow.  All units in meters.
         // create a new trajectory 1 meter forward
         Trajectory exampleTrajectory = PathPlanner.loadPath("New Path", 0.5, 0.5);
-        trajectory = exampleTrajectory;
 
         this.ramseteCommand = new RamseteCommand(
                 exampleTrajectory,

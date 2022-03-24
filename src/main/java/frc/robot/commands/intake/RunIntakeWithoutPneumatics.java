@@ -8,12 +8,10 @@ import frc.robot.subsystems.IntakeSubsystem;
 //MUST BE ENDED MANUALLY
 public class RunIntakeWithoutPneumatics extends CommandBase {
     private final IntakeSubsystem intakeSubsystem;
-    private final IndexerSubsystem indexerSubsystem;
 
     public RunIntakeWithoutPneumatics(IntakeSubsystem intakeSubsystem, IndexerSubsystem indexerSubsystem) {
         this.intakeSubsystem = intakeSubsystem;
-        this.indexerSubsystem = indexerSubsystem;
-        addRequirements(this.intakeSubsystem, this.indexerSubsystem);
+        addRequirements(this.intakeSubsystem, indexerSubsystem);
     }
 
     @Override

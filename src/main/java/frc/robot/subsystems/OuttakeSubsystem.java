@@ -6,7 +6,6 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
@@ -14,8 +13,10 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.lib.controllers.SimplePositionSystem;
 import frc.robot.lib.controllers.SimpleVelocitySystem;
+import frc.robot.lib.limelight.GoalNotFoundException;
+import frc.robot.lib.limelight.LimelightDataLatch;
+import frc.robot.lib.limelight.LimelightDataType;
 
 import java.util.Map;
 
@@ -25,31 +26,33 @@ import static frc.robot.Constants.MechanismConstants.*;
 public class OuttakeSubsystem extends SubsystemBase {
     // Setup motors, pid controller, and booleans
     private final TalonFX shooterMotorFront = new TalonFX(shooterMotorPortA);
-    private final TalonFX shooterMotorBack = new TalonFX(shooterMotorPortB);
     private final WPI_TalonFX turretMotor = new WPI_TalonFX(turretMotorPort);
     private final Servo leftHoodAngleServo = new Servo(2);
     private final Servo rightHoodAngleServo = new Servo(3);
 
-    ArmFeedforward feed;
-
-    PIDController pid = new PIDController(.0556, 0.0027, 0.0087); //8
-
+    final ArmFeedforward feed = new ArmFeedforward(Constants.Turret.ks, 0.0047422, Constants.Turret.kv, Constants.Turret.ka);
+    public final PIDController turretPID = new PIDController(.0556, 0.0027, 0.0087);
 
     private final NetworkTableEntry shooterAdjustmentNTE;
-
+    private final NetworkTableEntry shooterAdjustmentNTEF;
+    private final LimelightDataLatch distanceLatch = new LimelightDataLatch(LimelightDataType.DISTANCE, 5);
+    private final LimelightSubsystem limelightSubsystem;
 
     public boolean shooterRunning = false;
     public boolean turretRunning = false;
     public double shuffleboardShooterPower;
     public double shuffleboardShooterAdjustment;
+    public double currentShooterToleranceDegrees;
 
     private final SimpleVelocitySystem sys;
     private double shooterRPS = 0;
     private double angle;
-    private double volts;
 
-    public OuttakeSubsystem() {
+    public OuttakeSubsystem(LimelightSubsystem limelightSubsystem) {
+        this.limelightSubsystem = limelightSubsystem;
+
         shooterMotorFront.setInverted(false);
+        TalonFX shooterMotorBack = new TalonFX(shooterMotorPortB);
         shooterMotorBack.setInverted(false);
         turretMotor.setInverted(false);
 
@@ -58,20 +61,20 @@ public class OuttakeSubsystem extends SubsystemBase {
         shooterMotorBack.setNeutralMode(NeutralMode.Coast);
         shooterMotorBack.follow(shooterMotorFront);
 
-
-        turretMotor.configClosedloopRamp(0.5);
-        turretMotor.config_kP(0, 0.02);
-
         leftHoodAngleServo.setBounds(2.0, 1.8, 1.5, 1.2, 1.0); //Manufacturer specified for Actuonix linear servos
         rightHoodAngleServo.setBounds(2.0, 1.8, 1.5, 1.2, 1.0); //Manufacturer specified for Actuonix linear servos
-
-        feed = new ArmFeedforward(Constants.Turret.ks, 0.0047422, Constants.Turret.kv, Constants.Turret.ka);
 
         shooterAdjustmentNTE = Shuffleboard.getTab("852 - Dashboard")
                 .add("Shooter Power Adjustment", 1)
                 .withWidget(BuiltInWidgets.kNumberSlider)
                 .withProperties(Map.of("min", 0.75, "max", 1.25, "default value", 1))
                 .getEntry();
+
+        shooterAdjustmentNTEF = Shuffleboard.getTab("853 - Dashboard")
+                        .add("Shooter Feed Adjustment", 1)
+                                .withWidget(BuiltInWidgets.kNumberSlider)
+                                        .withProperties(Map.of("min", 1, "max", 36, "default value", 1))
+                                                .getEntry();
 
         shooterMotorFront.configVoltageCompSaturation(12);
         shooterMotorBack.configVoltageCompSaturation(12);
@@ -82,7 +85,7 @@ public class OuttakeSubsystem extends SubsystemBase {
                 Constants.Shooter.maxError, Constants.Shooter.maxControlEffort,
                 Constants.Shooter.modelDeviation, Constants.Shooter.encoderDeviation,
                 Constants.looptime);
-        pid.setTolerance(0.0001);
+        turretPID.setTolerance(0.0001);
         setTurretStartingAngle(-180); //assume default position is turret starting facing backwards counterclockwise
     }
 
@@ -100,8 +103,6 @@ public class OuttakeSubsystem extends SubsystemBase {
         shooterRunning = true;
         shooterRPS = rps * shuffleboardShooterAdjustment;
     }
-
-
 
     public void setShooterFront(double power) {
         if (power > 1.0) power = 1.0;
@@ -155,9 +156,9 @@ public class OuttakeSubsystem extends SubsystemBase {
         return Math.toRadians(turretMotor.getSelectedSensorPosition() * 36 / 2048);
     }
 
-    public void setTurretPosition(double fangle){
-        angle = fangle;
-        pid.setSetpoint(fangle);
+    public void setTurretPosition(double angle){
+        turretPID.setSetpoint(angle);
+        this.angle = angle;
         turretRunning = true;
     }
 
@@ -176,6 +177,7 @@ public class OuttakeSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Shooter Power", shooterRPS);
 
         shuffleboardShooterAdjustment = shooterAdjustmentNTE.getDouble(1);
+        double shuffleboardShooterAdjustment2 = shooterAdjustmentNTEF.getDouble(1);
 
         if (shooterRunning) {
             sys.update(getWheelSpeed());
@@ -183,11 +185,16 @@ public class OuttakeSubsystem extends SubsystemBase {
         }
 
         if (turretRunning) {
-            turretMotor.setVoltage(pid.calculate(getTurretAngle())); // +
-        }
-    }
+            turretMotor.setVoltage(turretPID.calculate(getTurretAngle())
+                    + feed.calculate(angle, Math.PI/2, Math.PI/2) /shuffleboardShooterAdjustment2); // + feed.calc
+            try {
+                if (distanceLatch.unlocked()) {
+                    currentShooterToleranceDegrees = 3/distanceLatch.open();
+                }
+            } catch (GoalNotFoundException e) {
+                limelightSubsystem.addLatch(distanceLatch.reset());
+            }
 
-    private void setTurret(double output) {
-        turretMotor.setVoltage(output);
+        }
     }
 }

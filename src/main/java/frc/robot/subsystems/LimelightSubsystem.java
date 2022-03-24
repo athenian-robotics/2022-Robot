@@ -1,9 +1,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.lib.limelight.LimelightDataLatch;
@@ -14,7 +12,7 @@ import java.util.LinkedList;
 //YOU DON'T NEED TO REQUIRE LIMELIGHTSUBSYSTEM IN COMMANDS!
 public class LimelightSubsystem extends SubsystemBase {
     public final LimelightDataLatchManager latchManager = new LimelightDataLatchManager();
-    NetworkTable limelight; //used to be final?
+    final NetworkTable limelight; //used to be final?
 
     public LimelightSubsystem(String tableName) {
         this.limelight = NetworkTableInstance.getDefault().getTable(tableName);
@@ -28,7 +26,7 @@ public class LimelightSubsystem extends SubsystemBase {
         {
         Double[] lloutput = (Double[]) limelight.getEntry("llpython").getNumberArray(new Number[]{-1, -1, -1, -1, -1, -1, -1, -9});
         return lloutput[7] == (double) -1;
-        };
+        }
 
 
     public void disable() {latchManager.clearPool();}

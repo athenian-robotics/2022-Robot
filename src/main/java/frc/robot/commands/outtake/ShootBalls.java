@@ -14,8 +14,6 @@ import frc.robot.lib.limelight.LimelightDataType;
 import frc.robot.lib.shooterData.ShooterDataTable;
 import frc.robot.subsystems.*;
 
-import java.util.concurrent.locks.Condition;
-
 
 public class ShootBalls extends SequentialCommandGroup {
     public ShootBalls(ClimberSubsystem climber, DrivetrainSubsystem drivetrain, IndexerSubsystem indexer, IntakeSubsystem intake, OuttakeSubsystem outtake, LimelightSubsystem limelight, ShooterDataTable shooterDataTable) {
@@ -43,7 +41,7 @@ public class ShootBalls extends SequentialCommandGroup {
                     new ParallelDeadlineGroup(
                             new ConditionalCommand(
                                     new SequentialCommandGroup(
-                                            new GuaranteeLimelightDataEquals(limelight, LimelightDataType.HORIZONTAL_OFFSET, 0, 1).withTimeout(2),
+                                            new GuaranteeLimelightDataEquals(limelight, LimelightDataType.HORIZONTAL_OFFSET, 0, Math.toRadians(outtake.currentShooterToleranceDegrees)).withTimeout(2),
                                             new ParallelCommandGroup(
                                                     new PulseIntakeToIndexerMotor(intake).withTimeout(0.3),
                                                     new ShootIndexedBallForever(indexer, outtake).withTimeout(1.5)
@@ -72,7 +70,7 @@ public class ShootBalls extends SequentialCommandGroup {
                     new ParallelDeadlineGroup(
                             new ConditionalCommand(
                                     new SequentialCommandGroup(
-                                            new GuaranteeLimelightDataEquals(limelight, LimelightDataType.HORIZONTAL_OFFSET, 0, 1).withTimeout(2),
+                                            new GuaranteeLimelightDataEquals(limelight, LimelightDataType.HORIZONTAL_OFFSET, 0, Math.toRadians(outtake.currentShooterToleranceDegrees)).withTimeout(2),
                                             new ParallelCommandGroup(
                                                     new PulseIntakeToIndexerMotor(intake).withTimeout(0.3),
                                                     new ShootIndexedBallForever(indexer, outtake).withTimeout(1.5)

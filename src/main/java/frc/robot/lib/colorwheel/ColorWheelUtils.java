@@ -10,20 +10,16 @@ import static frc.robot.lib.colorwheel.WheelColors.*;
 public class ColorWheelUtils {
     private final I2C.Port i2cPort = I2C.Port.kOnboard;
     private final ColorSensorV3 colorSensor = new ColorSensorV3(i2cPort);
-    private boolean isYellow;
-    private boolean isGreen;
-    private boolean isBlue;
-    private boolean isRed;
 
     public ColorWheelUtils() {}
 
     private void updateString(String currentColor) {SmartDashboard.putString("Current Color", currentColor);}
 
     private void resetIsColorBooleans() {
-        isRed = false;
-        isBlue = false;
-        isGreen = false;
-        isYellow = false;
+        boolean isRed = false;
+        boolean isBlue = false;
+        boolean isGreen = false;
+        boolean isYellow = false;
     }
 
     public WheelColors currentColor() {

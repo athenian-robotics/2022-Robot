@@ -6,7 +6,7 @@ import frc.robot.subsystems.ClimberSubsystem;
 
 public class SetBothTelescopeSpeed extends CommandBase {
     private final ClimberSubsystem climberSubsystem;
-    private double power;
+    private final double power;
 
     public SetBothTelescopeSpeed(ClimberSubsystem climberSubsystem, double power) {
         this.climberSubsystem = climberSubsystem;

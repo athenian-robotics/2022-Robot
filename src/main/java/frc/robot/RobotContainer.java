@@ -18,7 +18,6 @@ import frc.robot.commands.auto.*;
 import frc.robot.commands.climb.*;
 import frc.robot.commands.drive.ArcadeDrive;
 import frc.robot.commands.drive.TankDrive;
-import frc.robot.commands.indexer.PulseIndexer;
 import frc.robot.commands.indexer.QueueBalls;
 import frc.robot.commands.intake.RunIntakeWithoutPneumatics;
 import frc.robot.commands.intake.ToggleIntake;
@@ -29,7 +28,6 @@ import frc.robot.subsystems.*;
 
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
-import java.util.function.BooleanSupplier;
 
 import static frc.robot.Constants.MechanismConstants.telescopeSpeed;
 import static frc.robot.Constants.MechanismConstants.winchSpeed;
@@ -49,15 +47,15 @@ public class RobotContainer {
     public static JoystickButton xboxHamburger;
     public static Trigger xboxLS;
     public static XboxController.Axis xboxRS;
-    public static XboxController xboxController = new XboxController(Constants.OIConstants.xboxControllerPort);
-    SendableChooser<SequentialCommandGroup> chooser = new SendableChooser<>();
+    public static final XboxController xboxController = new XboxController(Constants.OIConstants.xboxControllerPort);
+    final SendableChooser<SequentialCommandGroup> chooser = new SendableChooser<>();
     // SUBSYSTEMS
-    public static LimelightSubsystem limelight = new LimelightSubsystem("limelight-arc");
-    public static DrivetrainSubsystem drivetrain = new DrivetrainSubsystem();
-    public static IndexerSubsystem indexer = new IndexerSubsystem();
-    public static IntakeSubsystem intake = new IntakeSubsystem();
-    public static ClimberSubsystem climb = new ClimberSubsystem();
-    public static OuttakeSubsystem outtake = new OuttakeSubsystem();
+    public static final LimelightSubsystem limelight = new LimelightSubsystem("limelight-arc");
+    public static final DrivetrainSubsystem drivetrain = new DrivetrainSubsystem();
+    public static final IndexerSubsystem indexer = new IndexerSubsystem();
+    public static final IntakeSubsystem intake = new IntakeSubsystem();
+    public static final ClimberSubsystem climb = new ClimberSubsystem();
+    public static final OuttakeSubsystem outtake = new OuttakeSubsystem();
     //MISC
     public static DriverStation.Alliance alliance = DriverStation.Alliance.Blue;
     public static ShooterDataTable shooterDataTable;

@@ -8,7 +8,7 @@ import java.util.TreeMap;
 
 public class ShooterDataTable implements Serializable {
     //private ShooterSpec[] dataTable;
-    private TreeMap<Double, ShooterSpec> dataTable;
+    private final TreeMap<Double, ShooterSpec> dataTable;
     public static final double MINDIST = 1.95;
     public static final double MAXDIST = 6.55;
     private static final double DINCREMENT = 0.5;

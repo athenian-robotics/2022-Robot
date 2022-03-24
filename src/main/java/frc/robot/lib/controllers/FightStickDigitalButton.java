@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 public class FightStickDigitalButton extends JoystickButton implements FightStickButton {
 
-    private FightStickInput.input button;
+    private final FightStickInput.input button;
 
     public FightStickDigitalButton(Joystick stick, int buttonNumber, FightStickInput.input button) {
         super(stick, buttonNumber);

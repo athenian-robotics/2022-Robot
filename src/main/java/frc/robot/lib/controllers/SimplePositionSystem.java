@@ -14,7 +14,6 @@ import edu.wpi.first.math.system.plant.LinearSystemId;
  * Defines a simple velocity system using a kalman filter and a linear quadratic regulator
  */
 public class SimplePositionSystem {
-    private final double kS;
 
     private final double maxControlEffort; // volts
     private final LinearSystem<N2, N1, N1> system;
@@ -25,7 +24,6 @@ public class SimplePositionSystem {
 
     public SimplePositionSystem(double kS, double kV, double kA, double maxError, double maxcontroleffort,
                                 double modelstandarddev, double encoderstandarddev, double looptime) {
-        this.kS = kS;
         maxControlEffort = maxcontroleffort;
 
         system = LinearSystemId.identifyPositionSystem(kV, kA);

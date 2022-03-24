@@ -5,7 +5,6 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
@@ -38,7 +37,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     private final DifferentialDrive drive;
     // Setup autonomous and sensor objects
     ChassisSpeeds chassisSpeeds;
-    DifferentialDriveOdometry odometry;
+    final DifferentialDriveOdometry odometry;
 
     public DrivetrainSubsystem() {
         // Initialize motors

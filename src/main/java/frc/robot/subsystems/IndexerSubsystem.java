@@ -11,9 +11,6 @@ import frc.robot.RobotContainer;
 import frc.robot.lib.colorwheel.ColorWheelUtils;
 import frc.robot.lib.colorwheel.WheelColors;
 
-import java.sql.Driver;
-import java.util.function.BooleanSupplier;
-
 import static frc.robot.Constants.MechanismConstants.indexerMotorPort;
 import static frc.robot.Constants.MechanismConstants.indexerSpeed;
 
@@ -22,8 +19,6 @@ public class IndexerSubsystem extends SubsystemBase {
     // Configure motor and booleans
     private final TalonFX indexerMotor = new TalonFX(indexerMotorPort);
     private final ColorWheelUtils colorWheelUtils = new ColorWheelUtils();
-
-    private final NetworkTableEntry indexerNTE;
 
     public WheelColors currentColor = WheelColors.GREEN;
     public double currentProximity = 0;
@@ -34,7 +29,7 @@ public class IndexerSubsystem extends SubsystemBase {
     public IndexerSubsystem() {
         indexerMotor.setInverted(false);
 
-        indexerNTE = Shuffleboard.getTab("852 - Dashboard")
+        NetworkTableEntry indexerNTE = Shuffleboard.getTab("852 - Dashboard")
                 .add("Indexer Active", false)
                 .getEntry();
     }

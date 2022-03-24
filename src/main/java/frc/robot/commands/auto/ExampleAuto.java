@@ -5,11 +5,9 @@ import frc.robot.subsystems.DrivetrainSubsystem;
 
 
 public class ExampleAuto extends CommandBase {
-    private final DrivetrainSubsystem drivetrainSubsystem;
 
     public ExampleAuto(DrivetrainSubsystem drivetrainSubsystem) {
-        this.drivetrainSubsystem = drivetrainSubsystem;
-        addRequirements(this.drivetrainSubsystem);
+        addRequirements(drivetrainSubsystem);
     }
 
     @Override

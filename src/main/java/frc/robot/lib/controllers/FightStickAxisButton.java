@@ -6,9 +6,9 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 public class FightStickAxisButton extends Trigger implements FightStickButton {
 
-    private int axis;
-    private FightStickInput.input button;
-    private Joystick fightStick;
+    private final int axis;
+    private final FightStickInput.input button;
+    private final Joystick fightStick;
 
     public FightStickAxisButton(Joystick fightStick, int axis, FightStickInput.input button) {
         this.axis = axis;

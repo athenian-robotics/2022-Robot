@@ -3,7 +3,6 @@ package frc.robot.commands.outtake;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.Constants;
 import frc.robot.commands.drive.DisableDrivetrain;
 import frc.robot.commands.indexer.ShootIndexedBallForever;
 import frc.robot.commands.intake.DisableIntake;
@@ -31,7 +30,7 @@ public class ShootOne extends SequentialCommandGroup {
                     new AlwaysTurretTurnToGoalWithLimelight(limelight, outtake).withTimeout(0.75),
                     new ParallelDeadlineGroup(
                         new SequentialCommandGroup(
-                                new GuaranteeLimelightDataEquals(limelight, LimelightDataType.HORIZONTAL_OFFSET, 0, 1),
+                                new GuaranteeLimelightDataEquals(limelight, LimelightDataType.HORIZONTAL_OFFSET, 0, Math.toRadians(outtake.currentShooterToleranceDegrees)),
                                 //Shoot 1st
                                 new ParallelCommandGroup(
                                         new PulseIntakeToIndexerMotor(intake, 0.5),

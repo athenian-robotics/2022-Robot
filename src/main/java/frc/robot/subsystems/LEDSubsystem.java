@@ -9,9 +9,9 @@ import static frc.robot.Constants.LEDConstants.LEDStripLength;
 
 public class LEDSubsystem extends SubsystemBase {
     private final AddressableLEDBuffer ledStripBuffer = new AddressableLEDBuffer(LEDStripLength);
-    private AddressableLED ledStrip = new AddressableLED(LEDPort);
 
     public LEDSubsystem() {
+        AddressableLED ledStrip = new AddressableLED(LEDPort);
         ledStrip.setLength(ledStripBuffer.getLength());
         ledStrip.setData(ledStripBuffer);
         ledStrip.start();
