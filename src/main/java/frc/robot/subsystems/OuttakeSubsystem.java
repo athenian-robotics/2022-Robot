@@ -5,9 +5,11 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
@@ -26,17 +28,21 @@ import static com.ctre.phoenix.motorcontrol.TalonFXControlMode.PercentOutput;
 import static frc.robot.Constants.MechanismConstants.*;
 
 public class OuttakeSubsystem extends SubsystemBase {
+
+
     // Setup motors, pid controller, and booleans
     private final TalonFX shooterMotorFront = new TalonFX(shooterMotorPortA);
     private final WPI_TalonFX turretMotor = new WPI_TalonFX(turretMotorPort);
     private final Servo leftHoodAngleServo = new Servo(2);
     private final Servo rightHoodAngleServo = new Servo(3);
 
-    public final PIDController turretPID = new PIDController(.0556, 0.003, 0.009);
+    public final ProfiledPIDController turretPID = new ProfiledPIDController(.0556, 0, 0.008,
+            new TrapezoidProfile.Constraints(Math.PI/2, Math.PI/2)); // integral should not be needed
 
     private final NetworkTableEntry shooterAdjustmentNTE;
     private final LimelightDataLatch distanceLatch = new LimelightDataLatch(LimelightDataType.DISTANCE, 5);
     private final LimelightSubsystem limelightSubsystem;
+    private final DrivetrainSubsystem drivetrain;
 
     public boolean shooterRunning = false;
     public boolean turretRunning = false;
@@ -47,9 +53,11 @@ public class OuttakeSubsystem extends SubsystemBase {
     private final SimpleVelocitySystem sys;
     private double shooterRPS = 0;
     private double angle;
-    private SlewRateLimiter filter = new SlewRateLimiter(Math.PI/2);
-
-    public OuttakeSubsystem(LimelightSubsystem limelightSubsystem) {
+    // time 2 go brazy
+    SimpleMotorFeedforward feed = new SimpleMotorFeedforward(Constants.Turret.ks, Constants.Turret.kv,
+            Constants.Turret.ka); // please please please work
+    public OuttakeSubsystem(LimelightSubsystem limelightSubsystem, DrivetrainSubsystem drivetrain) {
+        this.drivetrain = drivetrain;
         this.limelightSubsystem = limelightSubsystem;
 
         shooterMotorFront.setInverted(false);
@@ -161,7 +169,7 @@ public class OuttakeSubsystem extends SubsystemBase {
     }
 
     public void setTurretPosition(double angle){
-        turretPID.setSetpoint(angle);
+        turretPID.setGoal(angle);
         this.angle = angle;
         turretRunning = true;
     }
@@ -188,7 +196,8 @@ public class OuttakeSubsystem extends SubsystemBase {
         }
 
         if (turretRunning) {
-            turnTurretWithVoltage(turretPID.calculate(getTurretAngle())); // + feed.calc ?
+            turnTurretWithVoltage(turretPID.calculate(getTurretAngle(), angle) + (0.9 * feed.calculate(drivetrain.getVelocity())) +
+                    (0.1 * feed.calculate(Math.PI/2) * Math.signum(angle)));
 
             try {
                 if (distanceLatch.unlocked()) {

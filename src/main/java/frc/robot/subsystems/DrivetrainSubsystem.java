@@ -6,6 +6,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
@@ -17,6 +18,7 @@ import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+
 
 import static frc.robot.Constants.DriveConstants.*;
 
@@ -38,6 +40,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     // Setup autonomous and sensor objects
     ChassisSpeeds chassisSpeeds;
     final DifferentialDriveOdometry odometry;
+
 
     public DrivetrainSubsystem() {
         // Initialize motors
@@ -198,6 +201,13 @@ public class DrivetrainSubsystem extends SubsystemBase {
         driveShifterRight.set(DoubleSolenoid.Value.kReverse);
         driveShifterLeft.set(DoubleSolenoid.Value.kReverse);
     }
+
+
+    public double getVelocity() {
+        return -Constants.AutoConstants.kDriveKinematics.toChassisSpeeds(getWheelSpeeds()).omegaRadiansPerSecond;
+    }
+
+
 
     public Pose2d getPose() { // Returns the Pose2d object of the robot in meters
         return odometry.getPoseMeters();

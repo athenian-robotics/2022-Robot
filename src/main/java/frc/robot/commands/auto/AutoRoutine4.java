@@ -23,6 +23,7 @@ public class AutoRoutine4 extends SequentialCommandGroup {
                                 new ShootTwoWithoutTurret(climber, drivetrain, indexer, intake, outtake, limelight, shooterDataTable),
                                 new ToggleIntake(intake),
                                 new AutoRoutine1Part2(drivetrain),
+                                new ToggleIntake(intake),
                                 new AutoRoutine1Part25(drivetrain), //moves left to other ball
                                 //drives to human player terminal
                                 new ToggleIntake(intake),
