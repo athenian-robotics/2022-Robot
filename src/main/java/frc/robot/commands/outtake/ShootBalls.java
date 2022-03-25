@@ -32,7 +32,6 @@ public class ShootBalls extends SequentialCommandGroup {
                 new ParallelDeadlineGroup(
                         new ConditionalCommand(
                                 new SequentialCommandGroup(
-                                        new GuaranteeLimelightDataEquals(limelight, LimelightDataType.HORIZONTAL_OFFSET, 0, outtake.currentShooterToleranceDegrees),
                                         new ParallelCommandGroup(
                                                 new PulseIntakeToIndexerMotor(intake).withTimeout(0.3),
                                                 new ShootIndexedBallForever(indexer, outtake).withTimeout(1.5)
@@ -62,10 +61,9 @@ public class ShootBalls extends SequentialCommandGroup {
                 new ParallelDeadlineGroup(
                         new ConditionalCommand(
                                 new SequentialCommandGroup(
-                                        new GuaranteeLimelightDataEquals(limelight, LimelightDataType.HORIZONTAL_OFFSET, 0, outtake.currentShooterToleranceDegrees),
                                         new ParallelCommandGroup(
                                                 new PulseIntakeToIndexerMotor(intake).withTimeout(0.3),
-                                                new ShootIndexedBallForever(indexer, outtake).withTimeout(1.5)
+                                                new ShootIndexedBallForever(indexer, outtake).withTimeout(1)
                                         ), new RunIntakeWithoutPneumatics(intake, indexer).withTimeout(0.75)
                                 ),
                                 new ConditionalCommand(
@@ -73,7 +71,7 @@ public class ShootBalls extends SequentialCommandGroup {
                                                 new SetShooterPower(outtake, 15),
                                                 new ParallelCommandGroup(
                                                         new PulseIntakeToIndexerMotor(intake).withTimeout(0.3),
-                                                        new ShootIndexedBallForever(indexer, outtake).withTimeout(1.5)
+                                                        new ShootIndexedBallForever(indexer, outtake).withTimeout(1)
                                                 ), new RunIntakeWithoutPneumatics(intake, indexer).withTimeout(0.75)
                                         ),
                                         new WaitCommand(0),

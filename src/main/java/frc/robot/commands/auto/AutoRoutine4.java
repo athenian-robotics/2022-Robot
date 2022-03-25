@@ -20,10 +20,10 @@ public class AutoRoutine4 extends SequentialCommandGroup {
                                 new ToggleIntake(intake),
                                 new AutoRoutine1Part1(drivetrain), //moves left to other ball
                                 //moves down to ball under starting position
-                                new ToggleIntake(intake),
                                 new ShootTwoWithoutTurret(climber, drivetrain, indexer, intake, outtake, limelight, shooterDataTable),
                                 new ToggleIntake(intake),
-                                new AutoRoutine1Part5(drivetrain), //moves left to other ball
+                                new AutoRoutine1Part2(drivetrain),
+                                new AutoRoutine1Part25(drivetrain), //moves left to other ball
                                 //drives to human player terminal
                                 new ToggleIntake(intake),
                                 new AutoRoutine1Part4(drivetrain), //drives back closer to the goal

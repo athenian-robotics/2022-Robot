@@ -25,7 +25,9 @@ public class AutoRoutine1 extends SequentialCommandGroup {
                             new ShootTwoWithoutTurret(climber, drivetrain, indexer, intake, outtake, limelight, shooterDataTable),
                             new AutoRoutine1Part2(drivetrain), // turn back
                                 new ToggleIntake(intake),
-                                new AutoRoutine1Part25(drivetrain), // intake other ball
+                                new AutoRoutine1Part225(drivetrain), // intake other ball
+                                new ShootTwoWithoutTurret(climber, drivetrain, indexer, intake, outtake, limelight, shooterDataTable).withTimeout(1.5),
+                                new ToggleIntake(intake),
                             new AutoRoutine1Part3(drivetrain), //moves left to other ball
                             //drives to human player terminal
                             new WaitCommand(.75),

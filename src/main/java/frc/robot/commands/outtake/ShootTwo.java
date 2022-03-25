@@ -35,9 +35,8 @@ public class ShootTwo extends SequentialCommandGroup {
                                                         new SetShooterPowerWithLimelight(shooterDataTable, limelight, outtake),
                                                         new SetHoodAngleWithLimelightTimeSafe(shooterDataTable, limelight, outtake)
                                                 ),
-                                                new GuaranteeLimelightDataEquals(limelight, LimelightDataType.HORIZONTAL_OFFSET, 0, outtake.currentShooterToleranceDegrees),
                                                 //Shoot Balls
-                                                new ShootIndexedBallsForever(indexer, intake).withTimeout(2)
+                                                new ShootIndexedBallsForever(indexer, intake).withTimeout(1.75)
                                         ), new AlwaysTurretTurnToGoalWithLimelightOrManualControl(limelight, outtake)
                                 ),
                                 //Return to teleop
