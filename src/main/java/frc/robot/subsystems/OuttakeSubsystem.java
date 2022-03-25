@@ -36,9 +36,10 @@ public class OuttakeSubsystem extends SubsystemBase {
     private final Servo leftHoodAngleServo = new Servo(2);
     private final Servo rightHoodAngleServo = new Servo(3);
 
-    public final ProfiledPIDController turretPID = new ProfiledPIDController(.0556, 0, 0.008,
-            new TrapezoidProfile.Constraints(Math.PI/2, Math.PI/2)); // integral should not be needed
+    public final ProfiledPIDController turretPID = new ProfiledPIDController(3.1856, 0, 0.9740,
+            new TrapezoidProfile.Constraints(Math.PI, Math.PI)); // 1.4606 1.3344 sys id, or change kd to 1.3513
 
+    
     private final NetworkTableEntry shooterAdjustmentNTE;
     private final LimelightDataLatch distanceLatch = new LimelightDataLatch(LimelightDataType.DISTANCE, 5);
     private final LimelightSubsystem limelightSubsystem;
@@ -197,7 +198,8 @@ public class OuttakeSubsystem extends SubsystemBase {
 
         if (turretRunning) {
             turnTurretWithVoltage(turretPID.calculate(getTurretAngle(), angle) + (0.9 * feed.calculate(drivetrain.getVelocity())) +
-                    (0.1 * feed.calculate(Math.PI/2) * Math.signum(angle)) + 0.9 * feed.calculate(drivetrain.getTangentialVelocity(angle, distanceLatch.open())));
+                    (feed.calculate(0.038514) * Math.signum(angle)) /*+ 0.9 * feed.calculate(drivetrain
+                    .getTangentialVelocity(angle, distanceLatch.open()))*/);
 
             try {
                 if (distanceLatch.unlocked()) {
