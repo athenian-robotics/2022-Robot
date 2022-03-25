@@ -25,11 +25,7 @@ public class ColorWheelUtils {
     public WheelColors currentColor() {
         WheelColors currentColor;
         Color detectedColor = colorSensor.getColor();
-        SmartDashboard.putNumber("red", detectedColor.red);
-        SmartDashboard.putNumber("blue", detectedColor.blue);
-        SmartDashboard.putNumber("green", detectedColor.green);
         double checkColorRed = detectedColor.red * 255;
-        double checkColorGreen = detectedColor.green * 255;
         double checkColorBlue = detectedColor.blue * 255;
 
         //blue is weighted higher because blue balls have red .2 and blue .3 and red balls have red .4 and blue .2

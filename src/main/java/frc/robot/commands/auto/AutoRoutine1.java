@@ -4,10 +4,7 @@ package frc.robot.commands.auto;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.commands.auto.AutoRoutine1Contents.AutoRoutine1Part1;
-import frc.robot.commands.auto.AutoRoutine1Contents.AutoRoutine1Part2;
-import frc.robot.commands.auto.AutoRoutine1Contents.AutoRoutine1Part3;
-import frc.robot.commands.auto.AutoRoutine1Contents.AutoRoutine1Part4;
+import frc.robot.commands.auto.AutoRoutine1Contents.*;
 import frc.robot.commands.intake.ToggleIntake;
 import frc.robot.commands.outtake.AlwaysTurretTurnToGoalWithLimelightOrManualControl;
 import frc.robot.commands.outtake.ShootTwoWithoutTurret;
@@ -26,14 +23,12 @@ public class AutoRoutine1 extends SequentialCommandGroup {
                             //moves down to ball under starting position
                             new ToggleIntake(intake),
                             new ShootTwoWithoutTurret(climber, drivetrain, indexer, intake, outtake, limelight, shooterDataTable),
-                            new ToggleIntake(intake),
-                            new AutoRoutine1Part2(drivetrain), //moves left to other ball
-                            new ToggleIntake(intake),
-                            new ShootTwoWithoutTurret(climber, drivetrain, indexer, intake, outtake, limelight, shooterDataTable),
-                            new ToggleIntake(intake),
+                            new AutoRoutine1Part2(drivetrain), // turn back
+                                new ToggleIntake(intake),
+                                new AutoRoutine1Part25(drivetrain), // intake other ball
                             new AutoRoutine1Part3(drivetrain), //moves left to other ball
                             //drives to human player terminal
-                            new WaitCommand(1),
+                            new WaitCommand(.75),
                             new ToggleIntake(intake),
                             new AutoRoutine1Part4(drivetrain), //drives back closer to the goal
                             new ShootTwoWithoutTurret(climber, drivetrain, indexer, intake, outtake, limelight, shooterDataTable)

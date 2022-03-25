@@ -82,10 +82,7 @@ public class IndexerSubsystem extends SubsystemBase {
         currentProximity = colorWheelUtils.currentProximity();
 
         SmartDashboard.putBoolean("Indexer Active", indexerRunning);
-        SmartDashboard.putNumber("Proximity", currentProximity);
         SmartDashboard.putBoolean("Ball Indexed", ballIndexed);
-        SmartDashboard.putBoolean("Alliance Ball Indexed", allianceBallIndexed());
-        SmartDashboard.putString("Alliance", RobotContainer.alliance.name());
     }
 }
 

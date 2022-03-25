@@ -75,11 +75,10 @@ public final class Constants {
         public static final int leftClimberMaxEncoderCount = 293302;
         public static final int rightClimberMaxEncoderCount = 298499;
         public static final int winchMaxEncoderCount = 178179;
-
         // TURRET
         public static final int turretMotorPort = 10;
-        public static final double turretTurnSpeed = 0.12;
-        public static final double slowTurretTurnSpeed = 0.09;
+        public static final double turretTurnSpeed = 0.1;
+        public static final double slowTurretTurnSpeed = 0.06;
         // SHOOTER
         public static final int shooterMotorPortA = 7;
         public static final int shooterMotorPortB = 8;

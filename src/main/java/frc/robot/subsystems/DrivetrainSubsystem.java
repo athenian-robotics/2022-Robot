@@ -218,18 +218,11 @@ public class DrivetrainSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         // Consistently update the robot's odometry as it moves throughout the field
-        SmartDashboard.putNumber("Gyro Angle: ", getGyroAngle());
-        SmartDashboard.putNumber("Gyro Heading: ", getHeading());
-        SmartDashboard.putNumber("Gyro Yaw: ", getGyroYaw());
-        SmartDashboard.putNumber("Left Drive Encoder: ", getLeftEncoderCount());
-        SmartDashboard.putNumber("Right Drive Encoder: ", getRightEncoderCount());
-        SmartDashboard.putNumber("Left Drive Distance: ", getLeftDistanceDriven());
-        SmartDashboard.putNumber("Right Drive Distance: ", getRightDistanceDriven());
-
         odometry.update(gyro.getRotation2d(),
                 leftEncoder.getDistance(),
                 rightEncoder.getDistance());
 
+        drive.feed();
     }
 }
 

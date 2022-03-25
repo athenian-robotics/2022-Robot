@@ -13,6 +13,7 @@ import frc.robot.lib.shooterData.ShooterDataTable;
 import frc.robot.subsystems.*;
 
 
+//FOR AUTOS
 public class ShootTwoWithoutTurret extends SequentialCommandGroup {
     public ShootTwoWithoutTurret(ClimberSubsystem climber, DrivetrainSubsystem drivetrain, IndexerSubsystem indexer, IntakeSubsystem intake, OuttakeSubsystem outtake, LimelightSubsystem limelight, ShooterDataTable shooterDataTable) {
         if (climber.getLeftHeightPercent() > 0.1 || climber.getRightHeightPercent() > 0.1) this.cancel();

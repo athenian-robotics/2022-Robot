@@ -4,8 +4,10 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
@@ -30,11 +32,9 @@ public class OuttakeSubsystem extends SubsystemBase {
     private final Servo leftHoodAngleServo = new Servo(2);
     private final Servo rightHoodAngleServo = new Servo(3);
 
-    final ArmFeedforward feed = new ArmFeedforward(Constants.Turret.ks, 0.0047422, Constants.Turret.kv, Constants.Turret.ka);
-    public final PIDController turretPID = new PIDController(.0556, 0.0027, 0.0087);
+    public final PIDController turretPID = new PIDController(.0556, 0.003, 0.009);
 
     private final NetworkTableEntry shooterAdjustmentNTE;
-    private final NetworkTableEntry shooterAdjustmentNTEF;
     private final LimelightDataLatch distanceLatch = new LimelightDataLatch(LimelightDataType.DISTANCE, 5);
     private final LimelightSubsystem limelightSubsystem;
 
@@ -47,6 +47,7 @@ public class OuttakeSubsystem extends SubsystemBase {
     private final SimpleVelocitySystem sys;
     private double shooterRPS = 0;
     private double angle;
+    private SlewRateLimiter filter = new SlewRateLimiter(Math.PI/2);
 
     public OuttakeSubsystem(LimelightSubsystem limelightSubsystem) {
         this.limelightSubsystem = limelightSubsystem;
@@ -61,7 +62,7 @@ public class OuttakeSubsystem extends SubsystemBase {
         shooterMotorBack.setNeutralMode(NeutralMode.Coast);
         shooterMotorBack.follow(shooterMotorFront);
 
-        leftHoodAngleServo.setBounds(2.0, 1.8, 1.5, 1.2, 1.0); //Manufacturer specified for Actuonix linear servos
+         leftHoodAngleServo.setBounds(2.0, 1.8, 1.5, 1.2, 1.0); //Manufacturer specified for Actuonix linear servos
         rightHoodAngleServo.setBounds(2.0, 1.8, 1.5, 1.2, 1.0); //Manufacturer specified for Actuonix linear servos
 
         shooterAdjustmentNTE = Shuffleboard.getTab("852 - Dashboard")
@@ -69,12 +70,6 @@ public class OuttakeSubsystem extends SubsystemBase {
                 .withWidget(BuiltInWidgets.kNumberSlider)
                 .withProperties(Map.of("min", 0.75, "max", 1.25, "default value", 1))
                 .getEntry();
-
-        shooterAdjustmentNTEF = Shuffleboard.getTab("853 - Dashboard")
-                        .add("Shooter Feed Adjustment", 1)
-                                .withWidget(BuiltInWidgets.kNumberSlider)
-                                        .withProperties(Map.of("min", 1, "max", 36, "default value", 1))
-                                                .getEntry();
 
         shooterMotorFront.configVoltageCompSaturation(12);
         shooterMotorBack.configVoltageCompSaturation(12);
@@ -85,7 +80,7 @@ public class OuttakeSubsystem extends SubsystemBase {
                 Constants.Shooter.maxError, Constants.Shooter.maxControlEffort,
                 Constants.Shooter.modelDeviation, Constants.Shooter.encoderDeviation,
                 Constants.looptime);
-        turretPID.setTolerance(0.0001);
+
         setTurretStartingAngle(-180); //assume default position is turret starting facing backwards counterclockwise
     }
 
@@ -116,6 +111,15 @@ public class OuttakeSubsystem extends SubsystemBase {
         } else if (power == 0.0) {
             stopTurret();
         } else turretMotor.set(ControlMode.PercentOutput, 0);
+    }
+
+    public void turnTurretWithVoltage(double voltage) {
+        System.out.println(voltage);
+        if (getTurretAngle() < maximumTurretAngle && voltage > 0 || getTurretAngle() > minimumTurretAngle && voltage < 0) {
+            turretMotor.setVoltage(MathUtil.clamp(voltage, -2, 2));
+        } else if (voltage == 0.0) {
+            stopTurret();
+        } else turretMotor.setVoltage(0.0);
     }
 
     public void setHoodAngle(double angle) {
@@ -177,7 +181,6 @@ public class OuttakeSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Shooter Power", shooterRPS);
 
         shuffleboardShooterAdjustment = shooterAdjustmentNTE.getDouble(1);
-        double shuffleboardShooterAdjustment2 = shooterAdjustmentNTEF.getDouble(1);
 
         if (shooterRunning) {
             sys.update(getWheelSpeed());
@@ -185,7 +188,8 @@ public class OuttakeSubsystem extends SubsystemBase {
         }
 
         if (turretRunning) {
-            turretMotor.setVoltage(turretPID.calculate(getTurretAngle())); // + feed.calc
+            turnTurretWithVoltage(turretPID.calculate(getTurretAngle())); // + feed.calc ?
+
             try {
                 if (distanceLatch.unlocked()) {
                     currentShooterToleranceDegrees = 3/distanceLatch.open();

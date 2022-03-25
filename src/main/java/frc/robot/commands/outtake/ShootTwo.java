@@ -1,9 +1,12 @@
 package frc.robot.commands.outtake;
 
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
+import frc.robot.commands.drive.ArcadeDrive;
+import frc.robot.commands.drive.DisableDrivetrain;
 import frc.robot.commands.indexer.ShootIndexedBallsForever;
 import frc.robot.commands.intake.DisableIntake;
 import frc.robot.commands.limelight.GuaranteeLimelightData;
@@ -14,34 +17,34 @@ import frc.robot.subsystems.*;
 
 
 public class ShootTwo extends SequentialCommandGroup {
-    public ShootTwo(ClimberSubsystem climber, DrivetrainSubsystem drivetrain, IndexerSubsystem indexer, IntakeSubsystem intake, OuttakeSubsystem outtake, LimelightSubsystem limelight, ShooterDataTable shooterDataTable) {
+    public ShootTwo(ClimberSubsystem climber, DrivetrainSubsystem drivetrain, IndexerSubsystem indexer, IntakeSubsystem intake, OuttakeSubsystem outtake, LimelightSubsystem limelight, ShooterDataTable shooterDataTable, XboxController xboxController) {
         if (climber.getLeftHeightPercent() > 0.1 || climber.getRightHeightPercent() > 0.1) this.cancel();
-            addCommands(
-                    //Prepare
-                    //new DisableDrivetrain(drivetrain),
-                    new DisableIntake(intake),
-                    //Align to shoot
-                    new ParallelDeadlineGroup(new GuaranteeLimelightData(limelight).withTimeout(0.5), new ManualAdjustTurret(outtake)),
-                    new ParallelCommandGroup(
-                            new SetShooterPowerWithLimelight(shooterDataTable, limelight, outtake),
-                            new SetHoodAngleWithLimelightTimeSafe(shooterDataTable, limelight, outtake),
-                            new AlwaysTurretTurnToGoalWithLimelightOrManualControl(limelight, outtake).withTimeout(0.75)
-                    ),
-                    new ParallelDeadlineGroup(
+        addCommands(
+                //Prepare
+                new DisableDrivetrain(drivetrain),
+                new DisableIntake(intake),
+                //Shoot while letting Teddy drive
+                new ParallelDeadlineGroup(
                         new SequentialCommandGroup(
+                                //Find target while manually turning turret
+                                new ParallelDeadlineGroup(new GuaranteeLimelightData(limelight), new ManualAdjustTurret(outtake)),
+                                //Set shooter power, angle, and offset while turning to goal
                                 new ParallelDeadlineGroup(
-                                    new GuaranteeLimelightDataEquals(limelight, LimelightDataType.HORIZONTAL_OFFSET, 0, Math.toRadians(outtake.currentShooterToleranceDegrees)).withTimeout(0.75),
-                                    new ManualAdjustTurret(outtake)
+                                        new SequentialCommandGroup(
+                                                new ParallelCommandGroup(
+                                                        new SetShooterPowerWithLimelight(shooterDataTable, limelight, outtake),
+                                                        new SetHoodAngleWithLimelightTimeSafe(shooterDataTable, limelight, outtake)
+                                                ),
+                                                new GuaranteeLimelightDataEquals(limelight, LimelightDataType.HORIZONTAL_OFFSET, 0, outtake.currentShooterToleranceDegrees),
+                                                //Shoot Balls
+                                                new ShootIndexedBallsForever(indexer, intake).withTimeout(2)
+                                        ), new AlwaysTurretTurnToGoalWithLimelightOrManualControl(limelight, outtake)
                                 ),
-                                //Shoot Balls
-                                new ShootIndexedBallsForever(indexer, intake).withTimeout(2)
-                        ), new AlwaysTurretTurnToGoalWithLimelightOrManualControl(limelight, outtake)
-                    ),
-                    //Return to teleop
-                    new ParallelCommandGroup(
-                            new DisableShooter(outtake),
-                            new SetHoodAngle(outtake, Constants.MechanismConstants.defaultHoodAngle)
-                    )
-            );
+                                //Return to teleop
+                                new DisableShooter(outtake),
+                                new SetHoodAngle(outtake, Constants.MechanismConstants.defaultHoodAngle)
+                        ), new ArcadeDrive(drivetrain, xboxController)
+                )
+        );
     }
 }

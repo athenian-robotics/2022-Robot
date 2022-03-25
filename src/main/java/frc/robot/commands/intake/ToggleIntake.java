@@ -15,7 +15,6 @@ public class ToggleIntake extends InstantCommand {
     @Override
     public void initialize() {
         intakeSubsystem.togglePneumatic();
-        Timer.delay(0.3);
         intakeSubsystem.toggleIntake(); // On initialize, toggle intake
         if (intakeSubsystem.isRunning) intakeSubsystem.startIntakeToIndexerMotor();
     }

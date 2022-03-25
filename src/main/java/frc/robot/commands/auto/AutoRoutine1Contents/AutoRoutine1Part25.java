@@ -13,15 +13,14 @@ import frc.robot.Constants;
 import frc.robot.subsystems.DrivetrainSubsystem;
 
 
-public class AutoRoutine1Part2 extends CommandBase {
+public class AutoRoutine1Part25 extends CommandBase {
     private final RamseteCommand ramseteCommand;
     private final DrivetrainSubsystem drivetrain;
     private final PathPlannerTrajectory trajectory;
 
-    public AutoRoutine1Part2(DrivetrainSubsystem drivetrainSubsystem) {
+    public AutoRoutine1Part25(DrivetrainSubsystem drivetrainSubsystem) {
         addRequirements(drivetrainSubsystem);
         drivetrain = drivetrainSubsystem;
-
         // Create a voltage constraint to ensure we don't accelerate too fast
         var autoVoltageConstraint =
                 new DifferentialDriveVoltageConstraint(
@@ -44,7 +43,7 @@ public class AutoRoutine1Part2 extends CommandBase {
 
         // An example trajectory to follow.  All units in meters.
         // create a new trajectory 1 meter forward
-        PathPlannerTrajectory exampleTrajectory = PathPlanner.loadPath("Auto Routine 1 Part 2", Constants.AutoConstants.maxAutoSpeed, Constants.AutoConstants.maxAutoAcceleration, true);
+        PathPlannerTrajectory exampleTrajectory = PathPlanner.loadPath("Auto Routine 1 Part 2.5", Constants.AutoConstants.maxAutoSpeed, Constants.AutoConstants.maxAutoAcceleration);
         trajectory = exampleTrajectory;
 
         this.ramseteCommand = new RamseteCommand(

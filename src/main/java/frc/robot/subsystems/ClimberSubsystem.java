@@ -81,18 +81,10 @@ public class ClimberSubsystem extends SubsystemBase {
     }
 
     @Override
-    public void periodic() {
-        SmartDashboard.putNumber("left telescope height", getLeftHeightPercent());
-        SmartDashboard.putNumber("right telescope height", getRightHeightPercent());
-        SmartDashboard.putNumber("left telescope encoder count", getLeftHeightEncoderCount());
-        SmartDashboard.putNumber("right telescope encoder count", getRightHeightEncoderCount());
-        SmartDashboard.putNumber("Winch", getWinchEncoderCount());
-        SmartDashboard.putBoolean("Climb Active", climberActive);
-    }
+    public void periodic() {}
 
     public void set(int i) {
         // set motors to encoder count
-
         climbMotorLeft.set(ControlMode.Position, i);
     }
 }

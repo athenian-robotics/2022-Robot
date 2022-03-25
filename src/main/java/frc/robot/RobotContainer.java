@@ -82,7 +82,7 @@ public class RobotContainer {
         SmartDashboard.putData("AutoChooser", chooser);
         chooser.setDefaultOption("0: 2.5 Meters Forward", new AutoRoutine0(drivetrain));
         chooser.addOption("1: 5 Ball Auto - Bottom Left Start", new AutoRoutine1(climb, drivetrain, indexer, intake, outtake, limelight, shooterDataTable));
-        chooser.addOption("2: 3 Ball Auto - Top Left Start", new AutoRoutine2(climb, drivetrain, indexer, intake, outtake, limelight, shooterDataTable));
+        chooser.addOption("2: 2 Ball Auto - Top Left Start", new AutoRoutine2(climb, drivetrain, indexer, intake, outtake, limelight, shooterDataTable));
         chooser.addOption("3: 2 Ball Auto - Bottom Left Start", new AutoRoutine3(climb, drivetrain, indexer, intake, outtake, limelight, shooterDataTable));
         chooser.addOption("4: 4 Ball Auto - Bottom Left Start", new AutoRoutine4(climb, drivetrain, indexer, intake, outtake, limelight, shooterDataTable));
 
@@ -95,7 +95,7 @@ public class RobotContainer {
       /*  SUBSYSTEM COMMANDS (Main, functional commands) */
       FightStick.fightStickX.whenPressed(new ShootBalls(climb, drivetrain, indexer, intake, outtake, limelight, shooterDataTable));
       FightStick.fightStickA.whenPressed(new ToggleIntake(intake)); // Toggle intake wheels and pneumatics
-      FightStick.fightStickY.whenPressed(new ShootTwo(climb, drivetrain, indexer, intake, outtake, limelight, shooterDataTable));
+      FightStick.fightStickY.whenPressed(new ShootTwo(climb, drivetrain, indexer, intake, outtake, limelight, shooterDataTable, xboxController));
       FightStick.fightStickB.whenPressed(new RunIntakeWithoutPneumatics(intake, indexer));
       FightStick.fightStickLB.whenHeld(new SetBothTelescopeSpeed(climb, -telescopeSpeed));
       FightStick.fightStickRB.whenHeld(new SetBothTelescopeSpeed(climb, telescopeSpeed));
@@ -106,7 +106,7 @@ public class RobotContainer {
       //FightStick.fightStickRT.whenActive(new Traverse(climb));
       xboxB.whenPressed(new ShootLowGoal(climb, drivetrain, indexer, intake, outtake, limelight));
       xboxA.whenPressed(new ToggleIntake((intake)));
-      xboxRB.whenPressed(new ShootTwo(climb, drivetrain, indexer, intake, outtake, limelight, shooterDataTable));
+      xboxRB.whenPressed(new ShootTwo(climb, drivetrain, indexer, intake, outtake, limelight, shooterDataTable, xboxController));
       xboxLB.whenPressed(new ShootBalls(climb, drivetrain, indexer, intake, outtake, limelight, shooterDataTable));
 
         /* MISC COMMANDS (Random lib of commands. Written using functional commands because most are just one line ) */
@@ -119,10 +119,10 @@ public class RobotContainer {
                 }, () -> {
         }, interrupted -> {
         }, () -> true, drivetrain));
-        xboxLP.whenPressed(new FunctionalCommand(() -> drivetrain.shiftDown(), () -> {
+        xboxLP.whenPressed(new FunctionalCommand(drivetrain::shiftDown, () -> {
         }, interrupted -> {
         }, () -> true, drivetrain)); // Shift down
-        xboxRP.whenPressed(new FunctionalCommand(() -> drivetrain.shiftUp(), () -> {
+        xboxRP.whenPressed(new FunctionalCommand(drivetrain::shiftUp, () -> {
         }, interrupted -> {
         }, () -> true, drivetrain)); // Shift up
     }
