@@ -36,10 +36,8 @@ public class OuttakeSubsystem extends SubsystemBase {
     private final Servo leftHoodAngleServo = new Servo(2);
     private final Servo rightHoodAngleServo = new Servo(3);
 
-    public final ProfiledPIDController turretPID = new ProfiledPIDController(3.1856, 0, 0.9740,
-            new TrapezoidProfile.Constraints(Math.PI, Math.PI)); // 1.4606 1.3344 sys id, or change kd to 1.3513
+    public final PIDController turretPID = new PIDController(.0556, 0.003, 0.017); // integral should not be needed
 
-    
     private final NetworkTableEntry shooterAdjustmentNTE;
     private final LimelightDataLatch distanceLatch = new LimelightDataLatch(LimelightDataType.DISTANCE, 5);
     private final LimelightSubsystem limelightSubsystem;
@@ -54,9 +52,7 @@ public class OuttakeSubsystem extends SubsystemBase {
     private final SimpleVelocitySystem sys;
     private double shooterRPS = 0;
     private double angle;
-    // time 2 go brazy
-    SimpleMotorFeedforward feed = new SimpleMotorFeedforward(Constants.Turret.ks, Constants.Turret.kv,
-            Constants.Turret.ka); // please please please work
+
     public OuttakeSubsystem(LimelightSubsystem limelightSubsystem, DrivetrainSubsystem drivetrain) {
         this.drivetrain = drivetrain;
         this.limelightSubsystem = limelightSubsystem;
@@ -125,7 +121,7 @@ public class OuttakeSubsystem extends SubsystemBase {
     public void turnTurretWithVoltage(double voltage) {
         System.out.println(voltage);
         if (getTurretAngle() < maximumTurretAngle && voltage > 0 || getTurretAngle() > minimumTurretAngle && voltage < 0) {
-            turretMotor.setVoltage(MathUtil.clamp(voltage, -2, 2));
+            turretMotor.setVoltage(voltage);
         } else if (voltage == 0.0) {
             stopTurret();
         } else turretMotor.setVoltage(0.0);
@@ -170,7 +166,7 @@ public class OuttakeSubsystem extends SubsystemBase {
     }
 
     public void setTurretPosition(double angle){
-        turretPID.setGoal(angle);
+        turretPID.setSetpoint(angle);
         this.angle = angle;
         turretRunning = true;
     }
@@ -197,9 +193,7 @@ public class OuttakeSubsystem extends SubsystemBase {
         }
 
         if (turretRunning) {
-            turnTurretWithVoltage(turretPID.calculate(getTurretAngle(), angle) + (0.9 * feed.calculate(drivetrain.getVelocity())) +
-                    (feed.calculate(0.038514) * Math.signum(angle)) /*+ 0.9 * feed.calculate(drivetrain
-                    .getTangentialVelocity(angle, distanceLatch.open()))*/);
+            turnTurretWithVoltage(turretPID.calculate(getTurretAngle(), angle));
 
             try {
                 if (distanceLatch.unlocked()) {

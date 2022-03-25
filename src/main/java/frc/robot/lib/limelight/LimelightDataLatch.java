@@ -55,7 +55,7 @@ public class LimelightDataLatch {
         if (!unlocked)
             System.out.println("ERROR! Latch " + this + " for " + limelightDataType.toString() + " was opened before " +
                     "it was unlocked!");
-        return Math.toRadians(value);
+        return value;
     }
 
     public LimelightDataLatch reset() {
