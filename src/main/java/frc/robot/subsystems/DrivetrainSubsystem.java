@@ -237,7 +237,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     public double getTangentialVelocity(double angle, double distance) {
         double theta = 90 + Math.toDegrees(angle);
-        double v = Constants.AutoConstants.kDriveKinematics.toChassisSpeeds(getWheelSpeeds()).vxMetersPerSecond;
+        double v = Constants.AutoConstants.kDriveKinematics.toChassisSpeeds(getWheelSpeeds()).vxMetersPerSecond*Constants.looptime;
 
         double side =
                 Math.sqrt(Math.pow(v, 2) + Math.pow(distance, 2) - 2 * v * distance * Math.cos(Math.toRadians(theta)));
