@@ -1,6 +1,5 @@
 package frc.robot.commands.auto;
 
-
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -10,6 +9,7 @@ import frc.robot.commands.outtake.AlwaysTurretTurnToGoalWithLimelightOrManualCon
 import frc.robot.commands.outtake.ShootTwoWithoutTurret;
 import frc.robot.lib.shooterData.ShooterDataTable;
 import frc.robot.subsystems.*;
+
 
 public class AutoRoutine1 extends SequentialCommandGroup {
     public AutoRoutine1(ClimberSubsystem climber, DrivetrainSubsystem drivetrain, IndexerSubsystem indexer,
