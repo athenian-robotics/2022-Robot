@@ -197,7 +197,7 @@ public class OuttakeSubsystem extends SubsystemBase {
 
         if (turretRunning) {
             turnTurretWithVoltage(turretPID.calculate(getTurretAngle(), angle) + (0.9 * feed.calculate(drivetrain.getVelocity())) +
-                    (0.1 * feed.calculate(Math.PI/2) * Math.signum(angle)));
+                    (0.1 * feed.calculate(Math.PI/2) * Math.signum(angle)) + 0.9 * feed.calculate(drivetrain.getTangentialVelocity(angle, distanceLatch.open())));
 
             try {
                 if (distanceLatch.unlocked()) {

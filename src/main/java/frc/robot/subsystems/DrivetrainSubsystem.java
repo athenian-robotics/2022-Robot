@@ -234,5 +234,14 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
         drive.feed();
     }
+
+    public double getTangentialVelocity(double angle, double distance) {
+        double theta = 90 + Math.toDegrees(angle);
+        double v = Constants.AutoConstants.kDriveKinematics.toChassisSpeeds(getWheelSpeeds()).vxMetersPerSecond;
+
+        double side =
+                Math.sqrt(Math.pow(v, 2) + Math.pow(distance, 2) - 2 * v * distance * Math.cos(Math.toRadians(theta)));
+        return Math.toRadians(180) - Math.toRadians(theta) - Math.asin((Math.sin(Math.toRadians(theta)) *  distance) / side);
+    }
 }
 
