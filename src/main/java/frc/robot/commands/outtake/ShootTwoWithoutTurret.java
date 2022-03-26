@@ -33,5 +33,6 @@ public class ShootTwoWithoutTurret extends SequentialCommandGroup {
                         new SetHoodAngle(outtake, Constants.MechanismConstants.defaultHoodAngle)
                 )
         );
+
     }
 }

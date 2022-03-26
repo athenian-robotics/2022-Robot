@@ -1,5 +1,6 @@
 package frc.robot.commands.outtake;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.lib.controllers.FightStick;
 import frc.robot.lib.limelight.GoalNotFoundException;
@@ -32,6 +33,7 @@ public class AlwaysTurretTurnToGoalWithLimelightOrManualControl extends CommandB
 
     @Override
     public void execute() {
+        SmartDashboard.putBoolean("flight stick share", !FightStick.fightStickShare.getAsBoolean());
         if (FightStick.fightStickJoystick.getX() < -0.5) { //TURRET ADJUSTMENT FALCON
             outtakeSubsystem.turretRunning = false;
             outtakeSubsystem.turnTurret(-turretTurnSpeed);
@@ -44,15 +46,20 @@ public class AlwaysTurretTurnToGoalWithLimelightOrManualControl extends CommandB
         } else if (FightStick.fightStickJoystick.getY() > 0.5) {
                 outtakeSubsystem.turretRunning = false;
                 outtakeSubsystem.turnTurret(slowTurretTurnSpeed);
-        } else {
+        } else if (FightStick.fightStickShare.getAsBoolean()){
             try {
                 if (offsetLatch.unlocked()) {
-                    outtakeSubsystem.setTurretPosition(offsetLatch.open() + outtakeSubsystem.getTurretAngle());
+                    outtakeSubsystem.turnTurret(
+                            Math.abs(offsetLatch.open()-outtakeSubsystem.getTurretAngle()) > Math.PI/90
+                                    ? Math.signum(offsetLatch.open()) * turretTurnSpeed
+                                    : Math.signum(offsetLatch.open()) * slowTurretTurnSpeed);
                     throw new GoalNotFoundException(); //shortcut to latch reset  vvv  (since we've expended it)
                 }
             } catch (GoalNotFoundException e) {
                 limelightSubsystem.addLatch(offsetLatch.reset()); //assuming we want to look for the goal forever
             }
+        } else {
+            outtakeSubsystem.stopTurret();
         }
     }
 

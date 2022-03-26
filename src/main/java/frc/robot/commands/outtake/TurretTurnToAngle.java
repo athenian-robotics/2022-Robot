@@ -21,8 +21,6 @@ public class TurretTurnToAngle extends CommandBase {
     public void execute() {
         if (angle < minimumTurretAngle && angle - outtakeSubsystem.getTurretAngle() < 0 || angle > maximumTurretAngle && angle - outtakeSubsystem.getTurretAngle() > 0)
             System.out.println("Error! angle passed into TurretTurnToAngle " + this + " was out of bounds");
-        else
-            outtakeSubsystem.setTurretPosition(Math.toRadians(angle)); //lol unlol
     }
 
     @Override

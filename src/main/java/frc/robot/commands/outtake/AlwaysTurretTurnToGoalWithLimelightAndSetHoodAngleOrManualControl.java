@@ -1,5 +1,6 @@
 package frc.robot.commands.outtake;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.lib.controllers.FightStick;
 import frc.robot.lib.limelight.GoalNotFoundException;
@@ -23,7 +24,7 @@ public class AlwaysTurretTurnToGoalWithLimelightAndSetHoodAngleOrManualControl e
 
     public AlwaysTurretTurnToGoalWithLimelightAndSetHoodAngleOrManualControl(LimelightSubsystem limelightSubsystem,
                                                                              OuttakeSubsystem outtakeSubsystem,
-                                                                             ShooterDataTable shooterDataTable ) {
+                                                                             ShooterDataTable shooterDataTable) {
         this.limelightSubsystem = limelightSubsystem;
         this.outtakeSubsystem = outtakeSubsystem;
         this.shooterDataTable = shooterDataTable;
@@ -52,23 +53,29 @@ public class AlwaysTurretTurnToGoalWithLimelightAndSetHoodAngleOrManualControl e
         } else if (FightStick.fightStickJoystick.getY() > 0.5) {
                 outtakeSubsystem.turretRunning = false;
                 outtakeSubsystem.turnTurret(slowTurretTurnSpeed);
-        } else {
+        } else if (FightStick.fightStickShare.get()) {
             try {
                 if (offsetLatch.unlocked()) {
-                    outtakeSubsystem.setTurretPosition(offsetLatch.open() + outtakeSubsystem.getTurretAngle());
+                    outtakeSubsystem.turnTurret(
+                            Math.abs(offsetLatch.open()-outtakeSubsystem.getTurretAngle()) > 2
+                                    ? Math.signum(offsetLatch.open()) * turretTurnSpeed
+                                    : Math.signum(offsetLatch.open()) * slowTurretTurnSpeed);
                     throw new GoalNotFoundException(); //shortcut to latch reset  vvv  (since we've expended it)
                 }
             } catch (GoalNotFoundException e) {
                 limelightSubsystem.addLatch(offsetLatch.reset()); //assuming we want to look for the goal forever
             }
-            try {
-                if (distanceLatch.unlocked()) {
-                    outtakeSubsystem.setHoodAngle(shooterDataTable.getSpecs(distanceLatch.open()).getAngle());
-                    throw new GoalNotFoundException(); //shortcut to latch reset
-                }
-            } catch (GoalNotFoundException e) {
-                limelightSubsystem.addLatch(distanceLatch.reset());
+        } else {
+            outtakeSubsystem.stopTurret();
+        }
+
+        try {
+            if (distanceLatch.unlocked()) {
+                outtakeSubsystem.setHoodAngle(shooterDataTable.getSpecs(distanceLatch.open()).getAngle());
+                throw new GoalNotFoundException(); //shortcut to latch reset
             }
+        } catch (GoalNotFoundException e) {
+            limelightSubsystem.addLatch(distanceLatch.reset());
         }
     }
 
