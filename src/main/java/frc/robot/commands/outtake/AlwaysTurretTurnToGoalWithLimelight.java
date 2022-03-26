@@ -7,6 +7,9 @@ import frc.robot.lib.limelight.LimelightDataType;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.OuttakeSubsystem;
 
+import static frc.robot.Constants.MechanismConstants.slowTurretTurnSpeed;
+import static frc.robot.Constants.MechanismConstants.turretTurnSpeed;
+
 
 public class AlwaysTurretTurnToGoalWithLimelight extends CommandBase {
     private final LimelightSubsystem limelightSubsystem;
@@ -31,7 +34,9 @@ public class AlwaysTurretTurnToGoalWithLimelight extends CommandBase {
     public void execute() {
         try {
             if (offsetLatch.unlocked()) {
-                outtakeSubsystem.setTurretPosition(offsetLatch.open() + outtakeSubsystem.getTurretAngle());
+                outtakeSubsystem.turnTurret(Math.abs(offsetLatch.open()-outtakeSubsystem.getTurretAngle()) > 2
+                        ? Math.signum(offsetLatch.open()) * turretTurnSpeed
+                        : Math.signum(offsetLatch.open()) * slowTurretTurnSpeed);
                 throw new GoalNotFoundException(); //shortcut to latch reset  vvv  (since we've expended it)
             }
         } catch (GoalNotFoundException e) {

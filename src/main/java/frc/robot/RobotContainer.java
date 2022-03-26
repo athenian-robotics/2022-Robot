@@ -63,7 +63,7 @@ public class RobotContainer {
     // Sets up controllers, configures controllers, and sets the default drive mode (tank or arcade)
     public RobotContainer() {
         drivetrain.setDefaultCommand(new ArcadeDrive(drivetrain, xboxController)); // Check for Arcade or Tank
-        outtake.setDefaultCommand(new AlwaysSetHoodAngleAndTurret(limelight, outtake, shooterDataTable)); // Check fight stick y-axis for manual hood adjustment
+        // manual hood adjustment
         indexer.setDefaultCommand(new QueueBalls(indexer, intake)); //Turns on indexer when sees a ball, sets it to
         // off
         // when there are no balls in sight
@@ -79,6 +79,7 @@ public class RobotContainer {
             System.out.println("file not found, or class not found");
         }
 
+        outtake.setDefaultCommand(new AlwaysTurretTurnToGoalWithLimelightAndSetHoodAngleOrManualControl(limelight, outtake, shooterDataTable)); // Check fight stick y-axis for
         SmartDashboard.putData("AutoChooser", chooser);
         chooser.setDefaultOption("0: 2.5 Meters Forward", new AutoRoutine0(drivetrain));
         chooser.addOption("1: 5 Ball Auto - Bottom Left Start", new AutoRoutine1(climb, drivetrain, indexer, intake, outtake, limelight, shooterDataTable));
@@ -102,7 +103,6 @@ public class RobotContainer {
       FightStick.fightStickL3.whenHeld(new WinchSetSpeed(climb, -winchSpeed)); //Toggle Indexer down (tower portion)
       FightStick.fightStickR3.whenHeld(new WinchSetSpeed(climb, winchSpeed)); // Toggle indexer (tower portion)
       FightStick.fightStickLT.whenActive(new ShootLowGoal(climb, drivetrain, indexer, intake, outtake, limelight));
-      FightStick.fightStickRT.whenActive(new ShootHighGoalNextToTarget(climb, drivetrain, indexer, intake, outtake, limelight));
       //FightStick.fightStickRT.whenActive(new Traverse(climb));
       xboxB.whenPressed(new ShootLowGoal(climb, drivetrain, indexer, intake, outtake, limelight));
       xboxA.whenPressed(new ToggleIntake((intake)));

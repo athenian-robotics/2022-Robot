@@ -24,6 +24,7 @@ import frc.robot.lib.limelight.LimelightDataType;
 
 import java.util.Map;
 
+import static com.ctre.phoenix.motorcontrol.NeutralMode.Coast;
 import static com.ctre.phoenix.motorcontrol.TalonFXControlMode.PercentOutput;
 import static frc.robot.Constants.MechanismConstants.*;
 
@@ -32,12 +33,14 @@ public class OuttakeSubsystem extends SubsystemBase {
 
     // Setup motors, pid controller, and booleans
     private final TalonFX shooterMotorFront = new TalonFX(shooterMotorPortA);
-    private final WPI_TalonFX turretMotor = new WPI_TalonFX(turretMotorPort);
+    public final WPI_TalonFX turretMotor = new WPI_TalonFX(turretMotorPort);
     private final Servo leftHoodAngleServo = new Servo(2);
     private final Servo rightHoodAngleServo = new Servo(3);
+    public final SimpleMotorFeedforward feed;
 
-    public final ProfiledPIDController turretPID = new ProfiledPIDController(.0556, 0, 0.008,
-            new TrapezoidProfile.Constraints(Math.PI/2, Math.PI/2)); // integral should not be needed
+    public final ProfiledPIDController turretPID =
+            new ProfiledPIDController(3.1856, 0, 1.13513, new TrapezoidProfile.Constraints(Math.PI/2, Math.PI/2)); //
+
 
     private final NetworkTableEntry shooterAdjustmentNTE;
     private final LimelightDataLatch distanceLatch = new LimelightDataLatch(LimelightDataType.DISTANCE, 5);
@@ -53,9 +56,7 @@ public class OuttakeSubsystem extends SubsystemBase {
     private final SimpleVelocitySystem sys;
     private double shooterRPS = 0;
     private double angle;
-    // time 2 go brazy
-    SimpleMotorFeedforward feed = new SimpleMotorFeedforward(Constants.Turret.ks, Constants.Turret.kv,
-            Constants.Turret.ka); // please please please work
+
     public OuttakeSubsystem(LimelightSubsystem limelightSubsystem, DrivetrainSubsystem drivetrain) {
         this.drivetrain = drivetrain;
         this.limelightSubsystem = limelightSubsystem;
@@ -65,9 +66,9 @@ public class OuttakeSubsystem extends SubsystemBase {
         shooterMotorBack.setInverted(false);
         turretMotor.setInverted(false);
 
-        turretMotor.setNeutralMode(NeutralMode.Brake);
-        shooterMotorFront.setNeutralMode(NeutralMode.Coast);
-        shooterMotorBack.setNeutralMode(NeutralMode.Coast);
+        turretMotor.setNeutralMode(NeutralMode.Coast);
+        shooterMotorFront.setNeutralMode(Coast);
+        shooterMotorBack.setNeutralMode(Coast);
         shooterMotorBack.follow(shooterMotorFront);
 
          leftHoodAngleServo.setBounds(2.0, 1.8, 1.5, 1.2, 1.0); //Manufacturer specified for Actuonix linear servos
@@ -88,6 +89,9 @@ public class OuttakeSubsystem extends SubsystemBase {
                 Constants.Shooter.maxError, Constants.Shooter.maxControlEffort,
                 Constants.Shooter.modelDeviation, Constants.Shooter.encoderDeviation,
                 Constants.looptime);
+
+        this.feed = new SimpleMotorFeedforward(Constants.Turret.ks, Constants.Turret.kv,
+                Constants.Turret.ka);
 
         setTurretStartingAngle(-180); //assume default position is turret starting facing backwards counterclockwise
     }
@@ -124,7 +128,7 @@ public class OuttakeSubsystem extends SubsystemBase {
     public void turnTurretWithVoltage(double voltage) {
         System.out.println(voltage);
         if (getTurretAngle() < maximumTurretAngle && voltage > 0 || getTurretAngle() > minimumTurretAngle && voltage < 0) {
-            turretMotor.setVoltage(MathUtil.clamp(voltage, -2, 2));
+            turretMotor.setVoltage(voltage);
         } else if (voltage == 0.0) {
             stopTurret();
         } else turretMotor.setVoltage(0.0);
@@ -168,12 +172,6 @@ public class OuttakeSubsystem extends SubsystemBase {
         return Math.toRadians(turretMotor.getSelectedSensorPosition() * 36 / 2048);
     }
 
-    public void setTurretPosition(double angle){
-        turretPID.setGoal(angle);
-        this.angle = angle;
-        turretRunning = true;
-    }
-
     public void disable() {
         stopShooter();
         stopHood();
@@ -195,18 +193,13 @@ public class OuttakeSubsystem extends SubsystemBase {
             setShooterPower(sys.getOutput());
         }
 
-        if (turretRunning) {
-            turnTurretWithVoltage(turretPID.calculate(getTurretAngle(), angle) + (0.9 * feed.calculate(drivetrain.getVelocity())) +
-                    (0.1 * feed.calculate(Math.PI/2) * Math.signum(angle)) + 0.9 * feed.calculate(drivetrain.getTangentialVelocity(angle, distanceLatch.open())));
-
+            //turnTurretWithVoltage(turretPID.calculate(getTurretAngle(), angle));
             try {
                 if (distanceLatch.unlocked()) {
-                    currentShooterToleranceDegrees = 3/distanceLatch.open();
+                    currentShooterToleranceDegrees = 6/distanceLatch.open();
                 }
             } catch (GoalNotFoundException e) {
                 limelightSubsystem.addLatch(distanceLatch.reset());
             }
-
-        }
     }
 }

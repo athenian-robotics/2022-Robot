@@ -32,6 +32,8 @@ public class ShootBalls extends SequentialCommandGroup {
                 new ParallelDeadlineGroup(
                         new ConditionalCommand(
                                 new SequentialCommandGroup(
+                                        new GuaranteeLimelightDataEquals(limelight,
+                                                LimelightDataType.HORIZONTAL_OFFSET, 0, outtake.currentShooterToleranceDegrees),
                                         new ParallelCommandGroup(
                                                 new PulseIntakeToIndexerMotor(intake).withTimeout(0.3),
                                                 new ShootIndexedBallForever(indexer, outtake).withTimeout(1.5)
@@ -61,6 +63,9 @@ public class ShootBalls extends SequentialCommandGroup {
                 new ParallelDeadlineGroup(
                         new ConditionalCommand(
                                 new SequentialCommandGroup(
+                                        new GuaranteeLimelightDataEquals(limelight,
+                                                LimelightDataType.HORIZONTAL_OFFSET, 0,
+                                                outtake.currentShooterToleranceDegrees),
                                         new ParallelCommandGroup(
                                                 new PulseIntakeToIndexerMotor(intake).withTimeout(0.3),
                                                 new ShootIndexedBallForever(indexer, outtake).withTimeout(1)
@@ -79,7 +84,7 @@ public class ShootBalls extends SequentialCommandGroup {
                                 ),
                                 indexer::allianceBallIndexed
                         ),
-                        new AlwaysTurretTurnToGoalWithLimelight(limelight, outtake)
+                        new AlwaysTurretTurnToGoalWithLimelightAndSetHoodAngleOrManualControl(limelight, outtake, shooterDataTable)
                 ),
                 //Return to teleop
                 new DisableShooter(outtake),
