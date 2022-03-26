@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.util.Units;
 import org.opencv.core.Mat;
@@ -35,7 +36,7 @@ public final class Constants {
         public static final int rightRearDrivePort = 4;
 
         public static final int rightEncoderChannelA = 2;
-        public static final int rightEncoderchannelB = 3;
+        public static final int rightEncoderChannelB = 3;
         public static final int leftEncoderChannelA = 0;
         public static final int leftEncoderChannelB = 1;
 
@@ -71,7 +72,7 @@ public final class Constants {
         public static final int leftClimberMotorPort = 15;
         public static final int rightClimberMotorPort = 16;
         public static final int climbWinchMotorPort = 17;
-        public static final double telescopeSpeed = 0.35;
+        public static final double telescopeSpeed = 0.5;
         public static final double winchSpeed = 0.25;
         public static final int leftClimberMaxEncoderCount = 293302;
         public static final int rightClimberMaxEncoderCount = 298499;
@@ -79,7 +80,8 @@ public final class Constants {
         // TURRET
         public static final int turretMotorPort = 10;
         public static final double turretTurnSpeed = 0.12;
-        public static final double slowTurretTurnSpeed = 0.06;
+        public static final double slowTurretTurnSpeed = 0.05;
+        public static final double turretSlowZoneWidthRadians = Math.toRadians(4);
         // SHOOTER
         public static final int shooterMotorPortA = 7;
         public static final int shooterMotorPortB = 8;
@@ -87,10 +89,10 @@ public final class Constants {
         public static final double minimumHoodAngle = 8;
         public static final double maximumHoodAngle = 41;
         public static final double defaultHoodAngle = 31;
-        public static final double maximumTurretAngle = Math.PI/2;
-        public static final double minimumTurretAngle = -210*Math.PI/180;
+        public static final double maximumTurretAngleRadians = Math.toRadians(90);
+        public static final double minimumTurretAngleRadians = Math.toRadians(-210);
         // MAX MECHANISM SPEEDS
-        public static final double intakeSpeed = 0.275; //0.3
+        public static final double intakeSpeed = 0.4;
 
         // Climber motor ports ...
     }

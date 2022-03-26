@@ -1,6 +1,5 @@
 package frc.robot.commands.outtake;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.lib.controllers.FightStick;
 import frc.robot.lib.limelight.GoalNotFoundException;
@@ -11,8 +10,6 @@ import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.OuttakeSubsystem;
 
 import static frc.robot.Constants.MechanismConstants.*;
-import static frc.robot.RobotContainer.outtake;
-import static frc.robot.RobotContainer.shooterDataTable;
 
 
 public class AlwaysTurretTurnToGoalWithLimelightAndSetHoodAngleOrManualControl extends CommandBase {
@@ -57,7 +54,7 @@ public class AlwaysTurretTurnToGoalWithLimelightAndSetHoodAngleOrManualControl e
             try {
                 if (offsetLatch.unlocked()) {
                     outtakeSubsystem.turnTurret(
-                            Math.abs(offsetLatch.open()-outtakeSubsystem.getTurretAngle()) > 2
+                            Math.abs(offsetLatch.open()-outtakeSubsystem.getTurretAngleRadians()) > turretSlowZoneWidthRadians
                                     ? Math.signum(offsetLatch.open()) * turretTurnSpeed
                                     : Math.signum(offsetLatch.open()) * slowTurretTurnSpeed);
                     throw new GoalNotFoundException(); //shortcut to latch reset  vvv  (since we've expended it)

@@ -9,12 +9,13 @@ import frc.robot.subsystems.OuttakeSubsystem;
 
 import static frc.robot.Constants.MechanismConstants.slowTurretTurnSpeed;
 import static frc.robot.Constants.MechanismConstants.turretTurnSpeed;
+import static frc.robot.Constants.MechanismConstants.turretSlowZoneWidthRadians;
 
 
 public class AlwaysTurretTurnToGoalWithLimelight extends CommandBase {
     private final LimelightSubsystem limelightSubsystem;
     private final OuttakeSubsystem outtakeSubsystem;
-    private LimelightDataLatch offsetLatch;
+    private final LimelightDataLatch offsetLatch;
 
     public AlwaysTurretTurnToGoalWithLimelight(LimelightSubsystem limelightSubsystem,
                                                OuttakeSubsystem outtakeSubsystem) {
@@ -27,21 +28,19 @@ public class AlwaysTurretTurnToGoalWithLimelight extends CommandBase {
     @Override
     public void initialize() {
         limelightSubsystem.addLatch(offsetLatch.reset());
-        double offset = Double.MAX_VALUE;
     }
 
     @Override
     public void execute() {
         try {
             if (offsetLatch.unlocked()) {
-                outtakeSubsystem.turnTurret(Math.abs(offsetLatch.open()-outtakeSubsystem.getTurretAngle()) > 2
+                outtakeSubsystem.turnTurret(Math.abs(offsetLatch.open()-outtakeSubsystem.getTurretAngleRadians()) > turretSlowZoneWidthRadians
                         ? Math.signum(offsetLatch.open()) * turretTurnSpeed
                         : Math.signum(offsetLatch.open()) * slowTurretTurnSpeed);
                 throw new GoalNotFoundException(); //shortcut to latch reset  vvv  (since we've expended it)
             }
         } catch (GoalNotFoundException e) {
-            offsetLatch = new LimelightDataLatch(LimelightDataType.HORIZONTAL_OFFSET, 5);
-            limelightSubsystem.addLatch(offsetLatch); //assuming we want to look for the goal forever
+            limelightSubsystem.addLatch(offsetLatch.reset()); //assuming we want to look for the goal forever
         }
     }
 }

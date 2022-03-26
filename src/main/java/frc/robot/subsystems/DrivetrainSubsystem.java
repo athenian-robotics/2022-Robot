@@ -6,7 +6,6 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
@@ -15,7 +14,6 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -59,7 +57,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
         drive = new DifferentialDrive(leftMotors, rightMotors); // Initialize Differential Drive
 
         // Configure encoders
-        rightEncoder = new Encoder(rightEncoderChannelA, rightEncoderchannelB, true);
+        rightEncoder = new Encoder(rightEncoderChannelA, rightEncoderChannelB, true);
         leftEncoder = new Encoder(leftEncoderChannelA, leftEncoderChannelB, false);
         leftEncoder.setDistancePerPulse(2 * 3.14 * (.1524 / 2) / 2048); // 6-inch wheel, to meters, PI for
         // circumference, gear conversion, 2048 ticks per rotation
@@ -239,8 +237,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
         double theta = 90 + Math.toDegrees(angle);
         double v = Constants.AutoConstants.kDriveKinematics.toChassisSpeeds(getWheelSpeeds()).vxMetersPerSecond*Constants.looptime;
 
-        double side =
-                Math.sqrt(Math.pow(v, 2) + Math.pow(distance, 2) - 2 * v * distance * Math.cos(Math.toRadians(theta)));
+        double side = Math.sqrt(Math.pow(v, 2) + Math.pow(distance, 2) - 2 * v * distance * Math.cos(Math.toRadians(theta)));
         return Math.toRadians(180) - Math.toRadians(theta) - Math.asin((Math.sin(Math.toRadians(theta)) *  distance) / side);
     }
 }

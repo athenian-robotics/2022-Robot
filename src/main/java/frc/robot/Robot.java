@@ -66,8 +66,7 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     m_robotContainer.setAlliance(DriverStation.getAlliance());
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-    outtake.setTurretStartingAngle(-180);
-    outtake.turretMotor.setNeutralMode(NeutralMode.Brake);
+    outtake.setTurretStartingAngleDegrees(-180);
         // schedule the autonomous command (example)
         if (m_autonomousCommand != null) {
             m_autonomousCommand.schedule();
@@ -80,12 +79,11 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-      outtake.turretMotor.setNeutralMode(NeutralMode.Coast);
-    m_robotContainer.setAlliance(DriverStation.getAlliance());
+      m_robotContainer.setAlliance(DriverStation.getAlliance());
 
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.cancel();
-    }
+      if (m_autonomousCommand != null) {
+          m_autonomousCommand.cancel();
+      }
   }
 
     /*

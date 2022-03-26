@@ -11,6 +11,7 @@ import frc.robot.subsystems.OuttakeSubsystem;
 
 import static frc.robot.Constants.MechanismConstants.slowTurretTurnSpeed;
 import static frc.robot.Constants.MechanismConstants.turretTurnSpeed;
+import static frc.robot.Constants.MechanismConstants.turretSlowZoneWidthRadians;
 
 
 public class AlwaysTurretTurnToGoalWithLimelightOrManualControl extends CommandBase {
@@ -50,7 +51,7 @@ public class AlwaysTurretTurnToGoalWithLimelightOrManualControl extends CommandB
             try {
                 if (offsetLatch.unlocked()) {
                     outtakeSubsystem.turnTurret(
-                            Math.abs(offsetLatch.open()-outtakeSubsystem.getTurretAngle()) > Math.PI/90
+                            Math.abs(offsetLatch.open()-outtakeSubsystem.getTurretAngleRadians()) > turretSlowZoneWidthRadians
                                     ? Math.signum(offsetLatch.open()) * turretTurnSpeed
                                     : Math.signum(offsetLatch.open()) * slowTurretTurnSpeed);
                     throw new GoalNotFoundException(); //shortcut to latch reset  vvv  (since we've expended it)
