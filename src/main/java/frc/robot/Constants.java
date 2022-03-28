@@ -4,10 +4,9 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.util.Units;
-import org.opencv.core.Mat;
+
 
 public final class Constants {
     public static final double looptime = 0.02;
@@ -19,7 +18,7 @@ public final class Constants {
         public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(DriveConstants.trackWidth);
         public static final double maxVolts = 7.0;
         public static final double maxAutoSpeed = 4; // meters per second 3
-        public static final double maxAutoAcceleration = 1.8; // meters per second per second  1.5
+        public static final double maxAutoAcceleration = 1.5; // meters per second per second  1.5
         public static final double kRamseteB = 2.0;
         public static final double kRamseteZeta = 0.7;
         public static final double kPDriveVel = 4.5729;
@@ -79,9 +78,10 @@ public final class Constants {
         public static final int winchMaxEncoderCount = 178179;
         // TURRET
         public static final int turretMotorPort = 10;
-        public static final double turretTurnSpeed = 0.12;
+        public static final double turretTurnSpeed = 0.075;
         public static final double slowTurretTurnSpeed = 0.05;
-        public static final double turretSlowZoneWidthRadians = Math.toRadians(4);
+        public static final double turretSlowZoneWidthRadians = Math.toRadians(7);
+        public static final double turretShootZoneRadians = 6;
         // SHOOTER
         public static final int shooterMotorPortA = 7;
         public static final int shooterMotorPortB = 8;
@@ -92,9 +92,7 @@ public final class Constants {
         public static final double maximumTurretAngleRadians = Math.toRadians(90);
         public static final double minimumTurretAngleRadians = Math.toRadians(-210);
         // MAX MECHANISM SPEEDS
-        public static final double intakeSpeed = 0.4;
-
-        // Climber motor ports ...
+        public static final double intakeSpeed = 0.275;
     }
 
     public static final class PneumaticConstants {

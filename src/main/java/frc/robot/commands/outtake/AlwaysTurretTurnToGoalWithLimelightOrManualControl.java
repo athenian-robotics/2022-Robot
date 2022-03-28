@@ -11,7 +11,6 @@ import frc.robot.subsystems.OuttakeSubsystem;
 
 import static frc.robot.Constants.MechanismConstants.slowTurretTurnSpeed;
 import static frc.robot.Constants.MechanismConstants.turretTurnSpeed;
-import static frc.robot.Constants.MechanismConstants.turretSlowZoneWidthRadians;
 
 
 public class AlwaysTurretTurnToGoalWithLimelightOrManualControl extends CommandBase {
@@ -34,26 +33,26 @@ public class AlwaysTurretTurnToGoalWithLimelightOrManualControl extends CommandB
 
     @Override
     public void execute() {
-        SmartDashboard.putBoolean("flight stick share", !FightStick.fightStickShare.getAsBoolean());
         if (FightStick.fightStickJoystick.getX() < -0.5) { //TURRET ADJUSTMENT FALCON
             outtakeSubsystem.turretRunning = false;
+            outtakeSubsystem.bangBangRunning = false;
             outtakeSubsystem.turnTurret(-turretTurnSpeed);
         } else if (FightStick.fightStickJoystick.getX() > 0.5) {
             outtakeSubsystem.turretRunning = false;
+            outtakeSubsystem.bangBangRunning = false;
             outtakeSubsystem.turnTurret(turretTurnSpeed);
-        }else if (FightStick.fightStickJoystick.getY() < -0.5) { //TURRET ADJUSTMENT FALCON
-                outtakeSubsystem.turretRunning = false;
-                outtakeSubsystem.turnTurret(-slowTurretTurnSpeed);
+        } else if (FightStick.fightStickJoystick.getY() < -0.5) { //TURRET ADJUSTMENT FALCON
+            outtakeSubsystem.turretRunning = false;
+            outtakeSubsystem.bangBangRunning = false;
+            outtakeSubsystem.turnTurret(-slowTurretTurnSpeed);
         } else if (FightStick.fightStickJoystick.getY() > 0.5) {
-                outtakeSubsystem.turretRunning = false;
-                outtakeSubsystem.turnTurret(slowTurretTurnSpeed);
-        } else if (FightStick.fightStickShare.getAsBoolean()){
+            outtakeSubsystem.turretRunning = false;
+            outtakeSubsystem.bangBangRunning = false;
+            outtakeSubsystem.turnTurret(slowTurretTurnSpeed);
+        } else if (FightStick.fightStickShare.getAsBoolean()) {
             try {
                 if (offsetLatch.unlocked()) {
-                    outtakeSubsystem.turnTurret(
-                            Math.abs(offsetLatch.open()-outtakeSubsystem.getTurretAngleRadians()) > turretSlowZoneWidthRadians
-                                    ? Math.signum(offsetLatch.open()) * turretTurnSpeed
-                                    : Math.signum(offsetLatch.open()) * slowTurretTurnSpeed);
+                    outtakeSubsystem.setTurretPositionRadians(offsetLatch.open() + outtakeSubsystem.getTurretAngleRadians());
                     throw new GoalNotFoundException(); //shortcut to latch reset  vvv  (since we've expended it)
                 }
             } catch (GoalNotFoundException e) {

@@ -18,6 +18,7 @@ import frc.robot.lib.controllers.SimpleVelocitySystem;
 import frc.robot.lib.limelight.GoalNotFoundException;
 import frc.robot.lib.limelight.LimelightDataLatch;
 import frc.robot.lib.limelight.LimelightDataType;
+
 import java.util.Map;
 
 import static com.ctre.phoenix.motorcontrol.NeutralMode.Coast;
@@ -33,7 +34,7 @@ public class OuttakeSubsystem extends SubsystemBase {
     public final SimpleMotorFeedforward feed;
 
     public final ProfiledPIDController turretPID =
-            new ProfiledPIDController(3.1856, 0, 1.13513, new TrapezoidProfile.Constraints(Math.PI/2, Math.PI/2)); //
+            new ProfiledPIDController(3.1856, 0, 1.13513, new TrapezoidProfile.Constraints(Math.PI / 2, Math.PI / 2)); //
 
 
     private final NetworkTableEntry shooterAdjustmentNTE;
@@ -42,12 +43,14 @@ public class OuttakeSubsystem extends SubsystemBase {
 
     public boolean shooterRunning = false;
     public boolean turretRunning = false;
+    public boolean bangBangRunning = false;
     public double shuffleboardShooterPower;
     public double shuffleboardShooterAdjustment;
     public double currentShooterToleranceDegrees = 1;
 
     private final SimpleVelocitySystem sys;
     private double shooterRPS = 0;
+    private double bangBangSetpointRadians;
 
     public OuttakeSubsystem(LimelightSubsystem limelightSubsystem) {
         this.limelightSubsystem = limelightSubsystem;
@@ -109,20 +112,19 @@ public class OuttakeSubsystem extends SubsystemBase {
     }
 
     public void turnTurret(double power) {
-        if (getTurretAngleRadians() < maximumTurretAngleRadians && power > 0 || getTurretAngleRadians() > minimumTurretAngleRadians && power < 0) {
-            turretMotor.set(ControlMode.PercentOutput, power > turretTurnSpeed ? turretTurnSpeed : Math.max(power, -turretTurnSpeed));
-        } else if (power == 0.0) {
+        if (power == 0.0) {
             stopTurret();
-        } else turretMotor.set(ControlMode.PercentOutput, 0);
+        } else {
+            turretMotor.set(ControlMode.PercentOutput, power > turretTurnSpeed ? turretTurnSpeed : Math.max(power, -turretTurnSpeed));
+        }
     }
 
     public void turnTurretWithVoltage(double voltage) {
-        System.out.println(voltage);
-        if (getTurretAngleRadians() < maximumTurretAngleRadians && voltage > 0 || getTurretAngleRadians() > minimumTurretAngleRadians && voltage < 0) {
-            turretMotor.setVoltage(voltage);
-        } else if (voltage == 0.0) {
+        if (voltage == 0.0) {
             stopTurret();
-        } else turretMotor.setVoltage(0.0);
+        } else {
+            turretMotor.setVoltage(voltage);
+        }
     }
 
     public void setHoodAngle(double angle) {
@@ -152,11 +154,18 @@ public class OuttakeSubsystem extends SubsystemBase {
     public void stopTurret() {
         turretMotor.set(PercentOutput, 0);
         turretRunning = false;
+        bangBangRunning = false;
     }
 
     public void setTurretStartingAngleDegrees(double position) {
         //Primarily for use in auto routines where we need to know where the shooter starts
         turretMotor.setSelectedSensorPosition(2048 * position / 36);
+    }
+
+    //CW Positive
+    public void setTurretPositionRadians(double angle) {
+        bangBangSetpointRadians = angle;
+        bangBangRunning = true;
     }
 
     public double getTurretAngleRadians() {
@@ -184,13 +193,21 @@ public class OuttakeSubsystem extends SubsystemBase {
             setShooterPower(sys.getOutput());
         }
 
-            //turnTurretWithVoltage(turretPID.calculate(getTurretAngle(), angle));
-            try {
-                if (distanceLatch.unlocked()) {
-                    currentShooterToleranceDegrees = 6/distanceLatch.open();
-                }
-            } catch (GoalNotFoundException e) {
-                limelightSubsystem.addLatch(distanceLatch.reset());
+        if (bangBangRunning) {
+            double bangBangOffset = bangBangSetpointRadians - getTurretAngleRadians();
+            if (Math.abs(bangBangOffset) >= currentShooterToleranceDegrees) {
+                turnTurret(Math.signum(bangBangOffset) * slowTurretTurnSpeed + turretTurnSpeed / bangBangOffset);
+            } else {
+                stopTurret();
             }
+        }
+
+        try {
+            if (distanceLatch.unlocked()) {
+                currentShooterToleranceDegrees = turretShootZoneRadians / distanceLatch.open();
+            }
+        } catch (GoalNotFoundException e) {
+            limelightSubsystem.addLatch(distanceLatch.reset());
+        }
     }
 }

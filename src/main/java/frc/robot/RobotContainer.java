@@ -86,7 +86,7 @@ public class RobotContainer {
         chooser.addOption("2: 2 Ball Auto - Top Left Start", new AutoRoutine2(climb, drivetrain, indexer, intake, outtake, limelight, shooterDataTable));
         chooser.addOption("3: 2 Ball Auto - Bottom Left Start", new AutoRoutine3(climb, drivetrain, indexer, intake, outtake, limelight, shooterDataTable));
         chooser.addOption("4: 4 Ball Auto - Bottom Left Start", new AutoRoutine4(climb, drivetrain, indexer, intake, outtake, limelight, shooterDataTable));
-
+        chooser.addOption("5: 2 ball Auto",new AutoRoutine5(climb, drivetrain, indexer, intake, outtake, limelight, shooterDataTable ) );
         xboxButtonSetup();
         configureButtonBindings();
     }
@@ -111,20 +111,20 @@ public class RobotContainer {
 
         /* MISC COMMANDS (Random lib of commands. Written using functional commands because most are just one line ) */
         // have fun with this - jason and jacob '22   ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ
-        xboxSquares.whenPressed(new FunctionalCommand(  // Toggle drive mode
-                () -> {
-                    if (drivetrain.getDefaultCommand() instanceof ArcadeDrive)
-                        drivetrain.setDefaultCommand(new TankDrive(drivetrain, xboxController));
-                    else drivetrain.setDefaultCommand(new ArcadeDrive(drivetrain, xboxController));
-                }, () -> {
-        }, interrupted -> {
-        }, () -> true, drivetrain));
-        xboxLP.whenPressed(new FunctionalCommand(drivetrain::shiftDown, () -> {
-        }, interrupted -> {
-        }, () -> true, drivetrain)); // Shift down
-        xboxRP.whenPressed(new FunctionalCommand(drivetrain::shiftUp, () -> {
-        }, interrupted -> {
-        }, () -> true, drivetrain)); // Shift up
+//        xboxSquares.whenPressed(new FunctionalCommand(  // Toggle drive mode
+//                () -> {
+//                    if (drivetrain.getDefaultCommand() instanceof ArcadeDrive)
+//                        drivetrain.setDefaultCommand(new TankDrive(drivetrain, xboxController));
+//                    else drivetrain.setDefaultCommand(new ArcadeDrive(drivetrain, xboxController));
+//                }, () -> {
+//        }, interrupted -> {
+//        }, () -> true, drivetrain));
+//        xboxLP.whenPressed(new FunctionalCommand(drivetrain::shiftDown, () -> {
+//        }, interrupted -> {
+//        }, () -> true, drivetrain)); // Shift down
+//        xboxRP.whenPressed(new FunctionalCommand(drivetrain::shiftUp, () -> {
+//        }, interrupted -> {
+//        }, () -> true, drivetrain)); // Shift up
     }
 
     // Connects xbox buttons to button #'s for the driver station
