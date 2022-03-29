@@ -17,7 +17,9 @@ import frc.robot.subsystems.*;
 
 
 public class ShootTwo extends SequentialCommandGroup {
-    public ShootTwo(ClimberSubsystem climber, DrivetrainSubsystem drivetrain, IndexerSubsystem indexer, IntakeSubsystem intake, OuttakeSubsystem outtake, LimelightSubsystem limelight, ShooterDataTable shooterDataTable, XboxController xboxController) {
+    public ShootTwo(ClimberSubsystem climber, DrivetrainSubsystem drivetrain, IndexerSubsystem indexer,
+                    IntakeSubsystem intake, OuttakeSubsystem outtake, LimelightSubsystem limelight,
+                    ShooterDataTable shooterDataTable, XboxController xboxController) {
         if (climber.getLeftHeightPercent() > 0.1 || climber.getRightHeightPercent() > 0.1) this.cancel();
         addCommands(
                 //Prepare
@@ -27,7 +29,8 @@ public class ShootTwo extends SequentialCommandGroup {
                 new ParallelDeadlineGroup(
                         new SequentialCommandGroup(
                                 //Find target while manually turning turret
-                                new ParallelDeadlineGroup(new GuaranteeLimelightData(limelight), new ManualAdjustTurret(outtake)),
+                                new ParallelDeadlineGroup(new GuaranteeLimelightData(limelight),
+                                        new ManualAdjustTurret(outtake)),
                                 //Set shooter power, angle, and offset while turning to goal
                                 new ParallelDeadlineGroup(
                                         new SequentialCommandGroup(
@@ -35,8 +38,10 @@ public class ShootTwo extends SequentialCommandGroup {
                                                         LimelightDataType.HORIZONTAL_OFFSET, 0,
                                                         outtake.currentShooterToleranceDegrees),
                                                 new ParallelCommandGroup(
-                                                        new SetShooterPowerWithLimelight(shooterDataTable, limelight, outtake),
-                                                        new SetHoodAngleWithLimelightTimeSafe(shooterDataTable, limelight, outtake)
+                                                        new SetShooterPowerWithLimelight(shooterDataTable, limelight,
+                                                                outtake),
+                                                        new SetHoodAngleWithLimelightTimeSafe(shooterDataTable,
+                                                                limelight, outtake)
                                                 ),
                                                 //Shoot Balls
                                                 new ShootIndexedBallsForever(indexer, intake).withTimeout(1.75)

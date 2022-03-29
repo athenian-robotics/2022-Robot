@@ -21,11 +21,13 @@ public class AutoRoutine2 extends SequentialCommandGroup {
                                 new ToggleIntake(intake),
                                 new AutoRoutine2Part1(drivetrain), //drives up to ball
                                 new ToggleIntake(intake),
-                                new ShootTwoWithoutTurret(climber, drivetrain, indexer, intake, outtake, limelight, shooterDataTable),
-                                //new ShootBalls(climber, drivetrain, indexer, intake, outtake, limelight, shooterDataTable),
+                                new ShootTwoWithoutTurret(climber, drivetrain, indexer, intake, outtake, limelight,
+                                        shooterDataTable),
+                                //new ShootBalls(climber, drivetrain, indexer, intake, outtake, limelight,
+                                // shooterDataTable),
                                 new AutoRoutine2Part2(drivetrain) //drives to the right to get another ball
                         ), new AlwaysTurretTurnToGoalWithLimelightOrManualControl(limelight, outtake)
-                        )
+                )
         );
     }
 }

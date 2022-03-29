@@ -15,7 +15,9 @@ import frc.robot.subsystems.*;
 
 
 public class ShootBalls extends SequentialCommandGroup {
-    public ShootBalls(ClimberSubsystem climber, DrivetrainSubsystem drivetrain, IndexerSubsystem indexer, IntakeSubsystem intake, OuttakeSubsystem outtake, LimelightSubsystem limelight, ShooterDataTable shooterDataTable) {
+    public ShootBalls(ClimberSubsystem climber, DrivetrainSubsystem drivetrain, IndexerSubsystem indexer,
+                      IntakeSubsystem intake, OuttakeSubsystem outtake, LimelightSubsystem limelight,
+                      ShooterDataTable shooterDataTable) {
         if (climber.getLeftHeightPercent() > 0.1 || climber.getRightHeightPercent() > 0.1) this.cancel();
         addCommands(
                 //Prepare
@@ -33,7 +35,8 @@ public class ShootBalls extends SequentialCommandGroup {
                         new ConditionalCommand(
                                 new SequentialCommandGroup(
                                         new GuaranteeLimelightDataEquals(limelight,
-                                                LimelightDataType.HORIZONTAL_OFFSET, 0, outtake.currentShooterToleranceDegrees),
+                                                LimelightDataType.HORIZONTAL_OFFSET, 0,
+                                                outtake.currentShooterToleranceDegrees),
                                         new ParallelCommandGroup(
                                                 new PulseIntakeToIndexerMotor(intake).withTimeout(0.3),
                                                 new ShootIndexedBallForever(indexer, outtake).withTimeout(1.5)
@@ -84,7 +87,8 @@ public class ShootBalls extends SequentialCommandGroup {
                                 ),
                                 indexer::allianceBallIndexed
                         ),
-                        new AlwaysTurretTurnToGoalWithLimelightAndSetHoodAngleOrManualControl(limelight, outtake, shooterDataTable)
+                        new AlwaysTurretTurnToGoalWithLimelightAndSetHoodAngleOrManualControl(limelight, outtake,
+                                shooterDataTable)
                 ),
                 //Return to teleop
                 new DisableShooter(outtake),

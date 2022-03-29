@@ -43,7 +43,8 @@ public class AutoRoutine5Part1 extends CommandBase {
 
         // An example trajectory to follow.  All units in meters.
         // create a new trajectory 1 meter forward
-        PathPlannerTrajectory exampleTrajectory = PathPlanner.loadPath("Auto Routine 5 Part 1", Constants.AutoConstants.maxAutoSpeed, .6);
+        PathPlannerTrajectory exampleTrajectory = PathPlanner.loadPath("Auto Routine 5 Part 1",
+                Constants.AutoConstants.maxAutoSpeed, .6);
         trajectory = exampleTrajectory;
 
         this.ramseteCommand = new RamseteCommand(
@@ -98,7 +99,6 @@ public class AutoRoutine5Part1 extends CommandBase {
      * </p>
      *
      * @return whether this command has finished.
-     *
      */
     @Override
     public boolean isFinished() {

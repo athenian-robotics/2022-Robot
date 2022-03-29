@@ -15,7 +15,8 @@ public final class Constants {
         public static final double ksVolts = 0.55834;
         public static final double kvVoltSecondsPerMeter = 3.3207;
         public static final double kaVoltSecondsSquaredPerMeter = 0.51012;
-        public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(DriveConstants.trackWidth);
+        public static final DifferentialDriveKinematics kDriveKinematics =
+                new DifferentialDriveKinematics(DriveConstants.trackWidth);
         public static final double maxVolts = 7.0;
         public static final double maxAutoSpeed = 4; // meters per second 3
         public static final double maxAutoAcceleration = 1.5; // meters per second per second  1.5
@@ -29,6 +30,7 @@ public final class Constants {
         /**
          * DRIVE MOTOR PORTS
          **/
+       // am like 90% sure these are wrong but whateva
         public static final int leftFrontDrivePort = 2;
         public static final int leftRearDrivePort = 1;
         public static final int rightFrontDrivePort = 3;

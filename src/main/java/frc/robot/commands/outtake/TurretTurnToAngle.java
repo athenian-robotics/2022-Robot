@@ -25,7 +25,8 @@ public class TurretTurnToAngle extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return Math.abs(outtakeSubsystem.getTurretAngleRadians()-Math.toRadians(angle))<=0.075; //0.5 position tolerance
+        return Math.abs(outtakeSubsystem.getTurretAngleRadians() - Math.toRadians(angle)) <= 0.075; //0.5 position
+        // tolerance
     }
 
     @Override

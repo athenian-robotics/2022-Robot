@@ -5,7 +5,8 @@ import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 
-import static frc.robot.lib.colorwheel.WheelColors.*;
+import static frc.robot.lib.colorwheel.WheelColors.BLUE;
+import static frc.robot.lib.colorwheel.WheelColors.RED;
 
 public class ColorWheelUtils {
     private final I2C.Port i2cPort = I2C.Port.kOnboard;
@@ -29,7 +30,7 @@ public class ColorWheelUtils {
         double checkColorBlue = detectedColor.blue * 255;
 
         //blue is weighted higher because blue balls have red .2 and blue .3 and red balls have red .4 and blue .2
-        currentColor = checkColorRed > checkColorBlue*1.3? RED : BLUE;
+        currentColor = checkColorRed > checkColorBlue * 1.3 ? RED : BLUE;
         resetIsColorBooleans();
         updateString(currentColor.name());
         return currentColor;

@@ -18,20 +18,18 @@ import static frc.robot.Constants.MechanismConstants.intakeToIndexerSpeed;
 import static frc.robot.Constants.PneumaticConstants.*;
 
 public class IntakeSubsystem extends SubsystemBase {
+    public final boolean intakeToIndexerRunning = false;
     // Configure intake motor, solenoid, and booleans
     private final TalonFX intakeMotor = new TalonFX(Constants.MechanismConstants.intakeMotorPort);
-
     private final CANSparkMax intakeToIndexerMotor = new CANSparkMax(intakeToIndexerMotorPort,
             CANSparkMaxLowLevel.MotorType.kBrushless);
     private final DoubleSolenoid rightIntakePneumatic = new DoubleSolenoid(PneumaticsModuleType.CTREPCM,
             pneumaticPortRightA, pneumaticPortRightB);
     private final DoubleSolenoid leftIntakePneumatic = new DoubleSolenoid(PneumaticsModuleType.CTREPCM,
             pneumaticPortLeftA, pneumaticPortLeftB);
-
     public boolean isRunning = false;
     public boolean isExtended = false;
     public boolean isInverted = false;
-    public final boolean intakeToIndexerRunning = false;
 
     public IntakeSubsystem() {
         intakeMotor.configFactoryDefault(); // Initialize motor set up

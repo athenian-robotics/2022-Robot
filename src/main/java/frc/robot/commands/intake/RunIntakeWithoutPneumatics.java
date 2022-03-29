@@ -16,7 +16,7 @@ public class RunIntakeWithoutPneumatics extends CommandBase {
 
     @Override
     public void initialize() {
-        if(!intakeSubsystem.isExtended) {
+        if (!intakeSubsystem.isExtended) {
             intakeSubsystem.startIntake();
             intakeSubsystem.startIntakeToIndexerMotor();
         }
@@ -24,7 +24,7 @@ public class RunIntakeWithoutPneumatics extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        if(!intakeSubsystem.isExtended){
+        if (!intakeSubsystem.isExtended) {
             intakeSubsystem.stopIntake();
             intakeSubsystem.stopIntakeToIndexerMotor();
         }

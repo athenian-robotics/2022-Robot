@@ -1,6 +1,5 @@
 package frc.robot.commands.outtake;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.lib.controllers.FightStick;
 import frc.robot.lib.limelight.GoalNotFoundException;
@@ -18,7 +17,8 @@ public class AlwaysTurretTurnToGoalWithLimelightOrManualControl extends CommandB
     private final OuttakeSubsystem outtakeSubsystem;
     private final LimelightDataLatch offsetLatch;
 
-    public AlwaysTurretTurnToGoalWithLimelightOrManualControl(LimelightSubsystem limelightSubsystem, OuttakeSubsystem outtakeSubsystem) {
+    public AlwaysTurretTurnToGoalWithLimelightOrManualControl(LimelightSubsystem limelightSubsystem,
+                                                              OuttakeSubsystem outtakeSubsystem) {
         this.limelightSubsystem = limelightSubsystem;
         this.outtakeSubsystem = outtakeSubsystem;
 
@@ -35,19 +35,19 @@ public class AlwaysTurretTurnToGoalWithLimelightOrManualControl extends CommandB
     public void execute() {
         if (FightStick.fightStickJoystick.getX() < -0.5) { //TURRET ADJUSTMENT FALCON
             outtakeSubsystem.turretRunning = false;
-            outtakeSubsystem.bangBangRunning = false;
+            outtakeSubsystem.lqrRunning = false;
             outtakeSubsystem.turnTurret(-turretTurnSpeed);
         } else if (FightStick.fightStickJoystick.getX() > 0.5) {
             outtakeSubsystem.turretRunning = false;
-            outtakeSubsystem.bangBangRunning = false;
+            outtakeSubsystem.lqrRunning = false;
             outtakeSubsystem.turnTurret(turretTurnSpeed);
         } else if (FightStick.fightStickJoystick.getY() < -0.5) { //TURRET ADJUSTMENT FALCON
             outtakeSubsystem.turretRunning = false;
-            outtakeSubsystem.bangBangRunning = false;
+            outtakeSubsystem.lqrRunning = false;
             outtakeSubsystem.turnTurret(-slowTurretTurnSpeed);
         } else if (FightStick.fightStickJoystick.getY() > 0.5) {
             outtakeSubsystem.turretRunning = false;
-            outtakeSubsystem.bangBangRunning = false;
+            outtakeSubsystem.lqrRunning = false;
             outtakeSubsystem.turnTurret(slowTurretTurnSpeed);
         } else if (FightStick.fightStickShare.getAsBoolean()) {
             try {

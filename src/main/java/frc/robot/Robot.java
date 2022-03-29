@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import com.ctre.phoenix.motorcontrol.NeutralMode;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -61,30 +60,34 @@ public class Robot extends TimedRobot {
     @Override
     public void disabledPeriodic() {}
 
-  /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
-  @Override
-  public void autonomousInit() {
-    m_robotContainer.setAlliance(DriverStation.getAlliance());
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-    outtake.setTurretStartingAngleDegrees(-180);
+    /**
+     * This autonomous runs the autonomous command selected by your {@link RobotContainer} class.
+     */
+    @Override
+    public void autonomousInit() {
+        m_robotContainer.setAlliance(DriverStation.getAlliance());
+        m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+        outtake.setTurretStartingAngleDegrees(-180);
         // schedule the autonomous command (example)
         if (m_autonomousCommand != null) {
             m_autonomousCommand.schedule();
         }
     }
 
-  /** This function is called periodically during autonomous. */
-  @Override
-  public void autonomousPeriodic() {}
+    /**
+     * This function is called periodically during autonomous.
+     */
+    @Override
+    public void autonomousPeriodic() {}
 
-  @Override
-  public void teleopInit() {
-      m_robotContainer.setAlliance(DriverStation.getAlliance());
+    @Override
+    public void teleopInit() {
+        m_robotContainer.setAlliance(DriverStation.getAlliance());
 
-      if (m_autonomousCommand != null) {
-          m_autonomousCommand.cancel();
-      }
-  }
+        if (m_autonomousCommand != null) {
+            m_autonomousCommand.cancel();
+        }
+    }
 
     /*
      * This function is called periodically during operator control.

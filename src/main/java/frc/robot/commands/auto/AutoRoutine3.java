@@ -9,7 +9,9 @@ import frc.robot.lib.shooterData.ShooterDataTable;
 import frc.robot.subsystems.*;
 
 public class AutoRoutine3 extends SequentialCommandGroup {
-    public AutoRoutine3(ClimberSubsystem climber, DrivetrainSubsystem drivetrain, IndexerSubsystem indexer, IntakeSubsystem intake, OuttakeSubsystem outtake, LimelightSubsystem limelight, ShooterDataTable shooterDataTable) {
+    public AutoRoutine3(ClimberSubsystem climber, DrivetrainSubsystem drivetrain, IndexerSubsystem indexer,
+                        IntakeSubsystem intake, OuttakeSubsystem outtake, LimelightSubsystem limelight,
+                        ShooterDataTable shooterDataTable) {
         addCommands(
                 new ToggleIntake(intake),
                 new AutoRoutine1Part1(drivetrain),

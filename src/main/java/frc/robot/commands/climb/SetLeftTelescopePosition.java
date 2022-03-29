@@ -28,7 +28,8 @@ public class SetLeftTelescopePosition extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return direction ? climberSubsystem.getLeftHeightPercent() > position : climberSubsystem.getLeftHeightPercent() < position;
+        return direction ? climberSubsystem.getLeftHeightPercent() > position :
+                climberSubsystem.getLeftHeightPercent() < position;
     }
 
     @Override

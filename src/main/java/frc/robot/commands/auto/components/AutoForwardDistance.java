@@ -7,12 +7,12 @@ import frc.robot.subsystems.DrivetrainSubsystem;
 import static frc.robot.Constants.DriveConstants.maxAutoSpeed;
 
 public class AutoForwardDistance extends CommandBase {
+    // Setup PID variables
+    final DrivetrainSubsystem drivetrain;
     private final double metersToDrive;
     private final double Kp = 3.3; //3.3
     private final double Ki = 0.0;
     private final double Kd = 0.13; //0.13
-    // Setup PID variables
-    final DrivetrainSubsystem drivetrain;
     final PIDController pid = new PIDController(Kp, Ki, Kd);
 
     public AutoForwardDistance(DrivetrainSubsystem drivetrainSubsystem, double metersToDrive) {

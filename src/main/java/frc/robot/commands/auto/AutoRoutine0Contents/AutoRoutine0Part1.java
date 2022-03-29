@@ -43,7 +43,8 @@ public class AutoRoutine0Part1 extends CommandBase {
                         .addConstraint(autoVoltageConstraint);
 
         // An example trajectory to follow.  All units in meters.
-        PathPlannerTrajectory exampleTrajectory = PathPlanner.loadPath("2.5 Meters Forward", Constants.AutoConstants.maxAutoSpeed, Constants.AutoConstants.maxAutoAcceleration);
+        PathPlannerTrajectory exampleTrajectory = PathPlanner.loadPath("2.5 Meters Forward",
+                Constants.AutoConstants.maxAutoSpeed, Constants.AutoConstants.maxAutoAcceleration);
         trajectory = exampleTrajectory;
 
         this.ramseteCommand = new RamseteCommand(

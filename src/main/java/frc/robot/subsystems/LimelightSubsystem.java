@@ -22,17 +22,18 @@ public class LimelightSubsystem extends SubsystemBase {
         latchManager.addLatch(latch);
     }
 
-    public boolean checkGoalNotFound()
-        {
-        Double[] lloutput = (Double[]) limelight.getEntry("llpython").getNumberArray(new Number[]{-1, -1, -1, -1, -1, -1, -1, -9});
+    public boolean checkGoalNotFound() {
+        Double[] lloutput = (Double[]) limelight.getEntry("llpython").getNumberArray(new Number[] {-1, -1, -1, -1, -1
+                , -1, -1, -9});
         return lloutput[7] == (double) -1;
-        }
+    }
 
 
     public void disable() {latchManager.clearPool();}
 
     public void periodic() {
-        Double[] lloutput = (Double[]) limelight.getEntry("llpython").getNumberArray(new Number[]{-1, -1, -1, -1, -1, -1, -1, -9});
+        Double[] lloutput = (Double[]) limelight.getEntry("llpython").getNumberArray(new Number[] {-1, -1, -1, -1, -1
+                , -1, -1, -9});
         latchManager.update(lloutput);
         SmartDashboard.putNumber("X Offset", lloutput[1]);
         SmartDashboard.putNumber("Distance from Target", lloutput[0]);

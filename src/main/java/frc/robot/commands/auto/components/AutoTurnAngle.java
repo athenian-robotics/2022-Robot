@@ -9,13 +9,12 @@ public class AutoTurnAngle extends CommandBase {
     // Setup PID Variables
     private final DrivetrainSubsystem drivetrainSubsystem;
     private final double angleToTurn;
-    private double power = 0.0;
-    private double setpoint = 0.0;
     private final double Kp = 0.01;
     private final double Ki = 0.0;
     private final double Kd = 0.0001;
-
     final PIDController pid = new PIDController(Kp, Ki, Kd);
+    private double power = 0.0;
+    private double setpoint = 0.0;
 
     public AutoTurnAngle(DrivetrainSubsystem drivetrainSubsystem, double angleToTurn) {
         this.drivetrainSubsystem = drivetrainSubsystem;

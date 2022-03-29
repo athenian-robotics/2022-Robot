@@ -16,13 +16,11 @@ public class SimpleVelocitySystem {
     private final double kS;
 
     private final double maxControlEffort; // volts
-
-    private double filteredVelocity;
-
     private final LinearSystem<N1, N1, N1> system;
     private final LinearQuadraticRegulator<N1, N1, N1> regulator;
     private final KalmanFilter<N1, N1, N1> filter;
     private final LinearSystemLoop<N1, N1, N1> loop;
+    private double filteredVelocity;
 
     public SimpleVelocitySystem(double kS, double kV, double kA, double maxError, double maxcontroleffort,
                                 double modelstandarddev, double encoderstandarddev, double looptime) {

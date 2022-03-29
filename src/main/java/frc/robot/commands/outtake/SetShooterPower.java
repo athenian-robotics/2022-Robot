@@ -9,7 +9,8 @@ public class SetShooterPower extends InstantCommand {
     private final double power;
 
     public SetShooterPower(OuttakeSubsystem outtakeSubsystem, double rps) {
-        this.outtakeSubsystem = outtakeSubsystem; this.power = rps;
+        this.outtakeSubsystem = outtakeSubsystem;
+        this.power = rps;
     }
 
     @Override

@@ -4,9 +4,16 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.Nat;
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.controller.LinearQuadraticRegulator;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.estimator.KalmanFilter;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N2;
+import edu.wpi.first.math.system.LinearSystem;
+import edu.wpi.first.math.system.LinearSystemLoop;
+import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
@@ -24,34 +31,29 @@ import java.util.Map;
 import static com.ctre.phoenix.motorcontrol.NeutralMode.Coast;
 import static com.ctre.phoenix.motorcontrol.TalonFXControlMode.PercentOutput;
 import static frc.robot.Constants.MechanismConstants.*;
+import static frc.robot.Constants.looptime;
 
 public class OuttakeSubsystem extends SubsystemBase {
-    // Setup motors, pid controller, and booleans
-    private final TalonFX shooterMotorFront = new TalonFX(shooterMotorPortA);
     public final WPI_TalonFX turretMotor = new WPI_TalonFX(turretMotorPort);
-    private final Servo leftHoodAngleServo = new Servo(2);
-    private final Servo rightHoodAngleServo = new Servo(3);
     public final SimpleMotorFeedforward feed;
 
-    public final ProfiledPIDController turretPID =
-            new ProfiledPIDController(3.1856, 0, 1.13513, new TrapezoidProfile.Constraints(Math.PI / 2, Math.PI / 2)); //
-
-
+    // Setup motors, pid controller, and booleans
+    private final TalonFX shooterMotorFront = new TalonFX(shooterMotorPortA);
+    private final Servo leftHoodAngleServo = new Servo(2);
+    private final Servo rightHoodAngleServo = new Servo(3);
     private final NetworkTableEntry shooterAdjustmentNTE;
     private final LimelightDataLatch distanceLatch = new LimelightDataLatch(LimelightDataType.DISTANCE, 5);
     private final LimelightSubsystem limelightSubsystem;
-
+    private final SimpleVelocitySystem sys;
     public boolean shooterRunning = false;
     public boolean turretRunning = false;
-    public boolean bangBangRunning = false;
+    public boolean lqrRunning = false;
     public double shuffleboardShooterPower;
     public double shuffleboardShooterAdjustment;
     public double currentShooterToleranceDegrees = 1;
-
-    private final SimpleVelocitySystem sys;
     private double shooterRPS = 0;
-    private double bangBangSetpointRadians;
-
+    private double setpointRadians;
+    private final LinearSystemLoop<N2, N1, N1> turretLoop;
     public OuttakeSubsystem(LimelightSubsystem limelightSubsystem) {
         this.limelightSubsystem = limelightSubsystem;
 
@@ -82,12 +84,43 @@ public class OuttakeSubsystem extends SubsystemBase {
         sys = new SimpleVelocitySystem(Constants.Shooter.ks, Constants.Shooter.kv, Constants.Shooter.ka,
                 Constants.Shooter.maxError, Constants.Shooter.maxControlEffort,
                 Constants.Shooter.modelDeviation, Constants.Shooter.encoderDeviation,
-                Constants.looptime);
+                looptime);
 
         this.feed = new SimpleMotorFeedforward(Constants.Turret.ks, Constants.Turret.kv,
                 Constants.Turret.ka);
 
-        setTurretStartingAngleDegrees(-180); //assume default position is turret starting facing backwards counterclockwise
+        setTurretStartingAngleDegrees(-180); //assume default position is turret starting facing backwards
+        // counterclockwise
+        LinearSystem<N2, N1, N1> turretPlant = LinearSystemId.identifyPositionSystem(Constants.Turret.kv,
+                Constants.Turret.ka);
+
+        // model is probs 1 deg off (check sys id later)
+        // also 1 deg/s is the second param
+        // 1 enc tick is this many
+        KalmanFilter<N2, N1, N1> offsetFilter = new KalmanFilter<>(
+                Nat.N2(),
+                Nat.N1(),
+                turretPlant,
+                VecBuilder.fill(Math.toRadians(1), Math.toRadians(1)),// model is probs 1 deg off (check sys id later)
+                // also 1 deg/s is the second param
+                VecBuilder.fill(Math.toRadians(0.0176)), // 1 enc tick is this many
+                looptime
+        );
+
+        // 1 deg/s error and 1 deg error
+        // control effort
+        LinearQuadraticRegulator<N2, N1, N1> turretController = new LinearQuadraticRegulator<>(
+                turretPlant,
+                VecBuilder.fill(Math.toRadians(1), Math.toRadians(1)), // 1 deg/s error and 1 deg error
+                VecBuilder.fill(12), // control effort
+                looptime
+        );
+
+
+        turretLoop =
+                new LinearSystemLoop<>(turretPlant, turretController, offsetFilter, 12, looptime);
+
+
     }
 
     public void setShooterPower(double power) { // Enables both wheels
@@ -115,16 +148,13 @@ public class OuttakeSubsystem extends SubsystemBase {
         if (power == 0.0) {
             stopTurret();
         } else {
-            turretMotor.set(ControlMode.PercentOutput, power > turretTurnSpeed ? turretTurnSpeed : Math.max(power, -turretTurnSpeed));
+            turretMotor.set(ControlMode.PercentOutput, power > turretTurnSpeed ? turretTurnSpeed : Math.max(power,
+                    -turretTurnSpeed));
         }
     }
 
-    public void turnTurretWithVoltage(double voltage) {
-        if (voltage == 0.0) {
-            stopTurret();
-        } else {
-            turretMotor.setVoltage(voltage);
-        }
+    public double getHoodAngle() { //Takes the average of the angles (0-1) and scales it into a degree measurement
+        return ((maximumHoodAngle - minimumHoodAngle) * (leftHoodAngleServo.getAngle() + rightHoodAngleServo.getAngle()) / 360) + minimumHoodAngle;
     }
 
     public void setHoodAngle(double angle) {
@@ -134,10 +164,6 @@ public class OuttakeSubsystem extends SubsystemBase {
             rightHoodAngleServo.setAngle(180 * (angle - minimumHoodAngle) / (maximumHoodAngle - minimumHoodAngle));
             // 0 - 180 DEGREES
         }
-    }
-
-    public double getHoodAngle() { //Takes the average of the angles (0-1) and scales it into a degree measurement
-        return ((maximumHoodAngle - minimumHoodAngle) * (leftHoodAngleServo.getAngle() + rightHoodAngleServo.getAngle()) / 360) + minimumHoodAngle;
     }
 
     public void stopShooter() { // Disables shooter
@@ -154,7 +180,7 @@ public class OuttakeSubsystem extends SubsystemBase {
     public void stopTurret() {
         turretMotor.set(PercentOutput, 0);
         turretRunning = false;
-        bangBangRunning = false;
+        lqrRunning = false;
     }
 
     public void setTurretStartingAngleDegrees(double position) {
@@ -164,8 +190,8 @@ public class OuttakeSubsystem extends SubsystemBase {
 
     //CW Positive
     public void setTurretPositionRadians(double angle) {
-        bangBangSetpointRadians = angle;
-        bangBangRunning = true;
+        setpointRadians = angle;
+        lqrRunning = true;
     }
 
     public double getTurretAngleRadians() {
@@ -193,14 +219,17 @@ public class OuttakeSubsystem extends SubsystemBase {
             setShooterPower(sys.getOutput());
         }
 
-        if (bangBangRunning) {
-            double bangBangOffset = bangBangSetpointRadians - getTurretAngleRadians();
-            if (Math.abs(bangBangOffset) >= currentShooterToleranceDegrees) {
-                turnTurret(Math.signum(bangBangOffset) * slowTurretTurnSpeed + turretTurnSpeed / bangBangOffset);
-            } else {
-                stopTurret();
-            }
+        if (turretRunning) {
+            turretLoop.setNextR(VecBuilder.fill(setpointRadians, 0));
+            turretLoop.correct(VecBuilder.fill(getTurretAngleRadians()));
+            turretLoop.predict(looptime);
+            double next = turretLoop.getU(0);
+            turretMotor.setVoltage(next);
+        } else {
+            turretLoop.setNextR(VecBuilder.fill(getTurretAngleRadians(), 0));
         }
+
+
 
         try {
             if (distanceLatch.unlocked()) {
@@ -210,4 +239,6 @@ public class OuttakeSubsystem extends SubsystemBase {
             limelightSubsystem.addLatch(distanceLatch.reset());
         }
     }
+
+
 }

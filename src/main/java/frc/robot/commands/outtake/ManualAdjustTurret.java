@@ -23,12 +23,11 @@ public class ManualAdjustTurret extends CommandBase {
             outtakeSubsystem.turnTurret(-turretTurnSpeed);
         } else if (FightStick.fightStickJoystick.getX() > 0.5) {
             outtakeSubsystem.turnTurret(turretTurnSpeed);
-        }else if (FightStick.fightStickJoystick.getY() < -0.5) { //TURRET ADJUSTMENT FALCON
-                outtakeSubsystem.turnTurret(-slowTurretTurnSpeed);
+        } else if (FightStick.fightStickJoystick.getY() < -0.5) { //TURRET ADJUSTMENT FALCON
+            outtakeSubsystem.turnTurret(-slowTurretTurnSpeed);
         } else if (FightStick.fightStickJoystick.getY() > 0.5) {
-                outtakeSubsystem.turnTurret(slowTurretTurnSpeed);
-            }
-        else {
+            outtakeSubsystem.turnTurret(slowTurretTurnSpeed);
+        } else {
             outtakeSubsystem.turnTurret(0);
         }
     }

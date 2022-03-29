@@ -28,7 +28,8 @@ public class WinchSetPosition extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return direction ? climberSubsystem.getWinchPercent() > position : climberSubsystem.getWinchPercent() < position;
+        return direction ? climberSubsystem.getWinchPercent() > position :
+                climberSubsystem.getWinchPercent() < position;
     }
 
     @Override

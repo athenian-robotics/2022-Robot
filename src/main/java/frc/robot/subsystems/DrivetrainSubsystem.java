@@ -17,7 +17,6 @@ import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
-
 import static frc.robot.Constants.DriveConstants.*;
 
 
@@ -25,6 +24,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     // Setup drive objects
     public final Encoder rightEncoder;
     public final Encoder leftEncoder;
+    final DifferentialDriveOdometry odometry;
     private final AHRS gyro = new AHRS(SerialPort.Port.kMXP);
     private final DoubleSolenoid driveShifterRight = new DoubleSolenoid(PneumaticsModuleType.CTREPCM,
             Constants.PneumaticConstants.shifterRightSolenoidPortA,
@@ -37,7 +37,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
     private final DifferentialDrive drive;
     // Setup autonomous and sensor objects
     ChassisSpeeds chassisSpeeds;
-    final DifferentialDriveOdometry odometry;
 
 
     public DrivetrainSubsystem() {
@@ -61,7 +60,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
         leftEncoder = new Encoder(leftEncoderChannelA, leftEncoderChannelB, false);
         leftEncoder.setDistancePerPulse(2 * 3.14 * (.1524 / 2) / 2048); // 6-inch wheel, to meters, PI for
         // circumference, gear conversion, 2048 ticks per rotation
-        rightEncoder.setDistancePerPulse(2 * 3.14 * (.1524 / 2) / 2048) ; // 6-inch wheel, to meters, PI for
+        rightEncoder.setDistancePerPulse(2 * 3.14 * (.1524 / 2) / 2048); // 6-inch wheel, to meters, PI for
         // circumference, gear conversion, 2048 ticks per rotation
 
         //Configure solenoids
@@ -206,7 +205,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
     }
 
 
-
     public Pose2d getPose() { // Returns the Pose2d object of the robot in meters
         return odometry.getPoseMeters();
     }
@@ -235,10 +233,14 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     public double getTangentialVelocity(double angle, double distance) {
         double theta = 90 + Math.toDegrees(angle);
-        double v = Constants.AutoConstants.kDriveKinematics.toChassisSpeeds(getWheelSpeeds()).vxMetersPerSecond*Constants.looptime;
+        double v =
+                Constants.AutoConstants.kDriveKinematics.toChassisSpeeds(getWheelSpeeds()).vxMetersPerSecond * Constants.looptime;
 
-        double side = Math.sqrt(Math.pow(v, 2) + Math.pow(distance, 2) - 2 * v * distance * Math.cos(Math.toRadians(theta)));
-        return Math.toRadians(180) - Math.toRadians(theta) - Math.asin((Math.sin(Math.toRadians(theta)) *  distance) / side);
+        double side =
+                Math.sqrt(Math.pow(v, 2) + Math.pow(distance, 2) - 2 * v * distance * Math.cos(Math.toRadians(theta)));
+        return Math.toRadians(180) - Math.toRadians(theta) - Math.asin((Math.sin(Math.toRadians(theta)) * distance) / side);
     }
+
+
 }
 

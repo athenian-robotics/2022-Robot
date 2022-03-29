@@ -16,7 +16,9 @@ import frc.robot.subsystems.*;
 
 //ARCHIVED
 public class ShootOne extends SequentialCommandGroup {
-    public ShootOne(ClimberSubsystem climber, DrivetrainSubsystem drivetrain, IndexerSubsystem indexer, IntakeSubsystem intake, OuttakeSubsystem outtake, LimelightSubsystem limelight, ShooterDataTable shooterDataTable) {
+    public ShootOne(ClimberSubsystem climber, DrivetrainSubsystem drivetrain, IndexerSubsystem indexer,
+                    IntakeSubsystem intake, OuttakeSubsystem outtake, LimelightSubsystem limelight,
+                    ShooterDataTable shooterDataTable) {
         if (climber.getLeftHeightPercent() > 0.1 || climber.getRightHeightPercent() > 0.1) this.cancel();
         addCommands(
                 //Prepare
@@ -31,7 +33,8 @@ public class ShootOne extends SequentialCommandGroup {
                 new AlwaysTurretTurnToGoalWithLimelight(limelight, outtake).withTimeout(0.75),
                 new ParallelDeadlineGroup(
                         new SequentialCommandGroup(
-                                new GuaranteeLimelightDataEquals(limelight, LimelightDataType.HORIZONTAL_OFFSET, 0, outtake.currentShooterToleranceDegrees),
+                                new GuaranteeLimelightDataEquals(limelight, LimelightDataType.HORIZONTAL_OFFSET, 0,
+                                        outtake.currentShooterToleranceDegrees),
                                 //Shoot 1st
                                 new ParallelCommandGroup(
                                         new PulseIntakeToIndexerMotor(intake, 0.5),

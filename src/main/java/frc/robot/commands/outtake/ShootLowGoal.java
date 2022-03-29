@@ -10,11 +10,12 @@ import frc.robot.commands.intake.DisableIntake;
 import frc.robot.subsystems.*;
 
 public class ShootLowGoal extends SequentialCommandGroup {
-    public ShootLowGoal(ClimberSubsystem climber, DrivetrainSubsystem drivetrain, IndexerSubsystem indexer, IntakeSubsystem intake, OuttakeSubsystem outtake, LimelightSubsystem limelight) {
+    public ShootLowGoal(ClimberSubsystem climber, DrivetrainSubsystem drivetrain, IndexerSubsystem indexer,
+                        IntakeSubsystem intake, OuttakeSubsystem outtake, LimelightSubsystem limelight) {
         if (climber.getLeftHeightPercent() > 0.1 || climber.getRightHeightPercent() > 0.1) this.cancel();
         //Prepare
         addCommands(
-        new DisableDrivetrain(drivetrain),
+                new DisableDrivetrain(drivetrain),
                 new DisableIntake(intake),
                 //Align to shoot
                 new SetShooterPower(outtake, 17.5),
