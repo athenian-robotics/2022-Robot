@@ -10,11 +10,13 @@ import frc.robot.lib.shooterData.ShooterDataTable;
 import frc.robot.subsystems.*;
 
 public class AutoRoutine5 extends SequentialCommandGroup {
-    public AutoRoutine5(ClimberSubsystem climber, DrivetrainSubsystem drivetrain, IndexerSubsystem indexer, IntakeSubsystem intake, OuttakeSubsystem outtake, LimelightSubsystem limelight, ShooterDataTable shooterDataTable) {
+    public AutoRoutine5(ClimberSubsystem climber, DrivetrainSubsystem drivetrain, IndexerSubsystem indexer,
+                        IntakeSubsystem intake, OuttakeSubsystem outtake, PortalSubsystem portal, LimelightSubsystem limelight,
+                        ShooterDataTable shooterDataTable) {
         addCommands(
-                new ToggleIntake(intake),
+                new ToggleIntake(intake, portal),
                 new AutoRoutine5Part1(drivetrain),
-                new ToggleIntake(intake),
+                new ToggleIntake(intake, portal),
                 new ShootTwoWithoutTurret(climber, drivetrain, indexer, intake, outtake, limelight, shooterDataTable)
         );
     }

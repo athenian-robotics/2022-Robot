@@ -21,7 +21,7 @@ public class PulseIndexer extends CommandBase {
         if (up) {
             indexerSubsystem.startIndexer();
         } else {
-            indexerSubsystem.reverseIndexer();
+            indexerSubsystem.startIndexerReversed();
         }
     }
 

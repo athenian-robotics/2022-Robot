@@ -8,12 +8,12 @@ import frc.robot.Constants;
 import frc.robot.commands.drive.DisableDrivetrain;
 import frc.robot.commands.indexer.ShootIndexedBallsForever;
 import frc.robot.commands.intake.DisableIntake;
+import frc.robot.lib.shooterData.ShooterDataTable;
 import frc.robot.subsystems.*;
 
 public class ShootHighGoalNextToTarget extends SequentialCommandGroup {
-    public ShootHighGoalNextToTarget(ClimberSubsystem climber, DrivetrainSubsystem drivetrain, IndexerSubsystem indexer, IntakeSubsystem intake, OuttakeSubsystem outtake, LimelightSubsystem limelight) {
-        if (climber.getLeftHeightPercent() > 0.1 || climber.getRightHeightPercent() > 0.1) this.cancel();
-        //Prepare
+    public ShootHighGoalNextToTarget(DrivetrainSubsystem drivetrain, IndexerSubsystem indexer,
+                        IntakeSubsystem intake, OuttakeSubsystem outtake, PortalSubsystem portal) {
         addCommands(
                 new DisableDrivetrain(drivetrain),
                 new DisableIntake(intake),
@@ -22,7 +22,7 @@ public class ShootHighGoalNextToTarget extends SequentialCommandGroup {
                 new SetHoodAngleTimeSafe(outtake, 18.5),
                 new WaitCommand(0.7),
                 //Shoot Balls
-                new ShootIndexedBallsForever(indexer, intake).withTimeout(2),
+                new ShootIndexedBallsForever(indexer, intake, portal).withTimeout(2),
                 //Return to teleop
                 new ParallelCommandGroup(
                         new DisableShooter(outtake),

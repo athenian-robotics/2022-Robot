@@ -7,10 +7,12 @@ import frc.robot.Constants;
 import frc.robot.commands.drive.DisableDrivetrain;
 import frc.robot.commands.indexer.ShootIndexedBallsForever;
 import frc.robot.commands.intake.DisableIntake;
+import frc.robot.lib.shooterData.ShooterDataTable;
 import frc.robot.subsystems.*;
 
 public class ShootLowGoal extends SequentialCommandGroup {
-    public ShootLowGoal(ClimberSubsystem climber, DrivetrainSubsystem drivetrain, IndexerSubsystem indexer, IntakeSubsystem intake, OuttakeSubsystem outtake, LimelightSubsystem limelight) {
+    public ShootLowGoal(ClimberSubsystem climber, DrivetrainSubsystem drivetrain, IndexerSubsystem indexer,
+                        IntakeSubsystem intake, OuttakeSubsystem outtake, PortalSubsystem portal) {
         if (climber.getLeftHeightPercent() > 0.1 || climber.getRightHeightPercent() > 0.1) this.cancel();
         //Prepare
         addCommands(
@@ -19,7 +21,7 @@ public class ShootLowGoal extends SequentialCommandGroup {
                 //Align to shoot
                 new SetShooterPower(outtake, 17.5),
                 //Shoot Balls
-                new ShootIndexedBallsForever(indexer, intake).withTimeout(2),
+                new ShootIndexedBallsForever(indexer, intake, portal).withTimeout(2),
                 //Return to teleop
                 new ParallelCommandGroup(
                         new DisableShooter(outtake),

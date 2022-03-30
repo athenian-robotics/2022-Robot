@@ -10,15 +10,13 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.auto.*;
 import frc.robot.commands.climb.*;
 import frc.robot.commands.drive.ArcadeDrive;
-import frc.robot.commands.drive.TankDrive;
-import frc.robot.commands.indexer.QueueBalls;
+import frc.robot.commands.portal.QueueBalls;
 import frc.robot.commands.intake.RunIntakeWithoutPneumatics;
 import frc.robot.commands.intake.ToggleIntake;
 import frc.robot.commands.outtake.*;
@@ -56,18 +54,13 @@ public class RobotContainer {
     public static final IntakeSubsystem intake = new IntakeSubsystem();
     public static final ClimberSubsystem climb = new ClimberSubsystem();
     public static final OuttakeSubsystem outtake = new OuttakeSubsystem(limelight);
+    public static final PortalSubsystem portal = new PortalSubsystem();
     //MISC
     public static DriverStation.Alliance alliance = DriverStation.Alliance.Blue;
     public static ShooterDataTable shooterDataTable;
 
     // Sets up controllers, configures controllers, and sets the default drive mode (tank or arcade)
     public RobotContainer() {
-        drivetrain.setDefaultCommand(new ArcadeDrive(drivetrain, xboxController)); // Check for Arcade or Tank
-        // manual hood adjustment
-        indexer.setDefaultCommand(new QueueBalls(indexer, intake)); //Turns on indexer when sees a ball, sets it to
-        // off
-        // when there are no balls in sight
-
         try {
             ObjectInputStream fin = new ObjectInputStream(new FileInputStream("/home/lvuser/deploy/dt.ser"));
             Object obj = fin.readObject();
@@ -79,35 +72,29 @@ public class RobotContainer {
             System.out.println("file not found, or class not found");
         }
 
-        outtake.setDefaultCommand(new AlwaysTurretTurnToGoalWithLimelightAndSetHoodAngleOrManualControl(limelight, outtake, shooterDataTable)); // Check fight stick y-axis for
-        SmartDashboard.putData("AutoChooser", chooser);
-        chooser.setDefaultOption("0: 2.5 Meters Forward", new AutoRoutine0(drivetrain));
-        chooser.addOption("1: 5 Ball Auto - Bottom Left Start", new AutoRoutine1(climb, drivetrain, indexer, intake, outtake, limelight, shooterDataTable));
-        chooser.addOption("2: 2 Ball Auto - Top Left Start", new AutoRoutine2(climb, drivetrain, indexer, intake, outtake, limelight, shooterDataTable));
-        chooser.addOption("3: 2 Ball Auto - Bottom Left Start", new AutoRoutine3(climb, drivetrain, indexer, intake, outtake, limelight, shooterDataTable));
-        chooser.addOption("4: 4 Ball Auto - Bottom Left Start", new AutoRoutine4(climb, drivetrain, indexer, intake, outtake, limelight, shooterDataTable));
-        chooser.addOption("5: 2 ball Auto",new AutoRoutine5(climb, drivetrain, indexer, intake, outtake, limelight, shooterDataTable ) );
         xboxButtonSetup();
         configureButtonBindings();
+        configureAutoChooser();
+        configureDefaultCommands();
     }
 
   // Configures xbox buttons to commands
   private void configureButtonBindings() {
       /*  SUBSYSTEM COMMANDS (Main, functional commands) */
-      FightStick.fightStickX.whenPressed(new ShootBalls(climb, drivetrain, indexer, intake, outtake, limelight, shooterDataTable));
-      FightStick.fightStickA.whenPressed(new ToggleIntake(intake)); // Toggle intake wheels and pneumatics
-      FightStick.fightStickY.whenPressed(new ShootTwo(climb, drivetrain, indexer, intake, outtake, limelight, shooterDataTable, xboxController));
-      FightStick.fightStickB.whenPressed(new RunIntakeWithoutPneumatics(intake, indexer));
+      FightStick.fightStickX.whenPressed(new ShootBalls(climb, drivetrain, indexer, intake, outtake, portal, limelight, shooterDataTable));
+      FightStick.fightStickA.whenPressed(new ToggleIntake(intake, portal)); // Toggle intake wheels and pneumatics
+      FightStick.fightStickY.whenPressed(new ShootTwo(climb, drivetrain, indexer, intake, outtake, portal, limelight, shooterDataTable, xboxController));
+      FightStick.fightStickB.whenPressed(new RunIntakeWithoutPneumatics(intake, portal));
       FightStick.fightStickLB.whenHeld(new SetBothTelescopeSpeed(climb, -telescopeSpeed));
       FightStick.fightStickRB.whenHeld(new SetBothTelescopeSpeed(climb, telescopeSpeed));
       FightStick.fightStickL3.whenHeld(new WinchSetSpeed(climb, -winchSpeed)); //Toggle Indexer down (tower portion)
       FightStick.fightStickR3.whenHeld(new WinchSetSpeed(climb, winchSpeed)); // Toggle indexer (tower portion)
-      FightStick.fightStickLT.whenActive(new ShootLowGoal(climb, drivetrain, indexer, intake, outtake, limelight));
-      //FightStick.fightStickRT.whenActive(new Traverse(climb));
-      xboxB.whenPressed(new ShootLowGoal(climb, drivetrain, indexer, intake, outtake, limelight));
-      xboxA.whenPressed(new ToggleIntake((intake)));
-      xboxRB.whenPressed(new ShootTwo(climb, drivetrain, indexer, intake, outtake, limelight, shooterDataTable, xboxController));
-      xboxLB.whenPressed(new ShootBalls(climb, drivetrain, indexer, intake, outtake, limelight, shooterDataTable));
+      FightStick.fightStickLT.whenActive(new ShootLowGoal(climb, drivetrain, indexer, intake, outtake, portal));
+
+      xboxB.whenPressed(new ShootLowGoal(climb, drivetrain, indexer, intake, outtake, portal));
+      xboxA.whenPressed(new ToggleIntake(intake, portal));
+      xboxRB.whenPressed(new ShootTwo(climb, drivetrain, indexer, intake, outtake, portal, limelight, shooterDataTable, xboxController));
+      xboxLB.whenPressed(new ShootBalls(climb, drivetrain, indexer, intake, outtake, portal, limelight, shooterDataTable));
 
         /* MISC COMMANDS (Random lib of commands. Written using functional commands because most are just one line ) */
         // have fun with this - jason and jacob '22   ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ
@@ -142,13 +129,20 @@ public class RobotContainer {
         xboxLS = new Trigger();
     }
 
-    // Disables all robot subsystems (Emergency only)
-    public void disableAll() {
-        drivetrain.disable();
-        indexer.disable();
-        intake.disable();
-        limelight.disable();
-        outtake.disable();
+    private void configureAutoChooser() {
+        SmartDashboard.putData("AutoChooser", chooser);
+        chooser.setDefaultOption("0: 2.5 Meters Forward", new AutoRoutine0(drivetrain));
+        chooser.addOption("1: 5 Ball Auto - Bottom Left Start", new AutoRoutine1(climb, drivetrain, indexer, intake, outtake, portal, limelight, shooterDataTable));
+        chooser.addOption("2: 2 Ball Auto - Top Left Start", new AutoRoutine2(climb, drivetrain, indexer, intake, outtake, portal, limelight, shooterDataTable));
+        chooser.addOption("3: 2 Ball Auto - Bottom Left Start", new AutoRoutine3(climb, drivetrain, indexer, intake, outtake, portal, limelight, shooterDataTable));
+        chooser.addOption("4: 4 Ball Auto - Bottom Left Start", new AutoRoutine4(climb, drivetrain, indexer, intake, outtake, portal, limelight, shooterDataTable));
+        chooser.addOption("5: 2 ball Auto",new AutoRoutine5(climb, drivetrain, indexer, intake, outtake, portal, limelight, shooterDataTable) );
+    }
+
+    public void configureDefaultCommands() {
+        drivetrain.setDefaultCommand(new ArcadeDrive(drivetrain, xboxController)); // Check for Arcade or Tank
+        indexer.setDefaultCommand(new QueueBalls(portal, intake));
+        outtake.setDefaultCommand(new AlwaysTurretTurnToGoalWithLimelightAndSetHoodAngleOrManualControl(limelight, outtake, shooterDataTable)); // Check fight stick y-axis for
     }
 
     public void setAlliance(DriverStation.Alliance alliance) {if (alliance != DriverStation.Alliance.Invalid) RobotContainer.alliance = alliance;}
@@ -156,6 +150,17 @@ public class RobotContainer {
     // Returns the robot's main autonomous command
     public Command getAutonomousCommand() {
         return chooser.getSelected();
+    }
+
+    // Disables all robot subsystems
+    public void disableAll() {
+        climb.disable();
+        drivetrain.disable();
+        indexer.disable();
+        intake.disable();
+        limelight.disable();
+        outtake.disable();
+        portal.disable();
     }
 }
 

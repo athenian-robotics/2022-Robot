@@ -2,28 +2,29 @@ package frc.robot.commands.intake;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.PortalSubsystem;
 
 
-public class PulseIntakeToIndexerMotor extends CommandBase {
-    private final IntakeSubsystem intakeSubsystem;
+public class PulsePortal extends CommandBase {
+    private final PortalSubsystem portalSubsystem;
     private final long milliseconds;
     private long start;
 
-    public PulseIntakeToIndexerMotor(IntakeSubsystem intakeSubsystem) {
-        this.intakeSubsystem = intakeSubsystem;
+    public PulsePortal(PortalSubsystem portalSubsystem) {
+        this.portalSubsystem = portalSubsystem;
         this.milliseconds = Long.MAX_VALUE;
-        addRequirements(this.intakeSubsystem);
+        addRequirements(this.portalSubsystem);
     }
 
-    public PulseIntakeToIndexerMotor(IntakeSubsystem intakeSubsystem, double seconds) {
-        this.intakeSubsystem = intakeSubsystem;
+    public PulsePortal(PortalSubsystem portalSubsystem, double seconds) {
+        this.portalSubsystem = portalSubsystem;
         this.milliseconds = (long) ((long) 1000 * seconds);
-        addRequirements(this.intakeSubsystem);
+        addRequirements(this.portalSubsystem);
     }
 
     @Override
     public void initialize() {
-        intakeSubsystem.startIntakeToIndexerMotor();
+        portalSubsystem.startPortal();
         start = System.currentTimeMillis();
     }
 
@@ -34,6 +35,6 @@ public class PulseIntakeToIndexerMotor extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        intakeSubsystem.stopIntakeToIndexerMotor();
+        portalSubsystem.stopPortal();
     }
 }

@@ -21,8 +21,6 @@ public class IntakeSubsystem extends SubsystemBase {
     // Configure intake motor, solenoid, and booleans
     private final TalonFX intakeMotor = new TalonFX(Constants.MechanismConstants.intakeMotorPort);
 
-    private final CANSparkMax intakeToIndexerMotor = new CANSparkMax(intakeToIndexerMotorPort,
-            CANSparkMaxLowLevel.MotorType.kBrushless);
     private final DoubleSolenoid rightIntakePneumatic = new DoubleSolenoid(PneumaticsModuleType.CTREPCM,
             pneumaticPortRightA, pneumaticPortRightB);
     private final DoubleSolenoid leftIntakePneumatic = new DoubleSolenoid(PneumaticsModuleType.CTREPCM,
@@ -38,7 +36,6 @@ public class IntakeSubsystem extends SubsystemBase {
         intakeMotor.setNeutralMode(NeutralMode.Coast);
         intakeMotor.configOpenloopRamp(0.1); // Ramp up (Trapezoid)
         intakeMotor.configClosedloopRamp(0.1); // Ramp down (Trapezoid)
-        intakeToIndexerMotor.setInverted(true);
 
         NetworkTableEntry intakeNTE = Shuffleboard.getTab("852 - Dashboard")
                 .add("Intake Active", false)
@@ -86,31 +83,8 @@ public class IntakeSubsystem extends SubsystemBase {
         }
     }
 
-    public void startIntakeToIndexerMotor() {
-        intakeToIndexerMotor.set(Constants.MechanismConstants.intakeToIndexerSpeed);
-    }
-
-    public void stopIntakeToIndexerMotor() {
-        intakeToIndexerMotor.set(0);
-    }
-
-    public void toggleIntakeToIndexerMotor() {
-        if (intakeToIndexerRunning) {
-            stopIntakeToIndexerMotor();
-        } else startIntakeToIndexerMotor();
-    }
-
-    public void invertedIntakeToIndexerMotor() {
-        intakeToIndexerMotor.set(-intakeToIndexerSpeed);
-    }
-
-    public boolean isRunning() {
-        return isRunning;
-    }
-
     public void disable() { // Disables intake subsystem
         stopIntake();
-        stopIntakeToIndexerMotor();
         retractPneumatic();
     }
 

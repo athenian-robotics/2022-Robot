@@ -19,8 +19,6 @@ public class ClimberSubsystem extends SubsystemBase {
     private final TalonFX climbMotorRight = new TalonFX(rightClimberMotorPort);
     private final TalonFX climbWinchMotor = new TalonFX(climbWinchMotorPort);
 
-    public boolean climberActive = false;
-
     public ClimberSubsystem() {
         climbMotorLeft.setInverted(true);
         climbMotorRight.setInverted(false);
@@ -29,15 +27,6 @@ public class ClimberSubsystem extends SubsystemBase {
         climbMotorLeft.setNeutralMode(NeutralMode.Brake);
         climbMotorRight.setNeutralMode(NeutralMode.Brake);
         climbWinchMotor.setNeutralMode(NeutralMode.Brake);
-        climbMotorLeft.setSelectedSensorPosition(0);
-        climbMotorRight.setSelectedSensorPosition(0);
-        climbWinchMotor.setSelectedSensorPosition(0);
-
-        NetworkTableEntry climbPercentNTE = Shuffleboard.getTab("852 - Dashboard")
-                .add("Climber Percent", 0)
-                .withWidget(BuiltInWidgets.kNumberSlider)
-                .withProperties(Map.of("min", 0, "max", 1))
-                .getEntry();
     }
 
     public void setLeftMotor(double percent) {
@@ -52,39 +41,8 @@ public class ClimberSubsystem extends SubsystemBase {
         climbWinchMotor.set(ControlMode.PercentOutput, percent);
     }
 
-    private double getLeftHeightEncoderCount() {
-        return climbMotorLeft.getSelectedSensorPosition();
-    }
-
-    private double getRightHeightEncoderCount() {
-        return climbMotorRight.getSelectedSensorPosition();
-    }
-
-    private double getWinchEncoderCount(){
-        return climbWinchMotor.getSelectedSensorPosition();
-    }
-
-    public double getLeftHeightPercent() {
-        return getLeftHeightEncoderCount() / leftClimberMaxEncoderCount;
-    }
-
-    public double getRightHeightPercent() {
-        return getRightHeightEncoderCount() / rightClimberMaxEncoderCount;
-    }
-
-    public double getWinchPercent() {
-        return getWinchEncoderCount() / winchMaxEncoderCount;
-    }
-
     public void disable() {
-        climberActive = false;
-    }
-
-    @Override
-    public void periodic() {}
-
-    public void set(int i) {
-        // set motors to encoder count
-        climbMotorLeft.set(ControlMode.Position, i);
+        setLeftMotor(0);
+        setRightMotor(0);
     }
 }

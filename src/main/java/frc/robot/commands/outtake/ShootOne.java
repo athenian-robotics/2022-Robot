@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.drive.DisableDrivetrain;
 import frc.robot.commands.indexer.ShootIndexedBallForever;
 import frc.robot.commands.intake.DisableIntake;
-import frc.robot.commands.intake.PulseIntakeToIndexerMotor;
+import frc.robot.commands.intake.PulsePortal;
 import frc.robot.commands.limelight.GuaranteeLimelightData;
 import frc.robot.commands.limelight.GuaranteeLimelightDataEquals;
 import frc.robot.lib.limelight.LimelightDataType;
@@ -16,7 +16,9 @@ import frc.robot.subsystems.*;
 
 //ARCHIVED
 public class ShootOne extends SequentialCommandGroup {
-    public ShootOne(ClimberSubsystem climber, DrivetrainSubsystem drivetrain, IndexerSubsystem indexer, IntakeSubsystem intake, OuttakeSubsystem outtake, LimelightSubsystem limelight, ShooterDataTable shooterDataTable) {
+    public ShootOne(ClimberSubsystem climber, DrivetrainSubsystem drivetrain, IndexerSubsystem indexer,
+                        IntakeSubsystem intake, OuttakeSubsystem outtake, PortalSubsystem portal, LimelightSubsystem limelight,
+                        ShooterDataTable shooterDataTable) {
         if (climber.getLeftHeightPercent() > 0.1 || climber.getRightHeightPercent() > 0.1) this.cancel();
         addCommands(
                 //Prepare
@@ -34,8 +36,8 @@ public class ShootOne extends SequentialCommandGroup {
                                 new GuaranteeLimelightDataEquals(limelight, LimelightDataType.HORIZONTAL_OFFSET, 0, outtake.currentShooterToleranceDegrees),
                                 //Shoot 1st
                                 new ParallelCommandGroup(
-                                        new PulseIntakeToIndexerMotor(intake, 0.5),
-                                        new ShootIndexedBallForever(indexer, outtake).withTimeout(2)
+                                        new PulsePortal(portal, 0.5),
+                                        new ShootIndexedBallForever(indexer).withTimeout(2)
                                 )
                         ),
                         new AlwaysTurretTurnToGoalWithLimelight(limelight, outtake)

@@ -1,32 +1,31 @@
-package frc.robot.commands.indexer;
+package frc.robot.commands.portal;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
-import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.PortalSubsystem;
 
 
 public class QueueBalls extends CommandBase {
-    private final IndexerSubsystem indexerSubsystem;
+    private final PortalSubsystem portalSubsystem;
     private final IntakeSubsystem intakeSubsystem;
     private boolean ballQueued = false;
     private double queueStartTime = Integer.MAX_VALUE;
 
-    public QueueBalls(IndexerSubsystem indexerSubsystem, IntakeSubsystem intakeSubsystem) {
-        this.indexerSubsystem = indexerSubsystem;
+    public QueueBalls(PortalSubsystem portalSubsystem, IntakeSubsystem intakeSubsystem) {
+        this.portalSubsystem = portalSubsystem;
         this.intakeSubsystem = intakeSubsystem;
-        addRequirements(this.indexerSubsystem, this.intakeSubsystem);
+        addRequirements(this.portalSubsystem);
     }
 
     @Override
     public void initialize() {
-        if (indexerSubsystem.ballPrimed()) {
+        if (portalSubsystem.ballPrimed()) {
             queueStartTime = Integer.MIN_VALUE;
             ballQueued = true;
         } else {
             queueStartTime = Integer.MAX_VALUE;
             ballQueued = false;
-            indexerSubsystem.ballIndexed = false;
         }
     }
 
@@ -36,22 +35,21 @@ public class QueueBalls extends CommandBase {
         // (presumably shooter code) is sheduled
         if (!ballQueued) {
             //Default state, trying to suck in balls
-            if (indexerSubsystem.ballPrimed()) {
+            if (portalSubsystem.ballPrimed()) {
                 //This only runs the first time we see a ball with the proximity sensor. start the intakeToIndexer
                 // wheels and flag that we see a ball
-                intakeSubsystem.startIntakeToIndexerMotor();
+                portalSubsystem.startPortal();
                 if (!ballQueued) queueStartTime = System.currentTimeMillis();
                 ballQueued = true;
             } else if (!intakeSubsystem.isRunning) {
-                //If we don't see a ball we should stop the intakeToIndexer motor unless the intake is running, in
+                //If we don't see a ball we should stop the portal motor unless the intake is running, in
                 // which case we'd like it to spin (at least until we see a ball)
-                intakeSubsystem.stopIntakeToIndexerMotor();
+                portalSubsystem.stopPortal();
             }
         } else if (System.currentTimeMillis() - queueStartTime > Constants.MechanismConstants.intakeToIndexerResidualIndexTimeMillis) {
             //Ball is under the intakeToIndexer wheels, and we'll wait a bit and then stop the wheels. A second ball
             // will wait in the intake
-            intakeSubsystem.stopIntakeToIndexerMotor();
-            indexerSubsystem.ballIndexed = true;
+            portalSubsystem.stopPortal();
         }
     }
 }

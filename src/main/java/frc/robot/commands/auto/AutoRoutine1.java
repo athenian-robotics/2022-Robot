@@ -13,27 +13,27 @@ import frc.robot.subsystems.*;
 
 public class AutoRoutine1 extends SequentialCommandGroup {
     public AutoRoutine1(ClimberSubsystem climber, DrivetrainSubsystem drivetrain, IndexerSubsystem indexer,
-                        IntakeSubsystem intake, OuttakeSubsystem outtake, LimelightSubsystem limelight,
+                        IntakeSubsystem intake, OuttakeSubsystem outtake, PortalSubsystem portal, LimelightSubsystem limelight,
                         ShooterDataTable shooterDataTable) {
         addCommands(
                 new ParallelDeadlineGroup(
                         new SequentialCommandGroup(
-                            new ToggleIntake(intake),
+                            new ToggleIntake(intake, portal),
                             new AutoRoutine1Part1(drivetrain), //moves left to other ball
                             //moves down to ball under starting position
-                            new ToggleIntake(intake),
-                            new ShootTwoWithoutTurret(climber, drivetrain, indexer, intake, outtake, limelight, shooterDataTable),
+                            new ToggleIntake(intake, portal),
+                            new ShootTwoWithoutTurret(climber, drivetrain, indexer, intake, outtake, portal, limelight, shooterDataTable),
                             new AutoRoutine1Part2(drivetrain), // turn back
-                                new ToggleIntake(intake),
+                                new ToggleIntake(intake, portal),
                                 new AutoRoutine1Part225(drivetrain), // intake other ball
-                                new ShootTwoWithoutTurret(climber, drivetrain, indexer, intake, outtake, limelight, shooterDataTable).withTimeout(1.5),
-                                new ToggleIntake(intake),
+                                new ShootTwoWithoutTurret(climber, drivetrain, indexer, intake, outtake, portal, limelight, shooterDataTable).withTimeout(1.5),
+                                new ToggleIntake(intake, portal),
                             new AutoRoutine1Part3(drivetrain), //moves left to other ball
                             //drives to human player terminal
                             new WaitCommand(.75),
-                            new ToggleIntake(intake),
+                            new ToggleIntake(intake, portal),
                             new AutoRoutine1Part4(drivetrain), //drives back closer to the goal
-                            new ShootTwoWithoutTurret(climber, drivetrain, indexer, intake, outtake, limelight, shooterDataTable)
+                            new ShootTwoWithoutTurret(climber, drivetrain, indexer, intake, outtake, portal, limelight, shooterDataTable)
                             ),
                         new AlwaysTurretTurnToGoalWithLimelightOrManualControl(limelight, outtake)
                 )

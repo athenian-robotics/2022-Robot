@@ -15,7 +15,9 @@ import frc.robot.subsystems.*;
 
 //FOR AUTOS
 public class ShootTwoWithoutTurret extends SequentialCommandGroup {
-    public ShootTwoWithoutTurret(ClimberSubsystem climber, DrivetrainSubsystem drivetrain, IndexerSubsystem indexer, IntakeSubsystem intake, OuttakeSubsystem outtake, LimelightSubsystem limelight, ShooterDataTable shooterDataTable) {
+    public ShootTwoWithoutTurret(ClimberSubsystem climber, DrivetrainSubsystem drivetrain, IndexerSubsystem indexer,
+                        IntakeSubsystem intake, OuttakeSubsystem outtake, PortalSubsystem portal, LimelightSubsystem limelight,
+                        ShooterDataTable shooterDataTable) {
         if (climber.getLeftHeightPercent() > 0.1 || climber.getRightHeightPercent() > 0.1) this.cancel();
         addCommands(
                 //Prepare
@@ -26,7 +28,7 @@ public class ShootTwoWithoutTurret extends SequentialCommandGroup {
                         new SetHoodAngleWithLimelightTimeSafe(shooterDataTable, limelight, outtake)
                 ),
                 //Shoot Balls
-                new ShootIndexedBallsForever(indexer, intake).withTimeout(1.75),
+                new ShootIndexedBallsForever(indexer, intake, portal).withTimeout(1.75),
                 //Return to teleop
                 new ParallelCommandGroup(
                         new DisableShooter(outtake),
