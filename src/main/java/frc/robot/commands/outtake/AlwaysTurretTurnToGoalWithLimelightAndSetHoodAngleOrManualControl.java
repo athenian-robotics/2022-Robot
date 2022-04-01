@@ -7,27 +7,27 @@ import frc.robot.lib.limelight.LimelightDataLatch;
 import frc.robot.lib.limelight.LimelightDataType;
 import frc.robot.lib.shooterData.ShooterDataTable;
 import frc.robot.subsystems.LimelightSubsystem;
-import frc.robot.subsystems.OuttakeSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 
 import static frc.robot.Constants.MechanismConstants.*;
 
 
 public class AlwaysTurretTurnToGoalWithLimelightAndSetHoodAngleOrManualControl extends CommandBase {
     private final LimelightSubsystem limelightSubsystem;
-    private final OuttakeSubsystem outtakeSubsystem;
+    private final ShooterSubsystem shooterSubsystem;
     private final ShooterDataTable shooterDataTable;
     private final LimelightDataLatch offsetLatch;
     private final LimelightDataLatch distanceLatch;
 
     public AlwaysTurretTurnToGoalWithLimelightAndSetHoodAngleOrManualControl(LimelightSubsystem limelightSubsystem,
-                                                                             OuttakeSubsystem outtakeSubsystem,
+                                                                             ShooterSubsystem shooterSubsystem,
                                                                              ShooterDataTable shooterDataTable) {
         this.limelightSubsystem = limelightSubsystem;
-        this.outtakeSubsystem = outtakeSubsystem;
+        this.shooterSubsystem = shooterSubsystem;
         this.shooterDataTable = shooterDataTable;
         offsetLatch = new LimelightDataLatch(LimelightDataType.HORIZONTAL_OFFSET, 5);
         distanceLatch = new LimelightDataLatch(LimelightDataType.DISTANCE, 5);
-        addRequirements(this.outtakeSubsystem);
+        addRequirements(this.shooterSubsystem);
     }
 
     @Override
@@ -39,37 +39,37 @@ public class AlwaysTurretTurnToGoalWithLimelightAndSetHoodAngleOrManualControl e
     @Override
     public void execute() {
         if (FightStick.fightStickJoystick.getX() < -0.5) { //TURRET ADJUSTMENT FALCON
-            outtakeSubsystem.turretRunning = false;
-            outtakeSubsystem.bangBangRunning = false;
-            outtakeSubsystem.turnTurret(-turretTurnSpeed);
+            shooterSubsystem.turretRunning = false;
+            shooterSubsystem.bangBangRunning = false;
+            shooterSubsystem.turnTurret(-turretTurnSpeed);
         } else if (FightStick.fightStickJoystick.getX() > 0.5) {
-            outtakeSubsystem.turretRunning = false;
-            outtakeSubsystem.bangBangRunning = false;
-            outtakeSubsystem.turnTurret(turretTurnSpeed);
+            shooterSubsystem.turretRunning = false;
+            shooterSubsystem.bangBangRunning = false;
+            shooterSubsystem.turnTurret(turretTurnSpeed);
         } else if (FightStick.fightStickJoystick.getY() < -0.5) { //TURRET ADJUSTMENT FALCON
-            outtakeSubsystem.turretRunning = false;
-            outtakeSubsystem.bangBangRunning = false;
-            outtakeSubsystem.turnTurret(-slowTurretTurnSpeed);
+            shooterSubsystem.turretRunning = false;
+            shooterSubsystem.bangBangRunning = false;
+            shooterSubsystem.turnTurret(-slowTurretTurnSpeed);
         } else if (FightStick.fightStickJoystick.getY() > 0.5) {
-            outtakeSubsystem.turretRunning = false;
-            outtakeSubsystem.bangBangRunning = false;
-            outtakeSubsystem.turnTurret(slowTurretTurnSpeed);
+            shooterSubsystem.turretRunning = false;
+            shooterSubsystem.bangBangRunning = false;
+            shooterSubsystem.turnTurret(slowTurretTurnSpeed);
         } else if (FightStick.fightStickShare.get()) {
             try {
                 if (offsetLatch.unlocked()) {
-                    outtakeSubsystem.setTurretPositionRadians(offsetLatch.open() + outtakeSubsystem.getTurretAngleRadians());
+                    shooterSubsystem.setTurretPositionRadians(offsetLatch.open() + shooterSubsystem.getTurretAngleRadians());
                     throw new GoalNotFoundException(); //shortcut to latch reset  vvv  (since we've expended it)
                 }
             } catch (GoalNotFoundException e) {
                 limelightSubsystem.addLatch(offsetLatch.reset()); //assuming we want to look for the goal forever
             }
         } else {
-            outtakeSubsystem.stopTurret();
+            shooterSubsystem.stopTurret();
         }
 
         try {
             if (distanceLatch.unlocked()) {
-                outtakeSubsystem.setHoodAngle(shooterDataTable.getSpecs(distanceLatch.open()).getAngle());
+                shooterSubsystem.setHoodAngle(shooterDataTable.getSpecs(distanceLatch.open()).getAngle());
                 throw new GoalNotFoundException(); //shortcut to latch reset
             }
         } catch (GoalNotFoundException e) {
@@ -79,7 +79,7 @@ public class AlwaysTurretTurnToGoalWithLimelightAndSetHoodAngleOrManualControl e
 
     @Override
     public void end(boolean interrupted) {
-        outtakeSubsystem.stopTurret();
-        outtakeSubsystem.setHoodAngle(defaultHoodAngle);
+        shooterSubsystem.stopTurret();
+        shooterSubsystem.setHoodAngle(defaultHoodAngle);
     }
 }

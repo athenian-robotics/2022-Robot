@@ -13,7 +13,7 @@ import frc.robot.subsystems.*;
 
 public class AutoRoutine1 extends SequentialCommandGroup {
     public AutoRoutine1(ClimberSubsystem climber, DrivetrainSubsystem drivetrain, IndexerSubsystem indexer,
-                        IntakeSubsystem intake, OuttakeSubsystem outtake, PortalSubsystem portal, LimelightSubsystem limelight,
+                        IntakeSubsystem intake, ShooterSubsystem outtake, PortalSubsystem portal, LimelightSubsystem limelight,
                         ShooterDataTable shooterDataTable) {
         addCommands(
                 new ParallelDeadlineGroup(

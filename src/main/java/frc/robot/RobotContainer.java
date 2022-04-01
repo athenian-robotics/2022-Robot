@@ -53,7 +53,7 @@ public class RobotContainer {
     public static final IndexerSubsystem indexer = new IndexerSubsystem();
     public static final IntakeSubsystem intake = new IntakeSubsystem();
     public static final ClimberSubsystem climb = new ClimberSubsystem();
-    public static final OuttakeSubsystem outtake = new OuttakeSubsystem(limelight);
+    public static final ShooterSubsystem outtake = new ShooterSubsystem(limelight);
     public static final PortalSubsystem portal = new PortalSubsystem();
     public static final LEDSubsystem led = new LEDSubsystem();
     //MISC

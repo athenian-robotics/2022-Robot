@@ -1,24 +1,24 @@
 package frc.robot.commands.outtake;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.OuttakeSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 
 
 public class EnableShooter extends CommandBase {
-    private final OuttakeSubsystem outtakeSubsystem;
+    private final ShooterSubsystem shooterSubsystem;
 
-    public EnableShooter(OuttakeSubsystem outtakeSubsystem) {
-        this.outtakeSubsystem = outtakeSubsystem;
-        addRequirements(this.outtakeSubsystem);
+    public EnableShooter(ShooterSubsystem shooterSubsystem) {
+        this.shooterSubsystem = shooterSubsystem;
+        addRequirements(this.shooterSubsystem);
     }
 
     @Override
     public void initialize() {
-        outtakeSubsystem.setRPS(outtakeSubsystem.shuffleboardShooterPower);
+        shooterSubsystem.setRPS(shooterSubsystem.shuffleboardShooterPower);
     }
 
     @Override
     public boolean isFinished() {
-        return Math.abs(outtakeSubsystem.getWheelSpeed() - outtakeSubsystem.shuffleboardShooterPower) < 0.5;
+        return Math.abs(shooterSubsystem.getWheelSpeed() - shooterSubsystem.shuffleboardShooterPower) < 0.5;
     }
 }

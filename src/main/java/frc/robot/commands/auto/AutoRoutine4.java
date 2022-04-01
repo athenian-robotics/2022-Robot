@@ -12,7 +12,7 @@ import frc.robot.subsystems.*;
 
 public class AutoRoutine4 extends SequentialCommandGroup {
     public AutoRoutine4(ClimberSubsystem climber, DrivetrainSubsystem drivetrain, IndexerSubsystem indexer,
-                        IntakeSubsystem intake, OuttakeSubsystem outtake, PortalSubsystem portal, LimelightSubsystem limelight,
+                        IntakeSubsystem intake, ShooterSubsystem outtake, PortalSubsystem portal, LimelightSubsystem limelight,
                         ShooterDataTable shooterDataTable) {
         addCommands(
                 new ParallelDeadlineGroup(
@@ -20,14 +20,14 @@ public class AutoRoutine4 extends SequentialCommandGroup {
                                 new ToggleIntake(intake, portal),
                                 new AutoRoutine1Part1(drivetrain), //moves left to other ball
                                 //moves down to ball under starting position
-                                new ShootTwoWithoutTurret(climber, drivetrain, indexer, intake, outtake, limelight, shooterDataTable),
+                                new ShootTwoWithoutTurret(climber, drivetrain, indexer, intake, outtake, portal, limelight, shooterDataTable),
                                 new AutoRoutine1Part2(drivetrain),
                                 new ToggleIntake(intake, portal),
                                 new AutoRoutine1Part25(drivetrain), //moves left to other ball
                                 //drives to human player terminal
                                 new ToggleIntake(intake, portal),
                                 new AutoRoutine1Part4(drivetrain), //drives back closer to the goal
-                                new ShootTwoWithoutTurret(climber, drivetrain, indexer, intake, outtake, limelight, shooterDataTable)
+                                new ShootTwoWithoutTurret(climber, drivetrain, indexer, intake, outtake, portal, limelight, shooterDataTable)
                         ),
                         new AlwaysTurretTurnToGoalWithLimelightOrManualControl(limelight, outtake)
                 )

@@ -16,8 +16,8 @@ import frc.robot.subsystems.*;
 
 public class ShootBalls extends SequentialCommandGroup {
     public ShootBalls(ClimberSubsystem climber, DrivetrainSubsystem drivetrain, IndexerSubsystem indexer,
-                        IntakeSubsystem intake, OuttakeSubsystem outtake, PortalSubsystem portal, LimelightSubsystem limelight,
-                        ShooterDataTable shooterDataTable) {
+                      IntakeSubsystem intake, ShooterSubsystem outtake, PortalSubsystem portal, LimelightSubsystem limelight,
+                      ShooterDataTable shooterDataTable) {
         addCommands(
                 //Prepare
                 new DisableDrivetrain(drivetrain),

@@ -1,20 +1,20 @@
 package frc.robot.commands.outtake;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.subsystems.OuttakeSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 
 
 public class SetHoodAngle extends InstantCommand {
-    private final OuttakeSubsystem outtakeSubsystem;
+    private final ShooterSubsystem shooterSubsystem;
     private final double angle;
 
-    public SetHoodAngle(OuttakeSubsystem outtakeSubsystem, double angle) {
-        this.outtakeSubsystem = outtakeSubsystem; this.angle = angle;
+    public SetHoodAngle(ShooterSubsystem shooterSubsystem, double angle) {
+        this.shooterSubsystem = shooterSubsystem; this.angle = angle;
         addRequirements();
     }
 
     @Override
     public void initialize() {
-        outtakeSubsystem.setHoodAngle(angle);
+        shooterSubsystem.setHoodAngle(angle);
     }
 }

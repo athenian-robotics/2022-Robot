@@ -8,12 +8,11 @@ import frc.robot.Constants;
 import frc.robot.commands.drive.DisableDrivetrain;
 import frc.robot.commands.indexer.ShootIndexedBallsForever;
 import frc.robot.commands.intake.DisableIntake;
-import frc.robot.lib.shooterData.ShooterDataTable;
 import frc.robot.subsystems.*;
 
 public class ShootHighGoalNextToTarget extends SequentialCommandGroup {
     public ShootHighGoalNextToTarget(DrivetrainSubsystem drivetrain, IndexerSubsystem indexer,
-                        IntakeSubsystem intake, OuttakeSubsystem outtake, PortalSubsystem portal) {
+                                     IntakeSubsystem intake, ShooterSubsystem outtake, PortalSubsystem portal) {
         addCommands(
                 new DisableDrivetrain(drivetrain),
                 new DisableIntake(intake),

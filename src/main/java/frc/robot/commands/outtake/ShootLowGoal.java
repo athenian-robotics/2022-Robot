@@ -7,13 +7,11 @@ import frc.robot.Constants;
 import frc.robot.commands.drive.DisableDrivetrain;
 import frc.robot.commands.indexer.ShootIndexedBallsForever;
 import frc.robot.commands.intake.DisableIntake;
-import frc.robot.lib.shooterData.ShooterDataTable;
 import frc.robot.subsystems.*;
 
 public class ShootLowGoal extends SequentialCommandGroup {
     public ShootLowGoal(ClimberSubsystem climber, DrivetrainSubsystem drivetrain, IndexerSubsystem indexer,
-                        IntakeSubsystem intake, OuttakeSubsystem outtake, PortalSubsystem portal) {
-        if (climber.getLeftHeightPercent() > 0.1 || climber.getRightHeightPercent() > 0.1) this.cancel();
+                        IntakeSubsystem intake, ShooterSubsystem outtake, PortalSubsystem portal) {
         //Prepare
         addCommands(
         new DisableDrivetrain(drivetrain),

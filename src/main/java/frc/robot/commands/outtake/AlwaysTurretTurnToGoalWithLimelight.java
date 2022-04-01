@@ -5,20 +5,20 @@ import frc.robot.lib.limelight.GoalNotFoundException;
 import frc.robot.lib.limelight.LimelightDataLatch;
 import frc.robot.lib.limelight.LimelightDataType;
 import frc.robot.subsystems.LimelightSubsystem;
-import frc.robot.subsystems.OuttakeSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 
 
 public class AlwaysTurretTurnToGoalWithLimelight extends CommandBase {
     private final LimelightSubsystem limelightSubsystem;
-    private final OuttakeSubsystem outtakeSubsystem;
+    private final ShooterSubsystem shooterSubsystem;
     private final LimelightDataLatch offsetLatch;
 
     public AlwaysTurretTurnToGoalWithLimelight(LimelightSubsystem limelightSubsystem,
-                                               OuttakeSubsystem outtakeSubsystem) {
+                                               ShooterSubsystem shooterSubsystem) {
         this.limelightSubsystem = limelightSubsystem;
-        this.outtakeSubsystem = outtakeSubsystem;
+        this.shooterSubsystem = shooterSubsystem;
         offsetLatch = new LimelightDataLatch(LimelightDataType.HORIZONTAL_OFFSET, 5);
-        addRequirements(this.outtakeSubsystem);
+        addRequirements(this.shooterSubsystem);
     }
 
     @Override
@@ -30,7 +30,7 @@ public class AlwaysTurretTurnToGoalWithLimelight extends CommandBase {
     public void execute() {
         try {
             if (offsetLatch.unlocked()) {
-                outtakeSubsystem.setTurretPositionRadians(offsetLatch.open() + outtakeSubsystem.getTurretAngleRadians());
+                shooterSubsystem.setTurretPositionRadians(offsetLatch.open() + shooterSubsystem.getTurretAngleRadians());
                 throw new GoalNotFoundException(); //shortcut to latch reset  vvv  (since we've expended it)
             }
         } catch (GoalNotFoundException e) {

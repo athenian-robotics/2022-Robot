@@ -17,8 +17,8 @@ import frc.robot.subsystems.*;
 //ARCHIVED
 public class ShootOne extends SequentialCommandGroup {
     public ShootOne(ClimberSubsystem climber, DrivetrainSubsystem drivetrain, IndexerSubsystem indexer,
-                        IntakeSubsystem intake, OuttakeSubsystem outtake, PortalSubsystem portal, LimelightSubsystem limelight,
-                        ShooterDataTable shooterDataTable) {
+                    IntakeSubsystem intake, ShooterSubsystem outtake, PortalSubsystem portal, LimelightSubsystem limelight,
+                    ShooterDataTable shooterDataTable) {
         addCommands(
                 //Prepare
                 new DisableDrivetrain(drivetrain),

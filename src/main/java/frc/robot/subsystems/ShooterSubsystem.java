@@ -24,7 +24,7 @@ import static com.ctre.phoenix.motorcontrol.NeutralMode.Coast;
 import static com.ctre.phoenix.motorcontrol.TalonFXControlMode.PercentOutput;
 import static frc.robot.Constants.MechanismConstants.*;
 
-public class OuttakeSubsystem extends SubsystemBase {
+public class ShooterSubsystem extends SubsystemBase {
     // Setup motors, pid controller, and booleans
     private final TalonFX shooterMotorFront = new TalonFX(shooterMotorPortA);
     public final WPI_TalonFX turretMotor = new WPI_TalonFX(turretMotorPort);
@@ -51,7 +51,7 @@ public class OuttakeSubsystem extends SubsystemBase {
     private double shooterRPS = 0;
     private double bangBangSetpointRadians;
 
-    public OuttakeSubsystem(LimelightSubsystem limelightSubsystem) {
+    public ShooterSubsystem(LimelightSubsystem limelightSubsystem) {
         this.limelightSubsystem = limelightSubsystem;
 
         shooterMotorFront.setInverted(false);

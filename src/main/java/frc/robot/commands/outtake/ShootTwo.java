@@ -18,9 +18,8 @@ import frc.robot.subsystems.*;
 
 public class ShootTwo extends SequentialCommandGroup {
     public ShootTwo(ClimberSubsystem climber, DrivetrainSubsystem drivetrain, IndexerSubsystem indexer,
-                        IntakeSubsystem intake, OuttakeSubsystem outtake, PortalSubsystem portal, LimelightSubsystem limelight,
-                        ShooterDataTable shooterDataTable, XboxController xboxController) {
-        if (climber.getLeftHeightPercent() > 0.1 || climber.getRightHeightPercent() > 0.1) this.cancel();
+                    IntakeSubsystem intake, ShooterSubsystem outtake, PortalSubsystem portal, LimelightSubsystem limelight,
+                    ShooterDataTable shooterDataTable, XboxController xboxController) {
         addCommands(
                 //Prepare
                 new DisableDrivetrain(drivetrain),

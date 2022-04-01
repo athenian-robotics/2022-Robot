@@ -2,17 +2,17 @@ package frc.robot.commands.outtake;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.lib.controllers.FightStick;
-import frc.robot.subsystems.OuttakeSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 
 import static frc.robot.Constants.MechanismConstants.*;
 
 
 public class ManualAdjustOuttake extends CommandBase {
-    private final OuttakeSubsystem outtakeSubsystem;
+    private final ShooterSubsystem shooterSubsystem;
 
-    public ManualAdjustOuttake(OuttakeSubsystem outtakeSubsystem) {
-        this.outtakeSubsystem = outtakeSubsystem;
-        addRequirements(this.outtakeSubsystem);
+    public ManualAdjustOuttake(ShooterSubsystem shooterSubsystem) {
+        this.shooterSubsystem = shooterSubsystem;
+        addRequirements(this.shooterSubsystem);
     }
 
     @Override
@@ -24,20 +24,20 @@ public class ManualAdjustOuttake extends CommandBase {
     public void execute() {
         // TURRET ANGLE FALCON
         if (FightStick.fightStickJoystick.getX() < -0.5) {
-            outtakeSubsystem.turnTurret(-turretTurnSpeed);
+            shooterSubsystem.turnTurret(-turretTurnSpeed);
         } else if (FightStick.fightStickJoystick.getX() > 0.5) {
-            outtakeSubsystem.turnTurret(turretTurnSpeed);
+            shooterSubsystem.turnTurret(turretTurnSpeed);
         } else {
-            outtakeSubsystem.turnTurret(0);
+            shooterSubsystem.turnTurret(0);
         }
 
         // HOOD ANGLE LINEAR SERVOS
         if (FightStick.fightStickJoystick.getY() < 0) { // Inverted
-            outtakeSubsystem.setHoodAngle(maximumHoodAngle);
+            shooterSubsystem.setHoodAngle(maximumHoodAngle);
         } else if (FightStick.fightStickJoystick.getY() > 0) {
-            outtakeSubsystem.setHoodAngle(minimumHoodAngle);
+            shooterSubsystem.setHoodAngle(minimumHoodAngle);
         } else {
-            outtakeSubsystem.stopHood();
+            shooterSubsystem.stopHood();
         }
     }
 
