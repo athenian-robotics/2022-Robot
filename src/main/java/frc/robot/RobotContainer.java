@@ -55,6 +55,7 @@ public class RobotContainer {
     public static final ClimberSubsystem climb = new ClimberSubsystem();
     public static final OuttakeSubsystem outtake = new OuttakeSubsystem(limelight);
     public static final PortalSubsystem portal = new PortalSubsystem();
+    public static final LEDSubsystem led = new LEDSubsystem();
     //MISC
     public static DriverStation.Alliance alliance = DriverStation.Alliance.Blue;
     public static ShooterDataTable shooterDataTable;
@@ -161,6 +162,7 @@ public class RobotContainer {
         limelight.disable();
         outtake.disable();
         portal.disable();
+        led.disable();
     }
 }
 

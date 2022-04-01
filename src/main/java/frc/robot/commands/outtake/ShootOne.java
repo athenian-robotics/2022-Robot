@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.drive.DisableDrivetrain;
 import frc.robot.commands.indexer.ShootIndexedBallForever;
 import frc.robot.commands.intake.DisableIntake;
-import frc.robot.commands.intake.PulsePortal;
+import frc.robot.commands.portal.PulsePortal;
 import frc.robot.commands.limelight.GuaranteeLimelightData;
 import frc.robot.commands.limelight.GuaranteeLimelightDataEquals;
 import frc.robot.lib.limelight.LimelightDataType;
@@ -19,7 +19,6 @@ public class ShootOne extends SequentialCommandGroup {
     public ShootOne(ClimberSubsystem climber, DrivetrainSubsystem drivetrain, IndexerSubsystem indexer,
                         IntakeSubsystem intake, OuttakeSubsystem outtake, PortalSubsystem portal, LimelightSubsystem limelight,
                         ShooterDataTable shooterDataTable) {
-        if (climber.getLeftHeightPercent() > 0.1 || climber.getRightHeightPercent() > 0.1) this.cancel();
         addCommands(
                 //Prepare
                 new DisableDrivetrain(drivetrain),

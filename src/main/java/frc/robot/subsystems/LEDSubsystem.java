@@ -7,32 +7,46 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import static frc.robot.Constants.LEDConstants.LEDPort;
 import static frc.robot.Constants.LEDConstants.LEDStripLength;
 
+
 public class LEDSubsystem extends SubsystemBase {
-    private final AddressableLEDBuffer ledStripBuffer = new AddressableLEDBuffer(LEDStripLength);
+    private final AddressableLEDBuffer ledStripBuffer;
+    private final AddressableLED ledStrip;
+    private boolean continuousOutputEnabled;
 
     public LEDSubsystem() {
-        AddressableLED ledStrip = new AddressableLED(LEDPort);
+        ledStripBuffer = new AddressableLEDBuffer(LEDStripLength);
+        ledStrip = new AddressableLED(LEDPort);
+
         ledStrip.setLength(ledStripBuffer.getLength());
-        ledStrip.setData(ledStripBuffer);
         ledStrip.start();
     }
 
     public void setAllColor(int R, int G, int B) {
         for (int i = 0; i < ledStripBuffer.getLength(); i++) {
             ledStripBuffer.setRGB(i, R, G, B);
-        }
+        } ledStrip.setData(ledStripBuffer);
     }
 
-    public void SetLeftHalfColor(int R, int G, int B) {
-        for (int i = 0; i < ledStripBuffer.getLength() / 2; i++) {
-            ledStripBuffer.setRGB(i, R, G, B);
-        }
+    public void setColorAtIndex(int i, int R, int G, int B) {
+        if (i > 0 && i < ledStripBuffer.getLength()) ledStripBuffer.setRGB(i, R, G, B);
     }
 
-    public void SetRightHalfColor(int R, int G, int B) {
-        for (int i = ledStripBuffer.getLength() / 2; i < ledStripBuffer.getLength(); i++) {
-            ledStripBuffer.setRGB(i, R, G, B);
-        }
+    public void enableContinuousOutput() {
+        continuousOutputEnabled = true;
+    }
+
+    public void disableContinuousOutput() {
+        continuousOutputEnabled = false;
+    }
+
+    public void update() {ledStrip.setData(ledStripBuffer);}
+
+    public void disable() {
+        continuousOutputEnabled = false;
+    }
+
+    public void periodic() {
+        if (continuousOutputEnabled) update();
     }
 }
 

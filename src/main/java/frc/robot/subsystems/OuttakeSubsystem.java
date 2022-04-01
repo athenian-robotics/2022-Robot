@@ -18,7 +18,6 @@ import frc.robot.lib.controllers.SimpleVelocitySystem;
 import frc.robot.lib.limelight.GoalNotFoundException;
 import frc.robot.lib.limelight.LimelightDataLatch;
 import frc.robot.lib.limelight.LimelightDataType;
-
 import java.util.Map;
 
 import static com.ctre.phoenix.motorcontrol.NeutralMode.Coast;

@@ -5,7 +5,7 @@ import frc.robot.Constants;
 import frc.robot.commands.drive.DisableDrivetrain;
 import frc.robot.commands.indexer.ShootIndexedBallForever;
 import frc.robot.commands.intake.DisableIntake;
-import frc.robot.commands.intake.PulsePortal;
+import frc.robot.commands.portal.PulsePortal;
 import frc.robot.commands.intake.RunIntakeWithoutPneumatics;
 import frc.robot.commands.limelight.GuaranteeLimelightData;
 import frc.robot.commands.limelight.GuaranteeLimelightDataEquals;
