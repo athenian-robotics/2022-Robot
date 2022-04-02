@@ -4,13 +4,12 @@
 
 package frc.robot;
 
-import com.ctre.phoenix.motorcontrol.NeutralMode;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
-import static frc.robot.RobotContainer.outtake;
+import static frc.robot.RobotContainer.shooter;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -66,7 +65,7 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     m_robotContainer.setAlliance(DriverStation.getAlliance());
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-    outtake.setTurretStartingAngleDegrees(-180);
+    shooter.setTurretStartingAngleDegrees(-180);
         // schedule the autonomous command (example)
         if (m_autonomousCommand != null) {
             m_autonomousCommand.schedule();

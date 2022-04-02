@@ -14,6 +14,6 @@ public class DisableShooter extends InstantCommand {
 
     @Override
     public void initialize() {
-        shooterSubsystem.stopShooter();
+        shooterSubsystem.disable();
     }
 }
