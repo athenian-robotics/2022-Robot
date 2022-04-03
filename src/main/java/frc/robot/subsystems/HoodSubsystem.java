@@ -1,13 +1,8 @@
 package frc.robot.subsystems;
 
-
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class HoodSubsystem extends SubsystemBase {
 
-
-    private HoodSubsystem() {
-
-    }
+  private HoodSubsystem() {}
 }
-

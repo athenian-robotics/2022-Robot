@@ -1,4 +1,3 @@
 package frc.robot.lib.controllers;
 
-public class PositionSystem {
-}
+public class PositionSystem {}
