@@ -96,6 +96,8 @@ wrapper {
     distributionType = Wrapper.DistributionType.BIN
 }
 
+compileJava.options.encoding = 'UTF-8'
+
 spotless {
     java {
         target fileTree('.') {
