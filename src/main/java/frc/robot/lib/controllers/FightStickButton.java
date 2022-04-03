@@ -1,13 +1,9 @@
 package frc.robot.lib.controllers;
 
-/**
- * Simple, quick interface to ensure type similarities
- */
-
+/** Simple, quick interface to ensure type similarities */
 public interface FightStickButton {
 
-    FightStickInput.input getButtonInputType();
+  FightStickInput.input getButtonInputType();
 
-    boolean get();
-
+  boolean get();
 }
