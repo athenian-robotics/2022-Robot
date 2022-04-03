@@ -57,7 +57,6 @@ public class RobotContainer {
     public static final ShooterSubsystem shooter = new ShooterSubsystem();
     public static final TurretSubsystem turret = new TurretSubsystem();
     public static final HoodSubsystem hood = new HoodSubsystem();
-
     public static final LEDSubsystem led = new LEDSubsystem();
     //MISC
     public static DriverStation.Alliance alliance = DriverStation.Alliance.Blue;
@@ -74,7 +73,6 @@ public class RobotContainer {
             }
         } catch (Exception e) {
             System.out.println("file not found, or class not found: " + e);
-            System.exit(0);
         }
 
         xboxButtonSetup();
