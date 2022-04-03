@@ -85,9 +85,9 @@ public class RobotContainer {
 
   // Configures xbox buttons to commands
   private void configureButtonBindings() {
-      //FightStick.fightStickX.whenPressed(new ShootBalls(climb, drivetrain, indexer, intake, shooter, portal, limelight, shooterDataTable));
+      FightStick.fightStickX.whenPressed(new ShootBalls(climb, drivetrain, indexer, intake, shooter, portal, limelight, shooterDataTable));
       FightStick.fightStickA.whenPressed(new ToggleIntake(intake, portal)); // Toggle intake wheels and pneumatics
-      //FightStick.fightStickY.whenPressed(new ShootTwo(climb, drivetrain, indexer, intake, shooter, portal, limelight, shooterDataTable, xboxController));
+      FightStick.fightStickY.whenPressed(new ShootTwo(climb, drivetrain, indexer, intake, shooter, portal, limelight, shooterDataTable, xboxController));
       FightStick.fightStickB.whenPressed(new RunIntakeWithoutPneumatics(intake, portal));
       FightStick.fightStickLB.whenHeld(new SetBothTelescopeSpeed(climb, -telescopeSpeed));
       FightStick.fightStickRB.whenHeld(new SetBothTelescopeSpeed(climb, telescopeSpeed));
@@ -132,11 +132,11 @@ public class RobotContainer {
     private void configureAutoChooser() {
         SmartDashboard.putData("AutoChooser", chooser);
         chooser.setDefaultOption("0: 2.5 Meters Forward", new AutoRoutine0(drivetrain));
-//        chooser.addOption("1: 5 Ball Auto - Bottom Left Start", new AutoRoutine1(climb, drivetrain, indexer, intake, shooter, portal, limelight, shooterDataTable));
-//        chooser.addOption("2: 2 Ball Auto - Top Left Start", new AutoRoutine2(climb, drivetrain, indexer, intake, shooter, portal, limelight, shooterDataTable));
-//        chooser.addOption("3: 2 Ball Auto - Bottom Left Start", new AutoRoutine3(climb, drivetrain, indexer, intake, shooter, portal, limelight, shooterDataTable));
-//        chooser.addOption("4: 4 Ball Auto - Bottom Left Start", new AutoRoutine4(climb, drivetrain, indexer, intake, shooter, portal, limelight, shooterDataTable));
-//        chooser.addOption("5: 2 ball Auto",new AutoRoutine5(climb, drivetrain, indexer, intake, shooter, portal, limelight, shooterDataTable) );
+        chooser.addOption("1: 5 Ball Auto - Bottom Left Start", new AutoRoutine1(climb, drivetrain, indexer, intake, shooter, portal, limelight, shooterDataTable));
+        chooser.addOption("2: 2 Ball Auto - Top Left Start", new AutoRoutine2(climb, drivetrain, indexer, intake, shooter, portal, limelight, shooterDataTable));
+        chooser.addOption("3: 2 Ball Auto - Bottom Left Start", new AutoRoutine3(climb, drivetrain, indexer, intake, shooter, portal, limelight, shooterDataTable));
+        chooser.addOption("4: 4 Ball Auto - Bottom Left Start", new AutoRoutine4(climb, drivetrain, indexer, intake, shooter, portal, limelight, shooterDataTable));
+        chooser.addOption("5: 2 ball Auto",new AutoRoutine5(climb, drivetrain, indexer, intake, shooter, portal, limelight, shooterDataTable) );
     }
 
     public void configureDefaultCommands() {
