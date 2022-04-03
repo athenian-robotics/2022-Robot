@@ -10,12 +10,14 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.auto.*;
 import frc.robot.commands.climb.*;
 import frc.robot.commands.drive.ArcadeDrive;
+import frc.robot.commands.drive.TankDrive;
 import frc.robot.commands.hood.SetHoodAngleWithLimelight;
 import frc.robot.commands.portal.QueueBalls;
 import frc.robot.commands.intake.RunIntakeWithoutPneumatics;
@@ -95,25 +97,21 @@ public class RobotContainer {
 
       xboxB.whenPressed(new ShootLowGoalNextToTarget(drivetrain, indexer, intake, shooter, hood, portal));
       xboxA.whenPressed(new ToggleIntake(intake, portal));
-      //xboxRB.whenPressed(new ShootTwo(climb, drivetrain, indexer, intake, shooter, portal, limelight, shooterDataTable, xboxController));
-      //xboxLB.whenPressed(new ShootBalls(climb, drivetrain, indexer, intake, shooter, portal, limelight, shooterDataTable));
+      xboxRB.whenPressed(new ShootTwo(climb, drivetrain, indexer, intake, shooter, portal, limelight, shooterDataTable, xboxController));
+      xboxLB.whenPressed(new ShootBalls(climb, drivetrain, indexer, intake, shooter, portal, limelight, shooterDataTable));
 
         /* MISC COMMANDS (Random lib of commands. Written using functional commands because most are just one line ) */
         // have fun with this - jason and jacob '22   ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ
-//        xboxSquares.whenPressed(new FunctionalCommand(  // Toggle drive mode
-//                () -> {
-//                    if (drivetrain.getDefaultCommand() instanceof ArcadeDrive)
-//                        drivetrain.setDefaultCommand(new TankDrive(drivetrain, xboxController));
-//                    else drivetrain.setDefaultCommand(new ArcadeDrive(drivetrain, xboxController));
-//                }, () -> {
-//        }, interrupted -> {
-//        }, () -> true, drivetrain));
-//        xboxLP.whenPressed(new FunctionalCommand(drivetrain::shiftDown, () -> {
-//        }, interrupted -> {
-//        }, () -> true, drivetrain)); // Shift down
-//        xboxRP.whenPressed(new FunctionalCommand(drivetrain::shiftUp, () -> {
-//        }, interrupted -> {
-//        }, () -> true, drivetrain)); // Shift up
+        // two things: the amonguses broke CI and i had to fix and u wrote it wrong,
+        // u should have used instant commands instead of functional commands
+        xboxSquares.whenPressed(new InstantCommand(  // Toggle drive mode
+                () -> {
+                    if (drivetrain.getDefaultCommand() instanceof ArcadeDrive)
+                        drivetrain.setDefaultCommand(new TankDrive(drivetrain, xboxController));
+                    else drivetrain.setDefaultCommand(new ArcadeDrive(drivetrain, xboxController));
+                }, drivetrain));
+        xboxLP.whenPressed(new InstantCommand(drivetrain::shiftDown, drivetrain)); // Shift down
+        xboxRP.whenPressed(new InstantCommand(drivetrain::shiftUp, drivetrain)); // Shift up
     }
 
     // Connects xbox buttons to button #'s for the driver station
