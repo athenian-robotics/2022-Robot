@@ -4,19 +4,17 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.kauailabs.navx.frc.AHRS;
-import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.SerialPort;
+import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
+import static frc.robot.Constants.AutoConstants.kDriveKinematics;
 import static frc.robot.Constants.DriveConstants.*;
 
 
@@ -37,6 +35,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
     private final DifferentialDrive drive;
     // Setup autonomous and sensor objects
     ChassisSpeeds chassisSpeeds;
+    private double m_prevTime;
+    private double dt;
 
 
     public DrivetrainSubsystem() {
@@ -120,10 +120,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
      * @param rightOutput Right front wheel output percentage
      */
     public void setMotorPercentOutput(double leftOutput, double rightOutput) {
-//        driveMotors[0].set(ControlMode.PercentOutput, leftOutput);
-//        driveMotors[1].set(ControlMode.PercentOutput, leftOutput);
-//        driveMotors[2].set(ControlMode.PercentOutput, rightOutput);
-//        driveMotors[3].set(ControlMode.PercentOutput, rightOutput);
         leftMotors.set(leftOutput);
         rightMotors.set(rightOutput);
     }
@@ -200,8 +196,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
     }
 
 
-    public double getVelocity() {
-        return -Constants.AutoConstants.kDriveKinematics.toChassisSpeeds(getWheelSpeeds()).omegaRadiansPerSecond;
+    public ChassisSpeeds getVelocity() {
+        return kDriveKinematics.toChassisSpeeds(getWheelSpeeds());
     }
 
 
@@ -217,29 +213,34 @@ public class DrivetrainSubsystem extends SubsystemBase {
         drive.tankDrive(0, 0);
     }
 
+    public double getPositionOffset(double angle, double distance) {
+        double velocity = kDriveKinematics.toChassisSpeeds(getWheelSpeeds()).vxMetersPerSecond;
+        Translation2d displacementVector = new Translation2d(distance, new Rotation2d(angle));
+        Translation2d linearVelocityVector = new Translation2d(velocity, new Rotation2d(0));
+        double angularVelocity = kDriveKinematics.toChassisSpeeds(getWheelSpeeds()).omegaRadiansPerSecond;
+        // cross product
+        double cross =
+                displacementVector.getX() * linearVelocityVector.getY() - displacementVector.getY() * linearVelocityVector.getX();
+        return (cross + angularVelocity) * dt;
+    }
+
     /**
      * Periodic will be run over and over again, similar to that of a command's execute method, when the subsystem is
      * initialized
      */
     @Override
     public void periodic() {
+        dt = Timer.getFPGATimestamp() - m_prevTime;
         // Consistently update the robot's odometry as it moves throughout the field
         odometry.update(gyro.getRotation2d(),
                 leftEncoder.getDistance(),
                 rightEncoder.getDistance());
 
         drive.feed();
+        m_prevTime = Timer.getFPGATimestamp();
     }
 
-    public double getTangentialVelocity(double angle, double distance) {
-        double theta = 90 + Math.toDegrees(angle);
-        double v =
-                Constants.AutoConstants.kDriveKinematics.toChassisSpeeds(getWheelSpeeds()).vxMetersPerSecond * Constants.looptime;
 
-        double side =
-                Math.sqrt(Math.pow(v, 2) + Math.pow(distance, 2) - 2 * v * distance * Math.cos(Math.toRadians(theta)));
-        return Math.toRadians(180) - Math.toRadians(theta) - Math.asin((Math.sin(Math.toRadians(theta)) * distance) / side);
-    }
 
 
 }

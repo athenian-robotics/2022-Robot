@@ -9,6 +9,7 @@ import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.LinearQuadraticRegulator;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.estimator.KalmanFilter;
+import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.math.system.LinearSystem;
@@ -32,6 +33,7 @@ import static com.ctre.phoenix.motorcontrol.NeutralMode.Coast;
 import static com.ctre.phoenix.motorcontrol.TalonFXControlMode.PercentOutput;
 import static frc.robot.Constants.MechanismConstants.*;
 import static frc.robot.Constants.looptime;
+import static frc.robot.RobotContainer.drivetrain;
 
 public class OuttakeSubsystem extends SubsystemBase {
     public final WPI_TalonFX turretMotor = new WPI_TalonFX(turretMotorPort);
@@ -54,6 +56,10 @@ public class OuttakeSubsystem extends SubsystemBase {
     private double shooterRPS = 0;
     private double setpointRadians;
     private final LinearSystemLoop<N2, N1, N1> turretLoop;
+    private double desiredSpeed;
+    private Twist2d twist;
+    private double distance;
+
     public OuttakeSubsystem(LimelightSubsystem limelightSubsystem) {
         this.limelightSubsystem = limelightSubsystem;
 
@@ -194,6 +200,8 @@ public class OuttakeSubsystem extends SubsystemBase {
         lqrRunning = true;
     }
 
+
+
     public double getTurretAngleRadians() {
         return Math.toRadians(turretMotor.getSelectedSensorPosition() * 36 / 2048);
     }
@@ -219,8 +227,18 @@ public class OuttakeSubsystem extends SubsystemBase {
             setShooterPower(sys.getOutput());
         }
 
+        try {
+            if (distanceLatch.unlocked()) {
+                currentShooterToleranceDegrees = turretShootZoneRadians / distanceLatch.open();
+                distance = distanceLatch.open();
+            }
+        } catch (GoalNotFoundException e) {
+            limelightSubsystem.addLatch(distanceLatch.reset());
+        }
+
         if (turretRunning) {
-            turretLoop.setNextR(VecBuilder.fill(setpointRadians, 0));
+            turretLoop.setNextR(VecBuilder.fill(setpointRadians + drivetrain.getPositionOffset(distance,
+                    setpointRadians-getTurretAngleRadians()), 0));
             turretLoop.correct(VecBuilder.fill(getTurretAngleRadians()));
             turretLoop.predict(looptime);
             double next = turretLoop.getU(0);
@@ -231,14 +249,9 @@ public class OuttakeSubsystem extends SubsystemBase {
 
 
 
-        try {
-            if (distanceLatch.unlocked()) {
-                currentShooterToleranceDegrees = turretShootZoneRadians / distanceLatch.open();
-            }
-        } catch (GoalNotFoundException e) {
-            limelightSubsystem.addLatch(distanceLatch.reset());
-        }
+
     }
+
 
 
 }

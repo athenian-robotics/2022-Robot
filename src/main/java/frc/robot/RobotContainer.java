@@ -33,6 +33,7 @@ import frc.robot.subsystems.*;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 
+import static edu.wpi.first.wpilibj.XboxController.*;
 import static frc.robot.Constants.MechanismConstants.telescopeSpeed;
 import static frc.robot.Constants.MechanismConstants.winchSpeed;
 
@@ -58,7 +59,7 @@ public class RobotContainer {
     public static JoystickButton xboxSquares;
     public static JoystickButton xboxHamburger;
     public static Trigger xboxLS;
-    public static XboxController.Axis xboxRS;
+    public static Axis xboxRS;
     //MISC
     public static DriverStation.Alliance alliance = DriverStation.Alliance.Blue;
     public static ShooterDataTable shooterDataTable;
@@ -132,12 +133,12 @@ public class RobotContainer {
                 }, () -> {
         }, interrupted -> {
         }, () -> true, drivetrain));
-//        xboxLP.whenPressed(new FunctionalCommand(drivetrain::shiftDown, () -> {
-//        }, interrupted -> {
-//        }, () -> true, drivetrain)); // Shift down
-//        xboxRP.whenPressed(new FunctionalCommand(drivetrain::shiftUp, () -> {
-//        }, interrupted -> {
-//        }, () -> true, drivetrain)); // Shift up
+        xboxLP.whenPressed(new FunctionalCommand(drivetrain::shiftDown, () -> {
+        }, interrupted -> {
+        }, () -> true, drivetrain)); // Shift down
+        xboxRP.whenPressed(new FunctionalCommand(drivetrain::shiftUp, () -> {
+        }, interrupted -> {
+        }, () -> true, drivetrain)); // Shift up
     }
 
     // Connects xbox buttons to button #'s for the driver station

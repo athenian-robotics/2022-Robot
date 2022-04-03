@@ -51,7 +51,7 @@ public abstract class DetourableCommand extends CommandBase {
     }
 
     @Override
-    public final void end(boolean interruped) {
+    public final void end(boolean interrupted) {
         m_detourableCommand._end(false);
     }
 

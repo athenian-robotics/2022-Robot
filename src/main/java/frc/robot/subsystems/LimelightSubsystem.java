@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.lib.limelight.LimelightDataLatch;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 
@@ -42,13 +43,13 @@ public class LimelightSubsystem extends SubsystemBase {
 
     //Keeps a record of Latches waiting to be opened, and opens them when valid data comes along (see periodic())
     private static class LimelightDataLatchManager {
-        private final LinkedList<LimelightDataLatch> latchPool = new LinkedList<>();
+        private final ArrayList<LimelightDataLatch> latchPool = new ArrayList<>();
 
         //Updates every pooled latch if there's new data
         public void update(Double[] limelightOutputArray) {
             if (limelightOutputArray.length == 8 && limelightOutputArray[7] == (double) 1) {
                 while (latchPool.size() != 0) {
-                    LimelightDataLatch currentLatch = latchPool.pollFirst();
+                    LimelightDataLatch currentLatch = latchPool.remove(0);
                     currentLatch.unlock(limelightOutputArray[currentLatch.limelightDataType.llpythonIndex]);
                 }
             } else {
@@ -57,7 +58,7 @@ public class LimelightSubsystem extends SubsystemBase {
         }
 
         private void addLatch(LimelightDataLatch latch) {
-            latchPool.addFirst(latch);
+            latchPool.add(latch);
         }
 
         private void clearPool() {
