@@ -16,14 +16,14 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.auto.*;
 import frc.robot.commands.climb.*;
 import frc.robot.commands.drive.ArcadeDrive;
+import frc.robot.commands.hood.SetHoodAngleWithLimelight;
 import frc.robot.commands.portal.QueueBalls;
 import frc.robot.commands.intake.RunIntakeWithoutPneumatics;
 import frc.robot.commands.intake.ToggleIntake;
-import frc.robot.commands.outtake.*;
+import frc.robot.commands.scoring.*;
 import frc.robot.lib.controllers.FightStick;
 import frc.robot.lib.shooterData.ShooterDataTable;
 import frc.robot.subsystems.*;
-
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 
@@ -73,7 +73,8 @@ public class RobotContainer {
                 System.out.println("Checking 2.5m data in shooterDataTable: " + shooterDataTable.getSpecs(2.5));
             }
         } catch (Exception e) {
-            System.out.println("file not found, or class not found");
+            System.out.println("file not found, or class not found: " + e);
+            System.exit(0);
         }
 
         xboxButtonSetup();
@@ -84,21 +85,20 @@ public class RobotContainer {
 
   // Configures xbox buttons to commands
   private void configureButtonBindings() {
-      /*  SUBSYSTEM COMMANDS (Main, functional commands) */
-      FightStick.fightStickX.whenPressed(new ShootBalls(climb, drivetrain, indexer, intake, shooter, portal, limelight, shooterDataTable));
+      //FightStick.fightStickX.whenPressed(new ShootBalls(climb, drivetrain, indexer, intake, shooter, portal, limelight, shooterDataTable));
       FightStick.fightStickA.whenPressed(new ToggleIntake(intake, portal)); // Toggle intake wheels and pneumatics
-      FightStick.fightStickY.whenPressed(new ShootTwo(climb, drivetrain, indexer, intake, shooter, portal, limelight, shooterDataTable, xboxController));
+      //FightStick.fightStickY.whenPressed(new ShootTwo(climb, drivetrain, indexer, intake, shooter, portal, limelight, shooterDataTable, xboxController));
       FightStick.fightStickB.whenPressed(new RunIntakeWithoutPneumatics(intake, portal));
       FightStick.fightStickLB.whenHeld(new SetBothTelescopeSpeed(climb, -telescopeSpeed));
       FightStick.fightStickRB.whenHeld(new SetBothTelescopeSpeed(climb, telescopeSpeed));
       FightStick.fightStickL3.whenHeld(new WinchSetSpeed(climb, -winchSpeed)); //Toggle Indexer down (tower portion)
       FightStick.fightStickR3.whenHeld(new WinchSetSpeed(climb, winchSpeed)); // Toggle indexer (tower portion)
-      FightStick.fightStickLT.whenActive(new ShootLowGoal(climb, drivetrain, indexer, intake, shooter, portal));
+      FightStick.fightStickLT.whenActive(new ShootLowGoalNextToTarget(drivetrain, indexer, intake, shooter, hood, portal));
 
-      xboxB.whenPressed(new ShootLowGoal(climb, drivetrain, indexer, intake, shooter, portal));
+      xboxB.whenPressed(new ShootLowGoalNextToTarget(drivetrain, indexer, intake, shooter, hood, portal));
       xboxA.whenPressed(new ToggleIntake(intake, portal));
-      xboxRB.whenPressed(new ShootTwo(climb, drivetrain, indexer, intake, shooter, portal, limelight, shooterDataTable, xboxController));
-      xboxLB.whenPressed(new ShootBalls(climb, drivetrain, indexer, intake, shooter, portal, limelight, shooterDataTable));
+      //xboxRB.whenPressed(new ShootTwo(climb, drivetrain, indexer, intake, shooter, portal, limelight, shooterDataTable, xboxController));
+      //xboxLB.whenPressed(new ShootBalls(climb, drivetrain, indexer, intake, shooter, portal, limelight, shooterDataTable));
 
         /* MISC COMMANDS (Random lib of commands. Written using functional commands because most are just one line ) */
         // have fun with this - jason and jacob '22   ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ
@@ -136,17 +136,17 @@ public class RobotContainer {
     private void configureAutoChooser() {
         SmartDashboard.putData("AutoChooser", chooser);
         chooser.setDefaultOption("0: 2.5 Meters Forward", new AutoRoutine0(drivetrain));
-        chooser.addOption("1: 5 Ball Auto - Bottom Left Start", new AutoRoutine1(climb, drivetrain, indexer, intake, shooter, portal, limelight, shooterDataTable));
-        chooser.addOption("2: 2 Ball Auto - Top Left Start", new AutoRoutine2(climb, drivetrain, indexer, intake, shooter, portal, limelight, shooterDataTable));
-        chooser.addOption("3: 2 Ball Auto - Bottom Left Start", new AutoRoutine3(climb, drivetrain, indexer, intake, shooter, portal, limelight, shooterDataTable));
-        chooser.addOption("4: 4 Ball Auto - Bottom Left Start", new AutoRoutine4(climb, drivetrain, indexer, intake, shooter, portal, limelight, shooterDataTable));
-        chooser.addOption("5: 2 ball Auto",new AutoRoutine5(climb, drivetrain, indexer, intake, shooter, portal, limelight, shooterDataTable) );
+//        chooser.addOption("1: 5 Ball Auto - Bottom Left Start", new AutoRoutine1(climb, drivetrain, indexer, intake, shooter, portal, limelight, shooterDataTable));
+//        chooser.addOption("2: 2 Ball Auto - Top Left Start", new AutoRoutine2(climb, drivetrain, indexer, intake, shooter, portal, limelight, shooterDataTable));
+//        chooser.addOption("3: 2 Ball Auto - Bottom Left Start", new AutoRoutine3(climb, drivetrain, indexer, intake, shooter, portal, limelight, shooterDataTable));
+//        chooser.addOption("4: 4 Ball Auto - Bottom Left Start", new AutoRoutine4(climb, drivetrain, indexer, intake, shooter, portal, limelight, shooterDataTable));
+//        chooser.addOption("5: 2 ball Auto",new AutoRoutine5(climb, drivetrain, indexer, intake, shooter, portal, limelight, shooterDataTable) );
     }
 
     public void configureDefaultCommands() {
         drivetrain.setDefaultCommand(new ArcadeDrive(drivetrain, xboxController)); // Check for Arcade or Tank
-        indexer.setDefaultCommand(new QueueBalls(portal, intake));
-        shooter.setDefaultCommand(new AlwaysTurretTurnToGoalWithLimelightAndSetHoodAngleOrManualControl(limelight, shooter, shooterDataTable)); // Check fight stick y-axis for
+        portal.setDefaultCommand(new QueueBalls(portal, intake));
+        hood.setDefaultCommand(new SetHoodAngleWithLimelight(shooterDataTable, limelight, hood));
     }
 
     public void setAlliance(DriverStation.Alliance alliance) {if (alliance != DriverStation.Alliance.Invalid) RobotContainer.alliance = alliance;}
@@ -160,14 +160,14 @@ public class RobotContainer {
     public void disableAll() {
         climb.disable();
         drivetrain.disable();
+        hood.disable();
         indexer.disable();
-        portal.disable();
         intake.disable();
+        led.disable();
         limelight.disable();
+        portal.disable();
         shooter.disable();
         turret.disable();
-        hood.disable();
-        led.disable();
     }
 }
 

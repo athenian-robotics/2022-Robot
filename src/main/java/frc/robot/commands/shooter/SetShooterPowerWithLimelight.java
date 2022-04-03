@@ -1,4 +1,4 @@
-package frc.robot.commands.outtake;
+package frc.robot.commands.shooter;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.lib.limelight.GoalNotFoundException;
@@ -14,32 +14,32 @@ public class SetShooterPowerWithLimelight extends CommandBase {
     private final ShooterDataTable shooterDataTable;
     private final LimelightSubsystem limelightSubsystem;
     private final ShooterSubsystem shooterSubsystem;
-    private final LimelightDataLatch latch;
+    private final LimelightDataLatch distanceLatch;
 
     public SetShooterPowerWithLimelight(ShooterDataTable shooterDataTable, LimelightSubsystem limelightSubsystem,
                                         ShooterSubsystem shooterSubsystem) {
         this.shooterDataTable = shooterDataTable;
         this.limelightSubsystem = limelightSubsystem;
         this.shooterSubsystem = shooterSubsystem;
-        this.latch = new LimelightDataLatch(LimelightDataType.DISTANCE);
-        addRequirements();
+        this.distanceLatch = new LimelightDataLatch(LimelightDataType.DISTANCE);
+
+        addRequirements(this.shooterSubsystem);
     }
 
     @Override
     public void initialize() {
-        limelightSubsystem.addLatch(latch);
+        limelightSubsystem.addLatch(distanceLatch);
     }
 
     @Override
     public boolean isFinished() {
         try { //jump to end() as soon as we get data! If we receive none in time, we'll use the default given by
-            // shooterDataTable.getSpecs(0.0d).getPower()
-            return latch.unlocked();
+            return distanceLatch.unlocked();
         } catch (GoalNotFoundException e) {return true;}
     }
 
     @Override
     public void end(boolean interrupted) {
-        shooterSubsystem.setRPS(shooterDataTable.getSpecs(latch.open()).getPower());
+        shooterSubsystem.setRPS(shooterDataTable.getSpecs(distanceLatch.open()).getPower());
     }
 }

@@ -1,4 +1,4 @@
-package frc.robot.commands.outtake;
+package frc.robot.commands.shooter;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -9,7 +9,7 @@ public class DisableShooter extends InstantCommand {
 
     public DisableShooter(ShooterSubsystem shooterSubsystem) {
         this.shooterSubsystem = shooterSubsystem;
-        addRequirements();
+        addRequirements(this.shooterSubsystem);
     }
 
     @Override

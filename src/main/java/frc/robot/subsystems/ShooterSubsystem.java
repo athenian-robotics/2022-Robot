@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.lib.controllers.SimpleVelocitySystem;
-
 import java.util.Map;
 
 import static com.ctre.phoenix.motorcontrol.NeutralMode.Coast;
@@ -55,14 +54,10 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public void setShooterPower(double power) { // Enables both wheels
-        setShooterPowerFront(power);
-        shooterRunning = true;
-    }
-
-    public void setShooterPowerFront(double power) {
         if (power > 1.0) power = 1.0;
         if (power < 0.0) power = 0.0;
         shooterMotorFront.set(ControlMode.PercentOutput, power);
+        shooterRunning = true;
     }
 
     public double getWheelSpeed() {

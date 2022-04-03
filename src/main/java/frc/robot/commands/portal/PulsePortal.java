@@ -1,7 +1,6 @@
 package frc.robot.commands.portal;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.PortalSubsystem;
 
 

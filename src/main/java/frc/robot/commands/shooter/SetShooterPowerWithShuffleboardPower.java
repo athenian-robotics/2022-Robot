@@ -1,13 +1,13 @@
-package frc.robot.commands.outtake;
+package frc.robot.commands.shooter;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ShooterSubsystem;
 
 
-public class EnableShooter extends CommandBase {
+public class SetShooterPowerWithShuffleboardPower extends CommandBase {
     private final ShooterSubsystem shooterSubsystem;
 
-    public EnableShooter(ShooterSubsystem shooterSubsystem) {
+    public SetShooterPowerWithShuffleboardPower(ShooterSubsystem shooterSubsystem) {
         this.shooterSubsystem = shooterSubsystem;
         addRequirements(this.shooterSubsystem);
     }

@@ -8,8 +8,8 @@ import static frc.robot.Constants.MechanismConstants.*;
 
 
 public class HoodSubsystem extends SubsystemBase {
-    private final Servo leftHoodAngleServo = new Servo(2);
-    private final Servo rightHoodAngleServo = new Servo(3);
+    private final Servo leftHoodAngleServo = new Servo(leftHoodServoPort);
+    private final Servo rightHoodAngleServo = new Servo(rightHoodServoPort);
 
     public HoodSubsystem() {
         leftHoodAngleServo.setBounds(2.0, 1.8, 1.5, 1.2, 1.0); //Manufacturer specified for Actuonix linear servos

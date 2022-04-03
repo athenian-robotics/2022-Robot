@@ -16,12 +16,10 @@ import static frc.robot.Constants.MechanismConstants.*;
 public class TurretSubsystem extends SubsystemBase {
     public final WPI_TalonFX turretMotor = new WPI_TalonFX(turretMotorPort);
     public final SimpleMotorFeedforward feed;
-    public final ProfiledPIDController turretPID =
-            new ProfiledPIDController(3.1856, 0, 1.13513, new TrapezoidProfile.Constraints(Math.PI / 2, Math.PI / 2)); //
+    public final ProfiledPIDController turretPID;
 
     public boolean turretRunning = false;
     public boolean bangBangRunning = false;
-
     public double currentShooterToleranceDegrees = 1;
     private double bangBangSetpointRadians;
 
@@ -31,6 +29,8 @@ public class TurretSubsystem extends SubsystemBase {
         turretMotor.setNeutralMode(NeutralMode.Brake);
 
         this.feed = new SimpleMotorFeedforward(Constants.Turret.ks, Constants.Turret.kv, Constants.Turret.ka);
+        this.turretPID = new ProfiledPIDController(3.1856, 0, 1.13513, new TrapezoidProfile.Constraints(Math.PI / 2, Math.PI / 2));
+
         setTurretStartingAngleDegrees(-180); //assume default position is turret starting facing backwards counterclockwise
     }
 
@@ -50,13 +50,13 @@ public class TurretSubsystem extends SubsystemBase {
         }
     }
 
+    //Primarily for use in auto routines where we need to know where the shooter starts
     public void setTurretStartingAngleDegrees(double position) {
-        //Primarily for use in auto routines where we need to know where the shooter starts
         turretMotor.setSelectedSensorPosition(2048 * position / 36);
     }
 
     //CW Positive
-    public void setTurretPositionRadians(double angle) {
+    public void setTurretSetpointRadians(double angle) {
         bangBangSetpointRadians = angle;
         bangBangRunning = true;
     }

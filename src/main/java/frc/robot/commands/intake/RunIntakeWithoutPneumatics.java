@@ -1,7 +1,6 @@
 package frc.robot.commands.intake;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.PortalSubsystem;
 
@@ -14,7 +13,7 @@ public class RunIntakeWithoutPneumatics extends CommandBase {
     public RunIntakeWithoutPneumatics(IntakeSubsystem intakeSubsystem, PortalSubsystem portalSubsystem) {
         this.intakeSubsystem = intakeSubsystem;
         this.portalSubsystem = portalSubsystem;
-        addRequirements(this.intakeSubsystem, portalSubsystem);
+        addRequirements(this.intakeSubsystem, this.portalSubsystem);
     }
 
     @Override

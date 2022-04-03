@@ -5,7 +5,6 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
@@ -16,7 +15,6 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-
 
 import static frc.robot.Constants.DriveConstants.*;
 
@@ -36,7 +34,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
     private final MotorControllerGroup rightMotors;
     private final DifferentialDrive drive;
     // Setup autonomous and sensor objects
-    ChassisSpeeds chassisSpeeds;
     final DifferentialDriveOdometry odometry;
 
 
@@ -121,10 +118,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
      * @param rightOutput Right front wheel output percentage
      */
     public void setMotorPercentOutput(double leftOutput, double rightOutput) {
-//        driveMotors[0].set(ControlMode.PercentOutput, leftOutput);
-//        driveMotors[1].set(ControlMode.PercentOutput, leftOutput);
-//        driveMotors[2].set(ControlMode.PercentOutput, rightOutput);
-//        driveMotors[3].set(ControlMode.PercentOutput, rightOutput);
         leftMotors.set(leftOutput);
         rightMotors.set(rightOutput);
     }
@@ -200,12 +193,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
         driveShifterLeft.set(DoubleSolenoid.Value.kReverse);
     }
 
-
     public double getVelocity() {
         return -Constants.AutoConstants.kDriveKinematics.toChassisSpeeds(getWheelSpeeds()).omegaRadiansPerSecond;
     }
-
-
 
     public Pose2d getPose() { // Returns the Pose2d object of the robot in meters
         return odometry.getPoseMeters();

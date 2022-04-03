@@ -39,7 +39,7 @@ public class QueueBalls extends CommandBase {
                 //This only runs the first time we see a ball with the proximity sensor. start the intakeToIndexer
                 // wheels and flag that we see a ball
                 portalSubsystem.startPortal();
-                if (!ballQueued) queueStartTime = System.currentTimeMillis();
+                queueStartTime = System.currentTimeMillis();
                 ballQueued = true;
             } else if (!intakeSubsystem.isRunning) {
                 //If we don't see a ball we should stop the portal motor unless the intake is running, in
