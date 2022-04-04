@@ -9,8 +9,8 @@ import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
-import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.Constants;
+import frc.robot.subsystems.DrivetrainSubsystem;
 
 public class AutoRoutine0Part1 extends CommandBase {
   private final RamseteCommand ramseteCommand;

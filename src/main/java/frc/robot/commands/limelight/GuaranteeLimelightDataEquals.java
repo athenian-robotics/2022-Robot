@@ -23,6 +23,13 @@ public class GuaranteeLimelightDataEquals extends CommandBase {
     this.dataLatch = new LimelightDataLatch(dataType, 5);
   }
 
+  public GuaranteeLimelightDataEquals(LimelightSubsystem limelightSubsystem) {
+    this.limelightSubsystem = limelightSubsystem;
+    this.valueToGuarantee = 0;
+    this.tolerance = 1;
+    this.dataLatch = new LimelightDataLatch(LimelightDataType.HORIZONTAL_OFFSET, 5);
+  }
+
   @Override
   public void initialize() {
     limelightSubsystem.addLatch(dataLatch);

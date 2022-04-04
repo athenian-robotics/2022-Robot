@@ -32,6 +32,12 @@ public class LimelightSubsystem extends SubsystemBase {
   public void disable() {
     latchManager.clearPool();
   }
+  //  TODO: get absolute position and tweak pose estimator
+  //  public Pose2d getLimelightPose() {
+  //    return new Pose2d(
+  //
+  //    );
+  //  }
 
   public void periodic() {
     Double[] lloutput =

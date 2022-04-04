@@ -12,24 +12,26 @@ import frc.robot.commands.shooter.DisableShooter;
 import frc.robot.commands.shooter.SetShooterPower;
 import frc.robot.subsystems.*;
 
-
 public class ShootLowGoalNextToTarget extends SequentialCommandGroup {
-    public ShootLowGoalNextToTarget(DrivetrainSubsystem drivetrain, IndexerSubsystem indexer,
-                                    IntakeSubsystem intake, ShooterSubsystem shooter, HoodSubsystem hood, PortalSubsystem portal) {
-        //Prepare
-        addCommands(
+  public ShootLowGoalNextToTarget(
+      DrivetrainSubsystem drivetrain,
+      IndexerSubsystem indexer,
+      IntakeSubsystem intake,
+      ShooterSubsystem shooter,
+      HoodSubsystem hood,
+      PortalSubsystem portal) {
+    // Prepare
+    addCommands(
         new DisableDrivetrain(drivetrain),
-                new DisableIntake(intake),
-                //Align to shoot
-                new SetShooterPower(shooter, 17.5),
-                new SetHoodAngleTimeSafe(hood, Constants.MechanismConstants.defaultHoodAngle),
-                //Shoot Balls
-                new ShootIndexedBallsForever(indexer, intake, portal).withTimeout(2),
-                //Return to teleop
-                new ParallelCommandGroup(
-                        new DisableShooter(shooter),
-                        new SetHoodAngle(hood, Constants.MechanismConstants.defaultHoodAngle)
-                )
-        );
-    }
+        new DisableIntake(intake),
+        // Align to shoot
+        new SetShooterPower(shooter, 17.5),
+        new SetHoodAngleTimeSafe(hood, Constants.MechanismConstants.defaultHoodAngle),
+        // Shoot Balls
+        new ShootIndexedBallsForever(indexer, intake, portal).withTimeout(2),
+        // Return to teleop
+        new ParallelCommandGroup(
+            new DisableShooter(shooter),
+            new SetHoodAngle(hood, Constants.MechanismConstants.defaultHoodAngle)));
+  }
 }

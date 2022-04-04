@@ -8,38 +8,40 @@ import frc.robot.lib.shooterData.ShooterDataTable;
 import frc.robot.subsystems.HoodSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
 
-
-//If limelight data isn't found within a quarter-second, the default hood angle will be set.
+// If limelight data isn't found within a quarter-second, the default hood angle will be set.
 public class SetHoodAngleWithLimelight extends CommandBase {
-    private final ShooterDataTable shooterDataTable;
-    private final LimelightSubsystem limelightSubsystem;
-    private final HoodSubsystem hoodSubsystem;
-    private final LimelightDataLatch distanceLatch;
+  private final ShooterDataTable shooterDataTable;
+  private final LimelightSubsystem limelightSubsystem;
+  private final HoodSubsystem hoodSubsystem;
+  private final LimelightDataLatch distanceLatch;
 
-    public SetHoodAngleWithLimelight(ShooterDataTable shooterDataTable, LimelightSubsystem limelightSubsystem, HoodSubsystem hoodSubsystem) {
-        this.shooterDataTable = shooterDataTable;
-        this.limelightSubsystem = limelightSubsystem;
-        this.hoodSubsystem = hoodSubsystem;
-        this.distanceLatch = new LimelightDataLatch(LimelightDataType.DISTANCE);
-        addRequirements(this.hoodSubsystem);
-    }
+  public SetHoodAngleWithLimelight(
+      ShooterDataTable shooterDataTable,
+      LimelightSubsystem limelightSubsystem,
+      HoodSubsystem hoodSubsystem) {
+    this.shooterDataTable = shooterDataTable;
+    this.limelightSubsystem = limelightSubsystem;
+    this.hoodSubsystem = hoodSubsystem;
+    this.distanceLatch = new LimelightDataLatch(LimelightDataType.DISTANCE);
+    addRequirements(this.hoodSubsystem);
+  }
 
-    @Override
-    public void initialize() {
-        limelightSubsystem.addLatch(distanceLatch);
-    }
+  @Override
+  public void initialize() {
+    limelightSubsystem.addLatch(distanceLatch);
+  }
 
-    @Override
-    public boolean isFinished() {
-        try {
-            return distanceLatch.unlocked();
-        } catch (GoalNotFoundException e) {
-            return true;
-        }
+  @Override
+  public boolean isFinished() {
+    try {
+      return distanceLatch.unlocked();
+    } catch (GoalNotFoundException e) {
+      return true;
     }
+  }
 
-    @Override
-    public void end(boolean interrupted) {
-        hoodSubsystem.setHoodAngle(shooterDataTable.getSpecs(distanceLatch.open()).getAngle());
-    }
+  @Override
+  public void end(boolean interrupted) {
+    hoodSubsystem.setHoodAngle(shooterDataTable.getSpecs(distanceLatch.open()).getAngle());
+  }
 }
