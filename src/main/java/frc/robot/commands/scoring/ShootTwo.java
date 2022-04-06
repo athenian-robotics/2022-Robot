@@ -9,6 +9,7 @@ import frc.robot.commands.limelight.GuaranteeLimelightData;
 import frc.robot.commands.limelight.GuaranteeLimelightDataEquals;
 import frc.robot.commands.shooter.DisableShooter;
 import frc.robot.commands.shooter.SetShooterPowerWithLimelight;
+import frc.robot.lib.limelight.LimelightDataType;
 import frc.robot.lib.shooterData.ShooterDataTable;
 import frc.robot.subsystems.*;
 
@@ -29,7 +30,7 @@ public class ShootTwo extends SequentialCommandGroup {
             // Find target while manually turning turret
             new GuaranteeLimelightData(limelight),
             // Set shooter power, angle, and offset while turning to goal
-            new GuaranteeLimelightDataEquals(limelight),
+            new GuaranteeLimelightDataEquals(limelight, LimelightDataType.HORIZONTAL_OFFSET, 0, Math.toRadians(1)),
             new SetShooterPowerWithLimelight(shooterDataTable, limelight, outtake),
             // Shoot Balls
             new ShootIndexedBallsForever(indexer, intake, portal).withTimeout(1.75),

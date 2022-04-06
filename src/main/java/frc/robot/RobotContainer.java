@@ -4,11 +4,6 @@
 
 package frc.robot;
 
-import static frc.robot.Constants.MechanismConstants.telescopeSpeed;
-import static frc.robot.Constants.MechanismConstants.winchSpeed;
-import static frc.robot.lib.controllers.FightStick.fightStickLT;
-import static frc.robot.lib.controllers.FightStick.fightStickShare;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
@@ -22,22 +17,31 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.auto.*;
-import frc.robot.commands.climb.*;
+import frc.robot.commands.climb.SetBothTelescopeSpeed;
+import frc.robot.commands.climb.WinchSetSpeed;
 import frc.robot.commands.drive.ArcadeDrive;
 import frc.robot.commands.drive.TankDrive;
 import frc.robot.commands.hood.SetHoodAngleWithLimelight;
 import frc.robot.commands.intake.RunIntakeWithoutPneumatics;
 import frc.robot.commands.intake.ToggleIntake;
 import frc.robot.commands.portal.QueueBalls;
-import frc.robot.commands.scoring.*;
+import frc.robot.commands.scoring.ShootBalls;
+import frc.robot.commands.scoring.ShootLowGoalNextToTarget;
+import frc.robot.commands.scoring.ShootTwo;
 import frc.robot.commands.turret.AutoAimTurret;
 import frc.robot.commands.turret.ManualAdjustTurret;
 import frc.robot.lib.controllers.FightStick;
 import frc.robot.lib.shooterData.ShooterDataTable;
 import frc.robot.localization.Localization;
 import frc.robot.subsystems.*;
+
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
+
+import static frc.robot.Constants.MechanismConstants.telescopeSpeed;
+import static frc.robot.Constants.MechanismConstants.winchSpeed;
+import static frc.robot.lib.controllers.FightStick.fightStickLT;
+import static frc.robot.lib.controllers.FightStick.fightStickShare;
 
 public class RobotContainer {
   // CONTROLLERS
@@ -125,7 +129,7 @@ public class RobotContainer {
     /* MISC COMMANDS (Random lib of commands. Written using functional commands because most are just one line ) */
     // have fun with this - jason and jacob '22   ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ
     // two things: the amonguses broke CI and i had to fix and u wrote it wrong,
-    // u should have used instant commands instead of functional commands
+    // u should have used instant commands instead of functional commands rohan '24
     xboxSquares.whenPressed(
         new InstantCommand( // Toggle drive mode
             () -> {
