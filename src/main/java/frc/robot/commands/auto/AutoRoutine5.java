@@ -1,7 +1,6 @@
 package frc.robot.commands.auto;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.commands.auto.AutoRoutine1Contents.AutoRoutine5Part1;
 import frc.robot.commands.intake.ToggleIntake;
 import frc.robot.commands.scoring.ShootTwoWithoutTurret;
 import frc.robot.lib.shooterData.ShooterDataTable;
@@ -19,8 +18,7 @@ public class AutoRoutine5 extends SequentialCommandGroup {
       ShooterDataTable shooterDataTable) {
     addCommands(
         new ToggleIntake(intake, portal),
-        new AutoRoutine5Part1(drivetrain),
-        new ToggleIntake(intake, portal),
+        new AutoRoutine6(drivetrain, "Auto Routine 5 Part 1", 4, .6, true),
         new ShootTwoWithoutTurret(
             indexer, intake, shooter, hood, portal, limelight, shooterDataTable));
   }

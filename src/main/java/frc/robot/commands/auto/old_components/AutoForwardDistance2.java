@@ -1,16 +1,16 @@
-package frc.robot.commands.auto;
+package frc.robot.commands.auto.old_components;
 
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DrivetrainSubsystem;
 
-public class AutoForwardDistance extends CommandBase {
+public class AutoForwardDistance2 extends CommandBase {
   private final double setpoint;
   private final Encoder leftEnc;
   private final Encoder rightEnc;
   private final DrivetrainSubsystem drivetrainSubsystem;
 
-  public AutoForwardDistance(DrivetrainSubsystem drivetrainSubsystem, double metersToDrive) {
+  public AutoForwardDistance2(DrivetrainSubsystem drivetrainSubsystem, double metersToDrive) {
     this.drivetrainSubsystem = drivetrainSubsystem;
     leftEnc = drivetrainSubsystem.leftEncoder;
     rightEnc = drivetrainSubsystem.rightEncoder;

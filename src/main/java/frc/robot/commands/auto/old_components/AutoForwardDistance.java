@@ -1,4 +1,4 @@
-package frc.robot.commands.auto.components;
+package frc.robot.commands.auto.old_components;
 
 import static frc.robot.Constants.DriveConstants.maxAutoSpeed;
 
