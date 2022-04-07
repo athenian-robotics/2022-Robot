@@ -7,12 +7,13 @@ import frc.robot.lib.limelight.LimelightDataType;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
 
-public class AutoAimTurret extends CommandBase {
+public class TurretTurnToGoalWithLimelight extends CommandBase {
   private final LimelightSubsystem limelightSubsystem;
   private final TurretSubsystem turretSubsystem;
   private final LimelightDataLatch offsetLatch;
 
-  public AutoAimTurret(LimelightSubsystem limelightSubsystem, TurretSubsystem turretSubsystem) {
+  public TurretTurnToGoalWithLimelight(
+      LimelightSubsystem limelightSubsystem, TurretSubsystem turretSubsystem) {
     this.limelightSubsystem = limelightSubsystem;
     this.turretSubsystem = turretSubsystem;
     offsetLatch = new LimelightDataLatch(LimelightDataType.HORIZONTAL_OFFSET, 5);

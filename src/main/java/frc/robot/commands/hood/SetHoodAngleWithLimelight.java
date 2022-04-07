@@ -22,7 +22,7 @@ public class SetHoodAngleWithLimelight extends CommandBase {
     this.shooterDataTable = shooterDataTable;
     this.limelightSubsystem = limelightSubsystem;
     this.hoodSubsystem = hoodSubsystem;
-    this.distanceLatch = new LimelightDataLatch(LimelightDataType.DISTANCE);
+    this.distanceLatch = new LimelightDataLatch(LimelightDataType.DISTANCE, 5);
     addRequirements(this.hoodSubsystem);
   }
 
@@ -36,7 +36,8 @@ public class SetHoodAngleWithLimelight extends CommandBase {
     try {
       return distanceLatch.unlocked();
     } catch (GoalNotFoundException e) {
-      return true;
+      limelightSubsystem.addLatch(distanceLatch.reset());
+      return false;
     }
   }
 

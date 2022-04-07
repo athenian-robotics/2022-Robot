@@ -73,7 +73,7 @@ public final class Constants {
     // TURRET
     public static final int turretMotorPort = 10;
     public static final double turretTurnSpeed = 0.075;
-    public static final double slowTurretTurnSpeed = 0.05;
+    public static final double slowTurretTurnSpeed = 0.06;
     // SHOOTER
     public static final int shooterMotorPortA = 7;
     public static final int shooterMotorPortB = 8;
@@ -86,7 +86,7 @@ public final class Constants {
     public static final double maximumTurretAngleRadians = Math.toRadians(90);
     public static final double minimumTurretAngleRadians = Math.toRadians(-210);
     // MAX MECHANISM SPEEDS
-    public static final double intakeSpeed = 0.275;
+    public static final double intakeSpeed = 0.3;
   }
 
   public static final class PneumaticConstants {

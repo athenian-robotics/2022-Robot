@@ -1,6 +1,7 @@
 package frc.robot.commands.scoring;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.commands.hood.SetHoodAngleWithLimelightTimeSafe;
 import frc.robot.commands.indexer.ShootIndexedBallsForever;
 import frc.robot.commands.intake.DisableIntake;
 import frc.robot.commands.shooter.DisableShooter;
@@ -14,6 +15,7 @@ public class ShootTwoWithoutTurret extends SequentialCommandGroup {
       IndexerSubsystem indexer,
       IntakeSubsystem intake,
       ShooterSubsystem shooter,
+      HoodSubsystem hood,
       PortalSubsystem portal,
       LimelightSubsystem limelight,
       ShooterDataTable shooterDataTable) {
@@ -22,6 +24,7 @@ public class ShootTwoWithoutTurret extends SequentialCommandGroup {
         new DisableIntake(intake),
         // Align to shoot,
         new SetShooterPowerWithLimelight(shooterDataTable, limelight, shooter),
+        new SetHoodAngleWithLimelightTimeSafe(shooterDataTable, limelight, hood),
         // Shoot Balls
         new ShootIndexedBallsForever(indexer, intake, portal).withTimeout(1.75),
         // Return to

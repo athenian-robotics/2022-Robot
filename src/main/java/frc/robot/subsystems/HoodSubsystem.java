@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class HoodSubsystem extends SubsystemBase {
   private final Servo leftHoodAngleServo = new Servo(leftHoodServoPort);
   private final Servo rightHoodAngleServo = new Servo(rightHoodServoPort);
+  public double lastHoodAngle;
 
   public HoodSubsystem() {
     leftHoodAngleServo.setBounds(
@@ -18,9 +19,10 @@ public class HoodSubsystem extends SubsystemBase {
   }
 
   public void setHoodAngle(double angle) {
+    lastHoodAngle = getHoodAngle();
     if (angle >= minimumHoodAngle && angle <= maximumHoodAngle) {
       leftHoodAngleServo.setAngle(
-          180 * (angle - minimumHoodAngle) / (maximumHoodAngle - minimumHoodAngle)); //
+          180 * (angle - minimumHoodAngle) / (maximumHoodAngle - minimumHoodAngle));
       // 0 - 180 DEGREES
       rightHoodAngleServo.setAngle(
           180 * (angle - minimumHoodAngle) / (maximumHoodAngle - minimumHoodAngle));
@@ -45,5 +47,6 @@ public class HoodSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putNumber("Hood Angle", getHoodAngle());
+    SmartDashboard.putNumber("lastHoodAngle", lastHoodAngle);
   }
 }

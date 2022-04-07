@@ -15,6 +15,9 @@ public class ShooterDataTable implements Serializable {
   private static final double K = 3.333334;
   private static final int LINEAR = 1;
 
+  private static final double shooterDataTableScalar =
+      1; // we had to change the limelight code and scale the distances to what they used to be
+
   // Sets up the data table and pushes in empty specs
   public ShooterDataTable() {
     /*
@@ -45,6 +48,7 @@ public class ShooterDataTable implements Serializable {
   // gets the desired specs for shooter at a distance, linearly interpolating between the
   // two closest data points.
   public ShooterSpec getSpecs(double distance) {
+    distance = distance * shooterDataTableScalar;
     if (distance <= MINDIST || distance >= MAXDIST) return new ShooterSpec();
     if (dataTable.containsKey(distance)) return dataTable.get(distance);
 

@@ -12,7 +12,8 @@ public class AutoRoutine4 extends SequentialCommandGroup {
       DrivetrainSubsystem drivetrain,
       IndexerSubsystem indexer,
       IntakeSubsystem intake,
-      ShooterSubsystem outtake,
+      ShooterSubsystem shooter,
+      HoodSubsystem hood,
       PortalSubsystem portal,
       LimelightSubsystem limelight,
       ShooterDataTable shooterDataTable) {
@@ -22,7 +23,7 @@ public class AutoRoutine4 extends SequentialCommandGroup {
             new AutoRoutine1Part1(drivetrain), // moves left to other ball
             // moves down to ball under starting position
             new ShootTwoWithoutTurret(
-                indexer, intake, outtake, portal, limelight, shooterDataTable),
+                indexer, intake, shooter, hood, portal, limelight, shooterDataTable),
             new AutoRoutine1Part2(drivetrain),
             new ToggleIntake(intake, portal),
             new AutoRoutine1Part25(drivetrain), // moves left to other ball
@@ -30,6 +31,6 @@ public class AutoRoutine4 extends SequentialCommandGroup {
             new ToggleIntake(intake, portal),
             new AutoRoutine1Part4(drivetrain), // drives back closer to the goal
             new ShootTwoWithoutTurret(
-                indexer, intake, outtake, portal, limelight, shooterDataTable)));
+                indexer, intake, shooter, hood, portal, limelight, shooterDataTable)));
   }
 }

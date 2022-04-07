@@ -27,6 +27,10 @@ public class PortalSubsystem extends SubsystemBase {
     portalMotor.set(Constants.MechanismConstants.intakeToIndexerSpeed);
   }
 
+  public void startPortalInverted() {
+    portalMotor.set(-Constants.MechanismConstants.intakeToIndexerSpeed);
+  }
+
   public void stopPortal() {
     portalMotor.set(0);
   }

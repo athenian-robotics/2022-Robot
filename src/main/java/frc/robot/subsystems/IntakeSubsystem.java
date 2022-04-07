@@ -1,7 +1,5 @@
 package frc.robot.subsystems;
 
-import static frc.robot.Constants.PneumaticConstants.*;
-
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
@@ -12,6 +10,8 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+
+import static frc.robot.Constants.PneumaticConstants.*;
 
 public class IntakeSubsystem extends SubsystemBase {
   // Configure intake motor, solenoid, and booleans
@@ -24,8 +24,6 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public boolean isRunning = false;
   public boolean isExtended = false;
-  public boolean isInverted = false;
-  public final boolean intakeToIndexerRunning = false;
 
   public IntakeSubsystem() {
     intakeMotor.configFactoryDefault(); // Initialize motor set up
@@ -52,11 +50,8 @@ public class IntakeSubsystem extends SubsystemBase {
     else startIntake();
   } // Toggles intake
 
-  public void invertIntake() { // Inverts intake wheel direction
-    isInverted = !this.isInverted;
-    int sign = isInverted ? 1 : -1;
-    if (isRunning)
-      intakeMotor.set(ControlMode.PercentOutput, sign * Constants.MechanismConstants.intakeSpeed);
+  public void startIntakeInverted() { // Inverts intake wheel direction
+    intakeMotor.set(ControlMode.PercentOutput, -Constants.MechanismConstants.intakeSpeed);
   }
 
   public void extendPneumatic() { // Extends pneumatic

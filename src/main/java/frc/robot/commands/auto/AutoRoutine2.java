@@ -14,6 +14,7 @@ public class AutoRoutine2 extends SequentialCommandGroup {
       IndexerSubsystem indexer,
       IntakeSubsystem intake,
       ShooterSubsystem shooter,
+      HoodSubsystem hood,
       PortalSubsystem portal,
       LimelightSubsystem limelight,
       ShooterDataTable shooterDataTable) {
@@ -23,7 +24,7 @@ public class AutoRoutine2 extends SequentialCommandGroup {
             new AutoRoutine2Part1(drivetrain), // drives up to ball
             new ToggleIntake(intake, portal),
             new ShootTwoWithoutTurret(
-                indexer, intake, shooter, portal, limelight, shooterDataTable),
+                indexer, intake, shooter, hood, portal, limelight, shooterDataTable),
             new AutoRoutine2Part2(drivetrain) // drives to the right to get another ball
             ));
   }

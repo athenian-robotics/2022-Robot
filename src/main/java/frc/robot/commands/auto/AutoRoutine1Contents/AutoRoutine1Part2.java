@@ -33,8 +33,7 @@ public class AutoRoutine1Part2 extends CommandBase {
 
     // Create config for trajectory
     TrajectoryConfig config =
-        new TrajectoryConfig(
-                Constants.AutoConstants.maxAutoSpeed, 1)
+        new TrajectoryConfig(Constants.AutoConstants.maxAutoSpeed, 1)
             // Add kinematics to ensure max speed is actually obeyed
             .setKinematics(Constants.AutoConstants.kDriveKinematics)
             // Apply the voltage constraint

@@ -207,6 +207,14 @@ public class DrivetrainSubsystem extends SubsystemBase {
     return Math.IEEEremainder(-gyro.getAngle(), 360);
   } // Gets the gyro's heading, scaled
 
+  public double getGyroRateRadians() {
+    return Math.toRadians(gyro.getRate());
+  }
+
+  public double getGyroAccelRadians() {
+    return gyro.getWorldLinearAccelZ();
+  }
+
   private void resetEncoders() { // Resets the drive encoders
     leftEncoder.reset();
     rightEncoder.reset();

@@ -5,6 +5,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.lib.limelight.LimelightDataLatch;
+import frc.robot.lib.limelight.LimelightDataType;
 import java.util.LinkedList;
 
 // YOU DON'T NEED TO REQUIRE LIMELIGHTSUBSYSTEM IN COMMANDS!
@@ -18,15 +19,6 @@ public class LimelightSubsystem extends SubsystemBase {
 
   public void addLatch(LimelightDataLatch latch) {
     latchManager.addLatch(latch);
-  }
-
-  public boolean checkGoalNotFound() {
-    Double[] lloutput =
-        (Double[])
-            limelight
-                .getEntry("llpython")
-                .getNumberArray(new Number[] {-1, -1, -1, -1, -1, -1, -1, -9});
-    return lloutput[7] == (double) -1;
   }
 
   public void disable() {
@@ -46,8 +38,6 @@ public class LimelightSubsystem extends SubsystemBase {
                 .getEntry("llpython")
                 .getNumberArray(new Number[] {-1, -1, -1, -1, -1, -1, -1, -9});
     latchManager.update(lloutput);
-    SmartDashboard.putNumber("X Offset", lloutput[1]);
-    SmartDashboard.putNumber("Distance from Target", lloutput[0]);
   }
 
   // Keeps a record of Latches waiting to be opened, and opens them when valid data comes along (see
@@ -61,6 +51,14 @@ public class LimelightSubsystem extends SubsystemBase {
         while (latchPool.size() != 0) {
           LimelightDataLatch currentLatch = latchPool.pollFirst();
           currentLatch.unlock(limelightOutputArray[currentLatch.limelightDataType.llpythonIndex]);
+          if (currentLatch.limelightDataType == LimelightDataType.DISTANCE)
+            SmartDashboard.putNumber(
+                "Limelight Distance",
+                limelightOutputArray[currentLatch.limelightDataType.llpythonIndex]);
+          else
+            SmartDashboard.putNumber(
+                "Limelight Offset Degrees",
+                Math.toDegrees(limelightOutputArray[currentLatch.limelightDataType.llpythonIndex]));
         }
       } else {
         latchPool.removeIf(LimelightDataLatch::expired);

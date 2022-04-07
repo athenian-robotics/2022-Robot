@@ -5,11 +5,9 @@ import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
-import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
-import org.ejml.data.SingularMatrixException;
 
 public class Localization extends SubsystemBase { // quick hack, should not extend subsytemBase
   private final DrivetrainSubsystem drivetrain;
@@ -39,14 +37,14 @@ public class Localization extends SubsystemBase { // quick hack, should not exte
   // TODO: use vision to update pose estimator
   @Override
   public void periodic() {
-    DifferentialDriveWheelSpeeds wheelSpeeds = drivetrain.getWheelSpeeds();
-    Rotation2d rotation = drivetrain.getRotation2d();
-    double leftDistance = drivetrain.getLeftDistanceDriven();
-    double rightDistance = drivetrain.getRightDistanceDriven();
-    try {
-      Pose2d localizationPose =
-          poseEstimator.update(rotation, wheelSpeeds, leftDistance, rightDistance);
-    } catch (SingularMatrixException ignored) {
-    }
+    //    DifferentialDriveWheelSpeeds wheelSpeeds = drivetrain.getWheelSpeeds();
+    //    Rotation2d rotation = drivetrain.getRotation2d();
+    //    double leftDistance = drivetrain.getLeftDistanceDriven();
+    //    double rightDistance = drivetrain.getRightDistanceDriven();
+    //    try {
+    //      Pose2d localizationPose =
+    //          poseEstimator.update(rotation, wheelSpeeds, leftDistance, rightDistance);
+    //    } catch (SingularMatrixException ignored) {
+    //    }
   }
 }
