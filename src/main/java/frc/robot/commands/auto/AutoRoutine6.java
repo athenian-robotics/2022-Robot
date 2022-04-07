@@ -1,49 +1,36 @@
 package frc.robot.commands.auto;
 
 import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
-import frc.robot.Constants;
 import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.Constants;
 
+import static frc.robot.Constants.AutoConstants.maxAutoAcceleration;
+import static frc.robot.Constants.AutoConstants.maxAutoSpeed;
+
+
+//generalized auto movement command :)
 public class AutoRoutine6 extends CommandBase {
   private final RamseteCommand ramseteCommand;
+  private final PathPlannerTrajectory trajectory;
+  private final DrivetrainSubsystem drivetrain;
+  private final boolean resetOdomety;
 
-  public AutoRoutine6(DrivetrainSubsystem drivetrainSubsystem) {
+  public AutoRoutine6(DrivetrainSubsystem drivetrainSubsystem, String pathName, double maxVel, double maxAccel, boolean resetOdometry) {
+    this.drivetrain = drivetrainSubsystem;
+    this.resetOdomety = resetOdometry;
     addRequirements(drivetrainSubsystem);
 
-    // Create a voltage constraint to ensure we don't accelerate too fast
-    var autoVoltageConstraint =
-        new DifferentialDriveVoltageConstraint(
-            new SimpleMotorFeedforward(
-                Constants.AutoConstants.ksVolts,
-                Constants.AutoConstants.kvVoltSecondsPerMeter,
-                Constants.AutoConstants.kaVoltSecondsSquaredPerMeter),
-            Constants.AutoConstants.kDriveKinematics,
-            Constants.AutoConstants.maxVolts);
-
-    // Create config for trajectory
-    TrajectoryConfig config =
-        new TrajectoryConfig(
-                Constants.AutoConstants.maxAutoSpeed, Constants.AutoConstants.maxAutoAcceleration)
-            // Add kinematics to ensure max speed is actually obeyed
-            .setKinematics(Constants.AutoConstants.kDriveKinematics)
-            // Apply the voltage constraint
-            .addConstraint(autoVoltageConstraint);
-
-    // An example trajectory to follow.  All units in meters.
-    // create a new trajectory 1 meter forward
-    Trajectory exampleTrajectory = PathPlanner.loadPath("New Path", 0.5, 0.5);
-
-    this.ramseteCommand =
+    //load path from name
+    trajectory = PathPlanner.loadPath(pathName, Math.min(maxVel, maxAutoSpeed), Math.min(maxAccel, maxAutoAcceleration));
+    ramseteCommand =
         new RamseteCommand(
-            exampleTrajectory,
+            trajectory,
             drivetrainSubsystem::getPose,
             new RamseteController(
                 Constants.AutoConstants.kRamseteB, Constants.AutoConstants.kRamseteZeta),
@@ -58,15 +45,12 @@ public class AutoRoutine6 extends CommandBase {
             // RamseteCommand passes volts to the callback
             drivetrainSubsystem::tankDriveVolts,
             drivetrainSubsystem);
-
-    // Reset odometry to the starting pose of the trajectory.
-    drivetrainSubsystem.resetOdometry(exampleTrajectory.getInitialPose());
-    // Run path following command, then stop at the end.
   }
 
   /** The initial subroutine of a command. Called once when the command is initially scheduled. */
   @Override
   public void initialize() {
+    if (resetOdomety) drivetrain.resetOdometry(trajectory.getInitialPose()); // Reset odometry to the starting pose of the trajectory.
     ramseteCommand.initialize();
   }
 
