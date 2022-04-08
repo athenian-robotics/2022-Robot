@@ -26,7 +26,7 @@ public class ShootTwoWithoutTurret extends SequentialCommandGroup {
         new SetShooterPowerWithLimelight(shooterDataTable, limelight, shooter),
         new SetHoodAngleWithLimelightTimeSafe(shooterDataTable, limelight, hood),
         // Shoot Balls
-        new ShootIndexedBallsForever(indexer, intake, portal).withTimeout(1.75),
+        new ShootIndexedBallsForever(indexer, intake, portal).withTimeout(2.2),
         // Return to
         new DisableShooter(shooter));
   }

@@ -4,15 +4,19 @@
 
 package frc.robot;
 
+import static frc.robot.Constants.MechanismConstants.telescopeSpeed;
+import static frc.robot.Constants.MechanismConstants.winchSpeed;
+import static frc.robot.lib.controllers.FightStick.fightStickLT;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.util.net.PortForwarder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Axis;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -20,28 +24,22 @@ import frc.robot.commands.auto.*;
 import frc.robot.commands.climb.SetBothTelescopeSpeed;
 import frc.robot.commands.climb.WinchSetSpeed;
 import frc.robot.commands.drive.ArcadeDrive;
-import frc.robot.commands.drive.TankDrive;
 import frc.robot.commands.hood.SetHoodAngleTimeSafe;
 import frc.robot.commands.hood.SetHoodAngleWithLimelightTimeSafe;
 import frc.robot.commands.intake.RunIntakeBackwards;
 import frc.robot.commands.intake.RunIntakeWithoutPneumatics;
 import frc.robot.commands.intake.ToggleIntake;
 import frc.robot.commands.portal.QueueBalls;
+import frc.robot.commands.scoring.ShootHighGoalNextToTarget;
 import frc.robot.commands.scoring.ShootLowGoalNextToTarget;
 import frc.robot.commands.scoring.ShootOne;
 import frc.robot.commands.scoring.ShootTwo;
 import frc.robot.commands.turret.TurretTurnToGoalWithLimelightOrManualAdjustTurret;
 import frc.robot.lib.controllers.FightStick;
 import frc.robot.lib.shooterData.ShooterDataTable;
-import frc.robot.localization.Localization;
 import frc.robot.subsystems.*;
-
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
-
-import static frc.robot.Constants.MechanismConstants.telescopeSpeed;
-import static frc.robot.Constants.MechanismConstants.winchSpeed;
-import static frc.robot.lib.controllers.FightStick.fightStickLT;
 
 public class RobotContainer {
   // CONTROLLERS
@@ -68,10 +66,10 @@ public class RobotContainer {
   public static final IntakeSubsystem intake = new IntakeSubsystem();
   public static final ClimberSubsystem climb = new ClimberSubsystem();
   public static final ShooterSubsystem shooter = new ShooterSubsystem();
-  public static final TurretSubsystem turret = new TurretSubsystem(limelight);
+  public static final TurretSubsystem turret = new TurretSubsystem(limelight, drivetrain);
   public static final HoodSubsystem hood = new HoodSubsystem();
   public static final LEDSubsystem led = new LEDSubsystem();
-  public static Localization localization;
+  public static PoseEstimator poseEstimator;
   // MISC
   public static DriverStation.Alliance alliance = DriverStation.Alliance.Blue;
   public static ShooterDataTable shooterDataTable;
@@ -97,7 +95,11 @@ public class RobotContainer {
     configureDefaultCommands();
     portForwardLimelightPorts();
     // TODO: get init pose from shuffle board
-    localization = new Localization(drivetrain, limelight, new Pose2d());
+    poseEstimator = new PoseEstimator(drivetrain, limelight, new Pose2d());
+
+    Shuffleboard.getTab("852 - Dashboard")
+        .add("Chooser", chooser)
+        .withWidget(BuiltInWidgets.kComboBoxChooser);
   }
 
   // Configures xbox buttons to commands
@@ -116,13 +118,13 @@ public class RobotContainer {
     FightStick.fightStickR3.whenHeld(
         new WinchSetSpeed(climb, winchSpeed)); // Toggle indexer (tower portion)
     fightStickLT.whenActive(
-        new ShootLowGoalNextToTarget(drivetrain, indexer, intake, shooter, hood, portal));
+        new ShootHighGoalNextToTarget(drivetrain, indexer, intake, shooter, hood, portal, turret));
     FightStick.fightStickX.whenPressed(
         new ShootOne(
             climb, drivetrain, indexer, intake, shooter, portal, limelight, shooterDataTable));
 
     xboxB.whenPressed(
-        new ShootLowGoalNextToTarget(drivetrain, indexer, intake, shooter, hood, portal));
+        new ShootLowGoalNextToTarget(drivetrain, indexer, intake, shooter, hood, portal, turret));
     xboxA.whenPressed(new ToggleIntake(intake, portal));
     xboxRB.whenPressed(
         new ShootTwo(indexer, intake, shooter, portal, hood, turret, limelight, shooterDataTable));
@@ -131,16 +133,16 @@ public class RobotContainer {
     // have fun with this - jason and jacob '22   ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ
     // two things: the amonguses broke CI and i had to fix and u wrote it wrong,
     // u should have used instant commands instead of functional commands rohan '24
-    xboxSquares.whenPressed(
-        new InstantCommand( // Toggle drive mode
-            () -> {
-              if (drivetrain.getDefaultCommand() instanceof ArcadeDrive)
-                drivetrain.setDefaultCommand(new TankDrive(drivetrain, xboxController));
-              else drivetrain.setDefaultCommand(new ArcadeDrive(drivetrain, xboxController));
-            },
-            drivetrain));
-    xboxLP.whenPressed(new InstantCommand(drivetrain::shiftDown, drivetrain)); // Shift down
-    xboxRP.whenPressed(new InstantCommand(drivetrain::shiftUp, drivetrain)); // Shift up
+    //    xboxSquares.whenPressed(
+    //        new InstantCommand( // Toggle drive mode
+    //            () -> {
+    //              if (drivetrain.getDefaultCommand() instanceof ArcadeDrive)
+    //                drivetrain.setDefaultCommand(new TankDrive(drivetrain, xboxController));
+    //              else drivetrain.setDefaultCommand(new ArcadeDrive(drivetrain, xboxController));
+    //            },
+    //            drivetrain));
+    //    xboxLP.whenPressed(new InstantCommand(drivetrain::shiftDown, drivetrain)); // Shift down
+    //    xboxRP.whenPressed(new InstantCommand(drivetrain::shiftUp, drivetrain)); // Shift up
     xboxX.whenHeld(new RunIntakeBackwards(intake, portal));
     xboxY.whenPressed(new SetHoodAngleTimeSafe(hood, 10));
   }
@@ -161,34 +163,73 @@ public class RobotContainer {
   }
 
   private void configureAutoChooser() {
-    SmartDashboard.putData("AutoChooser", chooser);
     chooser.setDefaultOption("0: 2.5 Meters Forward", new AutoRoutine0(drivetrain));
     chooser.addOption(
         "1: 5 Ball Auto - Bottom Left Start",
         new AutoRoutine1(
-            drivetrain, indexer, intake, shooter, hood, portal, limelight, shooterDataTable));
+            drivetrain,
+            indexer,
+            intake,
+            shooter,
+            turret,
+            hood,
+            portal,
+            limelight,
+            shooterDataTable));
     chooser.addOption(
         "2: 2 Ball Auto - Top Left Start",
         new AutoRoutine2(
-            drivetrain, indexer, intake, shooter, hood, portal, limelight, shooterDataTable));
+            drivetrain,
+            indexer,
+            intake,
+            shooter,
+            turret,
+            hood,
+            portal,
+            limelight,
+            shooterDataTable));
     chooser.addOption(
         "3: 2 Ball Auto - Bottom Left Start",
         new AutoRoutine3(
-            drivetrain, indexer, intake, shooter, hood, portal, limelight, shooterDataTable));
+            drivetrain,
+            indexer,
+            intake,
+            shooter,
+            turret,
+            hood,
+            portal,
+            limelight,
+            shooterDataTable));
     chooser.addOption(
         "4: 4 Ball Auto - Bottom Left Start",
         new AutoRoutine4(
-            drivetrain, indexer, intake, shooter, hood, portal, limelight, shooterDataTable));
+            drivetrain,
+            indexer,
+            intake,
+            shooter,
+            turret,
+            hood,
+            portal,
+            limelight,
+            shooterDataTable));
     chooser.addOption(
         "5: 2 ball Auto",
         new AutoRoutine5(
-            drivetrain, indexer, intake, shooter, hood, portal, limelight, shooterDataTable));
+            drivetrain,
+            indexer,
+            intake,
+            shooter,
+            turret,
+            hood,
+            portal,
+            limelight,
+            shooterDataTable));
   }
 
   public void configureDefaultCommands() {
     drivetrain.setDefaultCommand(
         new ArcadeDrive(drivetrain, xboxController)); // Check for Arcade or Tank
-    portal.setDefaultCommand(new QueueBalls(portal, intake));
+    portal.setDefaultCommand(new QueueBalls(portal));
     turret.setDefaultCommand(
         new TurretTurnToGoalWithLimelightOrManualAdjustTurret(limelight, turret));
   }
@@ -209,6 +250,12 @@ public class RobotContainer {
     PortForwarder.add(5803, "limelight.local", 5803);
     PortForwarder.add(5804, "limelight.local", 5804);
     PortForwarder.add(5805, "limelight.local", 5805);
+    PortForwarder.add(5800, "10.8.52.76", 5800);
+    PortForwarder.add(5801, "10.8.52.76", 5801);
+    PortForwarder.add(5802, "10.8.52.76", 5802);
+    PortForwarder.add(5803, "10.8.52.76", 5803);
+    PortForwarder.add(5804, "10.8.52.76", 5804);
+    PortForwarder.add(5805, "10.8.52.76", 5805);
   }
 
   // Disables all robot subsystems

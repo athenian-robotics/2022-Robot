@@ -15,6 +15,7 @@ public class TurretTurnToAngleRadians extends InstantCommand {
 
   @Override
   public void initialize() {
+    turretSubsystem.turnTurret(0);
     turretSubsystem.setTurretSetpointRadians(angle);
   }
 }

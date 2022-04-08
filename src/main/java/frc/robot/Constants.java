@@ -41,9 +41,6 @@ public final class Constants {
     /** MISC CONSTANTS */
     public static final double trackWidth = Units.inchesToMeters(28);
 
-    public static final double driveGearRatio = 1;
-    public static final double wheelDiameter = 6.0; // 6 in.
-
     public static final double minDriveSpeed = 0.1;
     public static final double maxDriveSpeed = 0.95;
     public static final double maxAutoSpeed = 0.55;
@@ -61,9 +58,9 @@ public final class Constants {
     public static final int intakeMotorPort = 6;
     public static final int indexerMotorPort = 12;
     public static final int intakeToIndexerMotorPort = 13;
-    public static final double indexerSpeed = 0.35; // 0.25
-    public static final double intakeToIndexerSpeed = 0.2;
-    public static final int intakeToIndexerResidualIndexTimeMillis = 700;
+    public static final double indexerSpeed = 0.3; // 0.25
+    public static final double intakeToIndexerSpeed = 0.19;
+    public static final int intakeToIndexerResidualIndexTimeMillis = 650;
     // CLIMBER
     public static final int leftClimberMotorPort = 15;
     public static final int rightClimberMotorPort = 16;
@@ -72,7 +69,7 @@ public final class Constants {
     public static final double winchSpeed = 0.25;
     // TURRET
     public static final int turretMotorPort = 10;
-    public static final double turretTurnSpeed = 0.075;
+    public static final double turretTurnSpeed = 0.1; // 0.075
     public static final double slowTurretTurnSpeed = 0.06;
     // SHOOTER
     public static final int shooterMotorPortA = 7;
@@ -82,11 +79,9 @@ public final class Constants {
     public static final int rightHoodServoPort = 3;
     public static final double minimumHoodAngle = 8;
     public static final double maximumHoodAngle = 41;
-    public static final double defaultHoodAngle = 31;
-    public static final double maximumTurretAngleRadians = Math.toRadians(90);
-    public static final double minimumTurretAngleRadians = Math.toRadians(-210);
+    public static final double defaultHoodAngle = 33;
     // MAX MECHANISM SPEEDS
-    public static final double intakeSpeed = 0.3;
+    public static final double intakeSpeed = 0.27;
   }
 
   public static final class PneumaticConstants {

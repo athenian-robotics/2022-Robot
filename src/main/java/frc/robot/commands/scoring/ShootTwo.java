@@ -1,6 +1,7 @@
 package frc.robot.commands.scoring;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 import frc.robot.commands.hood.SetHoodAngle;
 import frc.robot.commands.hood.SetHoodAngleWithLimelightTimeSafe;
@@ -30,6 +31,7 @@ public class ShootTwo extends SequentialCommandGroup {
         // Shoot while letting Teddy drive
         // Find target while manually turning turret
         new GuaranteeLimelightData(limelight),
+        // Shoot Balls
         // Set shooter power, angle, and offset while turning to goal
         new GuaranteeLimelightDataEquals(
             limelight,
@@ -38,8 +40,9 @@ public class ShootTwo extends SequentialCommandGroup {
             turret.currentTurretToleranceRadians),
         new SetShooterPowerWithLimelight(shooterDataTable, limelight, outtake),
         new SetHoodAngleWithLimelightTimeSafe(shooterDataTable, limelight, hood),
-        // Shoot Balls
-        new ShootIndexedBallsForever(indexer, intake, portal).withTimeout(1.75),
+        new WaitCommand(1),
+        new ShootIndexedBallsForever(indexer, intake, portal).withTimeout(1.7),
+        // 1.94 <= distance <= 5 because of shooterDataTable minimums and maximums
         // Return to teleop
         new DisableShooter(outtake),
         new SetHoodAngle(hood, Constants.MechanismConstants.defaultHoodAngle));

@@ -23,12 +23,13 @@ public class TurretSubsystem extends SubsystemBase {
 
   private final LimelightSubsystem limelight;
   private final LimelightDataLatch turretToleranceDistanceLatch;
+  private final DrivetrainSubsystem drivetrain;
 
-  public boolean PIDRunning = false;
-  public boolean bangBangRunning = false;
   public double currentTurretToleranceRadians = Math.toRadians(1);
+  public boolean PIDRunning = false;
 
-  public TurretSubsystem(LimelightSubsystem limelight) {
+  public TurretSubsystem(LimelightSubsystem limelight, DrivetrainSubsystem drivetrain) {
+    this.drivetrain = drivetrain;
     this.limelight = limelight;
     turretMotor.setInverted(false);
     turretMotor.setNeutralMode(NeutralMode.Brake);
@@ -38,31 +39,19 @@ public class TurretSubsystem extends SubsystemBase {
         new SimpleMotorFeedforward(Constants.Turret.ks, Constants.Turret.kv, Constants.Turret.ka);
     turretPID =
         new ProfiledPIDController(
-            3.47, 0, 0.05, new TrapezoidProfile.Constraints(Math.PI / 2, Math.PI / 4));
+            5.85, 0.02, 1.188, new TrapezoidProfile.Constraints(4 * Math.PI, 2 * Math.PI));
+
+    // 3.85, 0.02, 0.068 new trap(pi/2,pi/4)
 
     setTurretStartingAngleDegrees(
         -180); // assume default position is turret starting facing backwards counterclockwise
+    setTurretSetpointRadians(getTurretAngleRadians());
   }
 
   public void turnTurret(double power) {
-    if (power > 0 && getTurretAngleRadians() < maximumTurretAngleRadians
-        || power < 0 && getTurretAngleRadians() > minimumTurretAngleRadians) {
-      turretMotor.set(
-          ControlMode.PercentOutput,
-          power > turretTurnSpeed ? turretTurnSpeed : Math.max(power, -turretTurnSpeed));
-    } else if (power == 0.0) {
-      disable();
-    } else {
-      turretMotor.set(0);
-    }
-  }
-
-  public void turnTurretWithVoltage(double voltage) {
-    if (voltage == 0.0) {
-      disable();
-    } else {
-      turretMotor.setVoltage(voltage);
-    }
+    turretMotor.set(
+        ControlMode.PercentOutput,
+        power > turretTurnSpeed ? turretTurnSpeed : Math.max(power, -turretTurnSpeed));
   }
 
   // Primarily for use in auto routines where we need to know where the shooter starts
@@ -73,10 +62,6 @@ public class TurretSubsystem extends SubsystemBase {
 
   // CW Positive
   public void setTurretSetpointRadians(double angle) {
-    if (angle > maximumTurretAngleRadians)
-      angle = maximumTurretAngleRadians - angle + minimumTurretAngleRadians;
-    if (angle < minimumTurretAngleRadians)
-      angle = minimumTurretAngleRadians - angle + maximumTurretAngleRadians;
     turretPID.setGoal(angle);
     PIDRunning = true;
   }
@@ -88,7 +73,7 @@ public class TurretSubsystem extends SubsystemBase {
   private void updateCurrentTurretTolerance() {
     try {
       if (turretToleranceDistanceLatch.unlocked()) {
-        currentTurretToleranceRadians = Math.toRadians(5) / turretToleranceDistanceLatch.open();
+        currentTurretToleranceRadians = Math.toRadians(6) / turretToleranceDistanceLatch.open();
         SmartDashboard.putNumber("turret tolerance", Math.toDegrees(currentTurretToleranceRadians));
       }
     } catch (GoalNotFoundException e) {
@@ -98,8 +83,8 @@ public class TurretSubsystem extends SubsystemBase {
 
   public void disable() {
     turretMotor.set(PercentOutput, 0);
+    setTurretSetpointRadians(getTurretAngleRadians());
     PIDRunning = false;
-    bangBangRunning = false;
   }
 
   @Override
@@ -107,20 +92,11 @@ public class TurretSubsystem extends SubsystemBase {
     updateCurrentTurretTolerance();
     if (PIDRunning) {
       double PIDOutput = turretPID.calculate(getTurretAngleRadians());
-      if (Math.abs(turretPID.getPositionError()) > currentTurretToleranceRadians) {
+      if (Math.abs(turretPID.getPositionError())
+          > currentTurretToleranceRadians
+              * 0.9 /* fixes discrepancy in PID tolerance and limelight tolerance */) {
         turnTurret(PIDOutput);
       } else turnTurret(0);
     }
-
-    //    if (bangBangRunning) {
-    //      double bangBangOffset = bangBangSetpointRadians - getTurretAngleRadians();
-    //      if (Math.abs(bangBangOffset) >= currentShooterToleranceRadians) {
-    //        turnTurret(
-    //            Math.signum(bangBangOffset) * slowTurretTurnSpeed + Math.min(turretTurnSpeed /
-    // bangBangOffset, turretTurnSpeed));
-    //      } else {
-    //        turretMotor.set(0);
-    //      }
-    //    }
   }
 }

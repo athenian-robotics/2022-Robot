@@ -1,5 +1,8 @@
 package frc.robot.commands.auto;
 
+import static frc.robot.Constants.AutoConstants.maxAutoAcceleration;
+import static frc.robot.Constants.AutoConstants.maxAutoSpeed;
+
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.math.controller.PIDController;
@@ -7,27 +10,30 @@ import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
-import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.Constants;
+import frc.robot.subsystems.DrivetrainSubsystem;
 
-import static frc.robot.Constants.AutoConstants.maxAutoAcceleration;
-import static frc.robot.Constants.AutoConstants.maxAutoSpeed;
-
-
-//generalized auto movement command :)
+// generalized auto movement command :)
 public class AutoRoutine6 extends CommandBase {
   private final RamseteCommand ramseteCommand;
   private final PathPlannerTrajectory trajectory;
   private final DrivetrainSubsystem drivetrain;
   private final boolean resetOdomety;
 
-  public AutoRoutine6(DrivetrainSubsystem drivetrainSubsystem, String pathName, double maxVel, double maxAccel, boolean resetOdometry) {
+  public AutoRoutine6(
+      DrivetrainSubsystem drivetrainSubsystem,
+      String pathName,
+      double maxVel,
+      double maxAccel,
+      boolean resetOdometry) {
     this.drivetrain = drivetrainSubsystem;
     this.resetOdomety = resetOdometry;
     addRequirements(drivetrainSubsystem);
 
-    //load path from name
-    trajectory = PathPlanner.loadPath(pathName, Math.min(maxVel, maxAutoSpeed), Math.min(maxAccel, maxAutoAcceleration));
+    // load path from name
+    trajectory =
+        PathPlanner.loadPath(
+            pathName, Math.min(maxVel, maxAutoSpeed), Math.min(maxAccel, maxAutoAcceleration));
     ramseteCommand =
         new RamseteCommand(
             trajectory,
@@ -50,7 +56,9 @@ public class AutoRoutine6 extends CommandBase {
   /** The initial subroutine of a command. Called once when the command is initially scheduled. */
   @Override
   public void initialize() {
-    if (resetOdomety) drivetrain.resetOdometry(trajectory.getInitialPose()); // Reset odometry to the starting pose of the trajectory.
+    if (resetOdomety)
+      drivetrain.resetOdometry(
+          trajectory.getInitialPose()); // Reset odometry to the starting pose of the trajectory.
     ramseteCommand.initialize();
   }
 
@@ -91,5 +99,6 @@ public class AutoRoutine6 extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     ramseteCommand.end(interrupted);
+    drivetrain.disable();
   }
 }

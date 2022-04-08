@@ -1,7 +1,8 @@
 package frc.robot.subsystems;
 
 import static com.ctre.phoenix.motorcontrol.NeutralMode.Coast;
-import static frc.robot.Constants.MechanismConstants.*;
+import static frc.robot.Constants.MechanismConstants.shooterMotorPortA;
+import static frc.robot.Constants.MechanismConstants.shooterMotorPortB;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
@@ -18,6 +19,7 @@ public class ShooterSubsystem extends SubsystemBase {
   // Setup motors, pid controller, and booleans
   private final TalonFX shooterMotorFront = new TalonFX(shooterMotorPortA);
   private final NetworkTableEntry shooterAdjustmentNTE;
+  private final NetworkTableEntry shooterPowerNTE;
 
   public boolean shooterRunning = false;
   public double shuffleboardShooterPower;
@@ -40,6 +42,13 @@ public class ShooterSubsystem extends SubsystemBase {
             .add("Shooter Power Adjustment", 1)
             .withWidget(BuiltInWidgets.kNumberSlider)
             .withProperties(Map.of("min", 0.75, "max", 1.25, "default value", 1))
+            .getEntry();
+
+    shooterPowerNTE =
+        Shuffleboard.getTab("852 - Dashboard")
+            .add("Hood Angle", 0)
+            .withWidget(BuiltInWidgets.kTextView)
+            .withProperties(Map.of("min", 0, "max", 500))
             .getEntry();
 
     shooterMotorFront.configVoltageCompSaturation(12);
@@ -76,6 +85,14 @@ public class ShooterSubsystem extends SubsystemBase {
     shooterRPS = rps * shuffleboardShooterAdjustment;
   }
 
+  public double getRPS() {
+    return sys.getVelocity();
+  }
+
+  public double getTargetRPS() {
+    return shooterRPS;
+  }
+
   public void disable() { // Disables shooter
     setShooterPower(0);
     shooterRPS = 0;
@@ -89,6 +106,7 @@ public class ShooterSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Shooter Power", shooterRPS);
 
     shuffleboardShooterAdjustment = shooterAdjustmentNTE.getDouble(1);
+    // setRPS(shooterPowerNTE.getDouble(0));
 
     if (shooterRunning) {
       sys.update(getWheelSpeed());

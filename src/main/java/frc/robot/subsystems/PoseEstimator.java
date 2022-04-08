@@ -1,4 +1,4 @@
-package frc.robot.localization;
+package frc.robot.subsystems;
 
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
@@ -6,16 +6,14 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.DrivetrainSubsystem;
-import frc.robot.subsystems.LimelightSubsystem;
 
-public class Localization extends SubsystemBase { // quick hack, should not extend subsytemBase
+public class PoseEstimator extends SubsystemBase { // quick hack, should not extend subsytemBase
   private final DrivetrainSubsystem drivetrain;
   private final LimelightSubsystem limelight;
   private final DifferentialDrivePoseEstimator poseEstimator;
   private final DifferentialDriveOdometry odometry;
 
-  public Localization(
+  public PoseEstimator(
       DrivetrainSubsystem drivetrain, LimelightSubsystem limelight, Pose2d initialPose) {
     this.limelight = limelight;
     this.drivetrain = drivetrain;

@@ -43,7 +43,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
   public DrivetrainSubsystem() {
     // Initialize motors
     WPI_TalonFX[] driveMotors = {
-      new WPI_TalonFX(4), new WPI_TalonFX(3), new WPI_TalonFX(1), new WPI_TalonFX(2)
+      new WPI_TalonFX(rightRearDrivePort),
+      new WPI_TalonFX(rightFrontDrivePort),
+      new WPI_TalonFX(leftRearDrivePort),
+      new WPI_TalonFX(leftFrontDrivePort)
     };
     configureDriveMotors(driveMotors); // Configure motors
 

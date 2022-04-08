@@ -27,6 +27,7 @@ public class TurretTurnToGoalWithLimelightOrManualAdjustTurret extends CommandBa
   @Override
   public void initialize() {
     limelightSubsystem.addLatch(offsetLatch.reset());
+    turretSubsystem.turnTurret(0);
   }
 
   @Override

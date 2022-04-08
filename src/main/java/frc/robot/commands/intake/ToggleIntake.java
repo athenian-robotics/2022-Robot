@@ -11,13 +11,13 @@ public class ToggleIntake extends InstantCommand {
   public ToggleIntake(IntakeSubsystem intakeSubsystem, PortalSubsystem portalSubsystem) {
     this.intakeSubsystem = intakeSubsystem;
     this.portalSubsystem = portalSubsystem;
-    addRequirements(this.intakeSubsystem, this.portalSubsystem);
+    addRequirements(this.intakeSubsystem);
   }
 
   @Override
   public void initialize() {
     intakeSubsystem.togglePneumatic();
     intakeSubsystem.toggleIntake(); // On initialize, toggle intake
-    if (intakeSubsystem.isRunning) portalSubsystem.startPortal();
+    if (intakeSubsystem.isRunning && !portalSubsystem.ballPrimed()) portalSubsystem.startPortal();
   }
 }
