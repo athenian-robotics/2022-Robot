@@ -1,16 +1,18 @@
 package frc.robot.subsystems;
 
-import static frc.robot.Constants.MechanismConstants.*;
-
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
 import java.util.Map;
 
+import static frc.robot.Constants.MechanismConstants.*;
+
 public class HoodSubsystem extends SubsystemBase {
+  private final NetworkTableEntry hoodAngleAdjustmentNTE;
   private final Servo leftHoodAngleServo = new Servo(leftHoodServoPort);
   private final Servo rightHoodAngleServo = new Servo(rightHoodServoPort);
   private final NetworkTableEntry hoodAngleNTE;
@@ -28,16 +30,23 @@ public class HoodSubsystem extends SubsystemBase {
             .withWidget(BuiltInWidgets.kTextView)
             .withProperties(Map.of("min", 8, "max", 41))
             .getEntry();
+
+    hoodAngleAdjustmentNTE =
+        Shuffleboard.getTab("852 - Dashboard")
+            .add("Hood Angle Adjustment", 1)
+            .withWidget(BuiltInWidgets.kNumberSlider)
+            .withProperties(Map.of("min", 0.75, "max", 1.25, "default value", 1))
+            .getEntry();
   }
 
   public void setHoodAngle(double angle) {
     lastHoodAngle = getHoodAngle();
     if (angle >= minimumHoodAngle && angle <= maximumHoodAngle) {
       leftHoodAngleServo.setAngle(
-          180 * (angle - minimumHoodAngle) / (maximumHoodAngle - minimumHoodAngle));
+          hoodAngleAdjustmentNTE.getDouble(1) * 180 * (angle - minimumHoodAngle) / (maximumHoodAngle - minimumHoodAngle));
       // 0 - 180 DEGREES
       rightHoodAngleServo.setAngle(
-          180 * (angle - minimumHoodAngle) / (maximumHoodAngle - minimumHoodAngle));
+          hoodAngleAdjustmentNTE.getDouble(1) * 180 * (angle - minimumHoodAngle) / (maximumHoodAngle - minimumHoodAngle));
       // 0 - 180 DEGREES
     }
   }

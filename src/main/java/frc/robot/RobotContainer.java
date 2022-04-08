@@ -4,10 +4,6 @@
 
 package frc.robot;
 
-import static frc.robot.Constants.MechanismConstants.telescopeSpeed;
-import static frc.robot.Constants.MechanismConstants.winchSpeed;
-import static frc.robot.lib.controllers.FightStick.fightStickLT;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.util.net.PortForwarder;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -38,8 +34,13 @@ import frc.robot.commands.turret.TurretTurnToGoalWithLimelightOrManualAdjustTurr
 import frc.robot.lib.controllers.FightStick;
 import frc.robot.lib.shooterData.ShooterDataTable;
 import frc.robot.subsystems.*;
+
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
+
+import static frc.robot.Constants.MechanismConstants.telescopeSpeed;
+import static frc.robot.Constants.MechanismConstants.winchSpeed;
+import static frc.robot.lib.controllers.FightStick.fightStickLT;
 
 public class RobotContainer {
   // CONTROLLERS
@@ -66,7 +67,7 @@ public class RobotContainer {
   public static final IntakeSubsystem intake = new IntakeSubsystem();
   public static final ClimberSubsystem climb = new ClimberSubsystem();
   public static final ShooterSubsystem shooter = new ShooterSubsystem();
-  public static final TurretSubsystem turret = new TurretSubsystem(limelight, drivetrain);
+  public static final TurretSubsystem turret = new TurretSubsystem(limelight);
   public static final HoodSubsystem hood = new HoodSubsystem();
   public static final LEDSubsystem led = new LEDSubsystem();
   public static PoseEstimator poseEstimator;
