@@ -43,10 +43,16 @@ public class HoodSubsystem extends SubsystemBase {
     lastHoodAngle = getHoodAngle();
     if (angle >= minimumHoodAngle && angle <= maximumHoodAngle) {
       leftHoodAngleServo.setAngle(
-          hoodAngleAdjustmentNTE.getDouble(1) * 180 * (angle - minimumHoodAngle) / (maximumHoodAngle - minimumHoodAngle));
+          hoodAngleAdjustmentNTE.getDouble(1)
+              * 180
+              * (angle - minimumHoodAngle)
+              / (maximumHoodAngle - minimumHoodAngle));
       // 0 - 180 DEGREES
       rightHoodAngleServo.setAngle(
-          hoodAngleAdjustmentNTE.getDouble(1) * 180 * (angle - minimumHoodAngle) / (maximumHoodAngle - minimumHoodAngle));
+          hoodAngleAdjustmentNTE.getDouble(1)
+              * 180
+              * (angle - minimumHoodAngle)
+              / (maximumHoodAngle - minimumHoodAngle));
       // 0 - 180 DEGREES
     }
   }
