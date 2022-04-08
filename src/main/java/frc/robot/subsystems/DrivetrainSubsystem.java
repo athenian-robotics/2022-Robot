@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import static frc.robot.Constants.AutoConstants.kDriveKinematics;
 import static frc.robot.Constants.DriveConstants.*;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -8,12 +9,10 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.SerialPort;
+import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -39,6 +38,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
   private final DifferentialDrive drive;
   // Setup autonomous and sensor objects
   final DifferentialDriveOdometry odometry;
+  private double dt;
+  private double lastTime;
 
   public DrivetrainSubsystem() {
     // Initialize motors
@@ -239,8 +240,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
   }
 
   public double getVelocity() {
-    return -Constants.AutoConstants.kDriveKinematics.toChassisSpeeds(getWheelSpeeds())
-        .omegaRadiansPerSecond;
+    return -kDriveKinematics.toChassisSpeeds(getWheelSpeeds()).omegaRadiansPerSecond;
   }
 
   public Pose2d getPose() { // Returns the Pose2d object of the robot in meters
@@ -262,25 +262,24 @@ public class DrivetrainSubsystem extends SubsystemBase {
    */
   @Override
   public void periodic() {
+    dt = Timer.getFPGATimestamp() - lastTime;
     // Consistently update the robot's odometry as it moves throughout the field
     odometry.update(gyro.getRotation2d(), leftEncoder.getDistance(), rightEncoder.getDistance());
 
     drive.feed();
+    lastTime = Timer.getFPGATimestamp();
   }
 
-  public double getTangentialVelocity(double angle, double distance) {
-    double theta = 90 + Math.toDegrees(angle);
-    double v =
-        Constants.AutoConstants.kDriveKinematics.toChassisSpeeds(getWheelSpeeds()).vxMetersPerSecond
-            * Constants.looptime;
-
-    double side =
-        Math.sqrt(
-            Math.pow(v, 2)
-                + Math.pow(distance, 2)
-                - 2 * v * distance * Math.cos(Math.toRadians(theta)));
-    return Math.toRadians(180)
-        - Math.toRadians(theta)
-        - Math.asin((Math.sin(Math.toRadians(theta)) * distance) / side);
+  public double getPositionOffset(double angle, double distance) {
+    double velocity = kDriveKinematics.toChassisSpeeds(getWheelSpeeds()).vxMetersPerSecond;
+    Translation2d displacementVector = new Translation2d(distance, new Rotation2d(angle));
+    Translation2d linearVelocityVector = new Translation2d(velocity, new Rotation2d(0));
+    double angularVelocity =
+        kDriveKinematics.toChassisSpeeds(getWheelSpeeds()).omegaRadiansPerSecond;
+    // cross product
+    double cross =
+        displacementVector.getX() * linearVelocityVector.getY()
+            - displacementVector.getY() * linearVelocityVector.getX();
+    return (cross + angularVelocity) * dt;
   }
 }

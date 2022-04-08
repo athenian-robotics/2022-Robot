@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import static com.ctre.phoenix.motorcontrol.TalonFXControlMode.PercentOutput;
 import static frc.robot.Constants.MechanismConstants.turretMotorPort;
 import static frc.robot.Constants.MechanismConstants.turretTurnSpeed;
+import static frc.robot.RobotContainer.drivetrain;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -37,9 +38,10 @@ public class TurretSubsystem extends SubsystemBase {
   TrapezoidProfile.State goal = new TrapezoidProfile.State();
 
   public double currentTurretToleranceRadians = Math.toRadians(1);
-  public boolean PIDRunning = false;
+  public boolean LQRRunning = false;
+  private double distance;
 
-  public TurretSubsystem(LimelightSubsystem limelight) {
+  public TurretSubsystem(LimelightSubsystem limelight, DrivetrainSubsystem drivetrain) {
     this.limelight = limelight;
     turretMotor.setInverted(false);
     turretMotor.setNeutralMode(NeutralMode.Brake);
@@ -77,15 +79,15 @@ public class TurretSubsystem extends SubsystemBase {
   }
 
   // Primarily for use in auto routines where we need to know where the shooter starts
-  public void setTurretStartingAngleDegrees(double position) {
-    turretMotor.setSelectedSensorPosition(2048 * position / 36);
-    goal = new TrapezoidProfile.State(position, 0);
+  public void setTurretStartingAngleDegrees(double angle) {
+    turretMotor.setSelectedSensorPosition(2048 * angle / 36);
+    goal = new TrapezoidProfile.State(angle, 0);
   }
 
   // CW Positive
   public void setTurretSetpointRadians(double angle) {
     goal = new TrapezoidProfile.State(angle, 0);
-    PIDRunning = true;
+    LQRRunning = true;
   }
 
   public double getTurretAngleRadians() {
@@ -95,7 +97,8 @@ public class TurretSubsystem extends SubsystemBase {
   private void updateCurrentTurretTolerance() {
     try {
       if (turretToleranceDistanceLatch.unlocked()) {
-        currentTurretToleranceRadians = Math.toRadians(6) / turretToleranceDistanceLatch.open();
+        distance = turretToleranceDistanceLatch.open();
+        currentTurretToleranceRadians = Math.toRadians(6) / distance;
         SmartDashboard.putNumber("turret tolerance", Math.toDegrees(currentTurretToleranceRadians));
       }
     } catch (GoalNotFoundException e) {
@@ -106,14 +109,23 @@ public class TurretSubsystem extends SubsystemBase {
   public void disable() {
     turretMotor.set(PercentOutput, 0);
     setTurretSetpointRadians(getTurretAngleRadians());
-    PIDRunning = false;
+    LQRRunning = false;
   }
 
   @Override
   public void periodic() {
     updateCurrentTurretTolerance();
-    if (PIDRunning) {
-      lastReference = (new TrapezoidProfile(constraints, goal, lastReference)).calculate(0.02);
+    if (LQRRunning) {
+      lastReference =
+          (new TrapezoidProfile(
+                  constraints,
+                  new TrapezoidProfile.State(
+                      goal.position
+                          + drivetrain.getPositionOffset(
+                              goal.position + getTurretAngleRadians(), distance),
+                      goal.velocity),
+                  lastReference))
+              .calculate(0.02);
       turretLoop.setNextR(lastReference.position, lastReference.velocity);
       turretLoop.correct(VecBuilder.fill(getTurretAngleRadians()));
       turretLoop.predict(0.02);
