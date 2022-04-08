@@ -114,8 +114,8 @@ public final class Constants {
   }
 
   public static final class Turret {
-    public static final double ks = 0.70514;
-    public static final double ka = 0.019842;
-    public static final double kv = 0.22251;
+    public static final double ks = 0.22074;
+    public static final double ka = 0.024872;
+    public static final double kv = 0.20592;
   }
 }
