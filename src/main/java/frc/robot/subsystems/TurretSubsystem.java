@@ -1,14 +1,23 @@
 package frc.robot.subsystems;
 
 import static com.ctre.phoenix.motorcontrol.TalonFXControlMode.PercentOutput;
-import static frc.robot.Constants.MechanismConstants.*;
+import static frc.robot.Constants.MechanismConstants.turretMotorPort;
+import static frc.robot.Constants.MechanismConstants.turretTurnSpeed;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.Nat;
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.controller.LinearQuadraticRegulator;
+import edu.wpi.first.math.estimator.KalmanFilter;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N2;
+import edu.wpi.first.math.system.LinearSystem;
+import edu.wpi.first.math.system.LinearSystemLoop;
+import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -18,31 +27,44 @@ import frc.robot.lib.limelight.LimelightDataType;
 
 public class TurretSubsystem extends SubsystemBase {
   public final WPI_TalonFX turretMotor = new WPI_TalonFX(turretMotorPort);
-  public final SimpleMotorFeedforward feed;
-  public final ProfiledPIDController turretPID;
 
   private final LimelightSubsystem limelight;
   private final LimelightDataLatch turretToleranceDistanceLatch;
-  private final DrivetrainSubsystem drivetrain;
+  private final LinearSystemLoop<N2, N1, N1> turretLoop;
+  private final TrapezoidProfile.Constraints constraints =
+      new TrapezoidProfile.Constraints(Math.PI / 2, Math.PI / 4);
+  private TrapezoidProfile.State lastReference = new TrapezoidProfile.State();
+  TrapezoidProfile.State goal = new TrapezoidProfile.State();
 
   public double currentTurretToleranceRadians = Math.toRadians(1);
   public boolean PIDRunning = false;
 
-  public TurretSubsystem(LimelightSubsystem limelight, DrivetrainSubsystem drivetrain) {
-    this.drivetrain = drivetrain;
+  public TurretSubsystem(LimelightSubsystem limelight) {
     this.limelight = limelight;
     turretMotor.setInverted(false);
     turretMotor.setNeutralMode(NeutralMode.Brake);
 
     turretToleranceDistanceLatch = new LimelightDataLatch(LimelightDataType.DISTANCE, 16);
-    feed =
-        new SimpleMotorFeedforward(Constants.Turret.ks, Constants.Turret.kv, Constants.Turret.ka);
-    turretPID =
-        new ProfiledPIDController(
-            5.85, 0.02, 1.188, new TrapezoidProfile.Constraints(4 * Math.PI, 2 * Math.PI));
+    LinearSystem<N2, N1, N1> turretPlant =
+        LinearSystemId.identifyPositionSystem(Constants.Turret.kv, Constants.Turret.ka);
+    KalmanFilter<N2, N1, N1> kalmanFilter =
+        new KalmanFilter<>(
+            Nat.N2(),
+            Nat.N1(),
+            turretPlant,
+            VecBuilder.fill(0.47283, 5.6516),
+            VecBuilder.fill(0.01),
+            0.020);
+    LinearQuadraticRegulator<N2, N1, N1> turretController =
+        new LinearQuadraticRegulator<>(
+            turretPlant,
+            VecBuilder.fill(Units.degreesToRadians(1), Units.degreesToRadians(10)),
+            VecBuilder.fill(12),
+            0.020);
+    turretController.latencyCompensate(turretPlant, 0.020, 0.017);
+    turretLoop = new LinearSystemLoop<>(turretPlant, turretController, kalmanFilter, 12, 0.020);
 
     // 3.85, 0.02, 0.068 new trap(pi/2,pi/4)
-
     setTurretStartingAngleDegrees(
         -180); // assume default position is turret starting facing backwards counterclockwise
     setTurretSetpointRadians(getTurretAngleRadians());
@@ -57,12 +79,12 @@ public class TurretSubsystem extends SubsystemBase {
   // Primarily for use in auto routines where we need to know where the shooter starts
   public void setTurretStartingAngleDegrees(double position) {
     turretMotor.setSelectedSensorPosition(2048 * position / 36);
-    turretPID.setGoal(Math.toRadians(position));
+    goal = new TrapezoidProfile.State(position, 0);
   }
 
   // CW Positive
   public void setTurretSetpointRadians(double angle) {
-    turretPID.setGoal(angle);
+    goal = new TrapezoidProfile.State(angle, 0);
     PIDRunning = true;
   }
 
@@ -91,12 +113,12 @@ public class TurretSubsystem extends SubsystemBase {
   public void periodic() {
     updateCurrentTurretTolerance();
     if (PIDRunning) {
-      double PIDOutput = turretPID.calculate(getTurretAngleRadians());
-      if (Math.abs(turretPID.getPositionError())
-          > currentTurretToleranceRadians
-              * 0.9 /* fixes discrepancy in PID tolerance and limelight tolerance */) {
-        turnTurret(PIDOutput);
-      } else turnTurret(0);
-    }
+      lastReference = (new TrapezoidProfile(constraints, goal, lastReference)).calculate(0.02);
+      turretLoop.setNextR(lastReference.position, lastReference.velocity);
+      turretLoop.correct(VecBuilder.fill(getTurretAngleRadians()));
+      turretLoop.predict(0.02);
+      double next = turretLoop.getU(0);
+      turretMotor.setVoltage(next);
+    } else turnTurret(0);
   }
 }

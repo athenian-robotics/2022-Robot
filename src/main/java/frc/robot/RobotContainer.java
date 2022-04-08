@@ -66,7 +66,7 @@ public class RobotContainer {
   public static final IntakeSubsystem intake = new IntakeSubsystem();
   public static final ClimberSubsystem climb = new ClimberSubsystem();
   public static final ShooterSubsystem shooter = new ShooterSubsystem();
-  public static final TurretSubsystem turret = new TurretSubsystem(limelight, drivetrain);
+  public static final TurretSubsystem turret = new TurretSubsystem(limelight);
   public static final HoodSubsystem hood = new HoodSubsystem();
   public static final LEDSubsystem led = new LEDSubsystem();
   public static PoseEstimator poseEstimator;
