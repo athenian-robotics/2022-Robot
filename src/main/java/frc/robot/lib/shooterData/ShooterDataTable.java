@@ -83,11 +83,11 @@ public class ShooterDataTable implements Serializable {
     dt.addSpecs(4.56, 39.5, 41.1);
     dt.addSpecs(4.82, 40.5, 41.28);
     dt.addSpecs(5.00, 41, 42.3);
-    // estimations for further distances
+    dt.addSpecs(6.5, 41, 53.35);
     for (double i = 5.1; i < 8; i += 0.1) {
       dt.addSpecs(i, 41, 72.3067 * Math.log(i) - 8.23734);
     }
-    // System.out.println(dt.getSpecs(5.0));
+    // System.out.println(dt.getSpecs(6.5));
     try {
       FileOutputStream fileOut = new FileOutputStream("src/main/deploy/dt.ser");
       System.out.println("built file output stream");
