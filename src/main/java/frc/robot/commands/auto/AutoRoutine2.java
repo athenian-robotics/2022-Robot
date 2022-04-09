@@ -21,7 +21,7 @@ public class AutoRoutine2 extends SequentialCommandGroup {
     addCommands(
         new ToggleIntake(intake, portal),
         new AutoRoutine6(drivetrain, "Auto Routine 2 Part 3", 4, 1.5, true), // drives up to ball
-            new TurretSetSetpointRadians(turret, -Math.PI),
+        new TurretSetSetpointRadians(turret, -Math.PI),
         new ShootTwo(indexer, intake, shooter, portal, hood, turret, limelight, shooterDataTable),
         new AutoRoutine6(
             drivetrain,

@@ -114,17 +114,17 @@ public class TurretSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    double Tgoal =
+        Math.toDegrees(
+            goal.position
+                + drivetrain.getPositionOffset(goal.position + getTurretAngleRadians(), distance));
+    SmartDashboard.putNumber("goal", Tgoal);
+    SmartDashboard.putNumber("curr", Math.toDegrees(getTurretAngleRadians()));
     updateCurrentTurretTolerance();
     if (LQRRunning) {
       lastReference =
           (new TrapezoidProfile(
-                  constraints,
-                  new TrapezoidProfile.State(
-                      goal.position
-                          + drivetrain.getPositionOffset(
-                              goal.position + getTurretAngleRadians(), distance),
-                      goal.velocity),
-                  lastReference))
+                  constraints, new TrapezoidProfile.State(Tgoal, goal.velocity), lastReference))
               .calculate(0.02);
       turretLoop.setNextR(lastReference.position, lastReference.velocity);
       turretLoop.correct(VecBuilder.fill(getTurretAngleRadians()));
