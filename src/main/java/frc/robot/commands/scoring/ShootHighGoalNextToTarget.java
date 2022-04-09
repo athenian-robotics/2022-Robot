@@ -11,7 +11,7 @@ import frc.robot.commands.indexer.ShootIndexedBallsForever;
 import frc.robot.commands.intake.DisableIntake;
 import frc.robot.commands.shooter.DisableShooter;
 import frc.robot.commands.shooter.SetShooterPower;
-import frc.robot.commands.turret.TurretTurnToAngleRadians;
+import frc.robot.commands.turret.TurretSetSetpointRadians;
 import frc.robot.subsystems.*;
 
 public class ShootHighGoalNextToTarget extends SequentialCommandGroup {
@@ -29,7 +29,7 @@ public class ShootHighGoalNextToTarget extends SequentialCommandGroup {
         // Align to shoot
         new SetShooterPower(shooter, 36),
         new ParallelCommandGroup(
-            new SetHoodAngleTimeSafe(hood, 18.5), new TurretTurnToAngleRadians(turret, 0)),
+            new SetHoodAngleTimeSafe(hood, 18.5), new TurretSetSetpointRadians(turret, 0)),
         new WaitCommand(1),
         // Shoot Balls
         new ShootIndexedBallsForever(indexer, intake, portal).withTimeout(2),

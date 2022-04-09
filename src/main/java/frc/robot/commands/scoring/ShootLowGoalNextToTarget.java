@@ -10,7 +10,7 @@ import frc.robot.commands.indexer.ShootIndexedBallsForever;
 import frc.robot.commands.intake.DisableIntake;
 import frc.robot.commands.shooter.DisableShooter;
 import frc.robot.commands.shooter.SetShooterPower;
-import frc.robot.commands.turret.TurretTurnToAngleRadians;
+import frc.robot.commands.turret.TurretSetSetpointRadians;
 import frc.robot.subsystems.*;
 
 public class ShootLowGoalNextToTarget extends SequentialCommandGroup {
@@ -30,7 +30,7 @@ public class ShootLowGoalNextToTarget extends SequentialCommandGroup {
         new SetShooterPower(shooter, 17.5),
         new ParallelCommandGroup(
             new SetHoodAngleTimeSafe(hood, Constants.MechanismConstants.defaultHoodAngle),
-            new TurretTurnToAngleRadians(turret, 0)),
+            new TurretSetSetpointRadians(turret, 0)),
         // Shoot Balls
         new ShootIndexedBallsForever(indexer, intake, portal).withTimeout(2),
         // Return to teleop
