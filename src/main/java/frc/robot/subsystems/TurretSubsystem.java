@@ -60,7 +60,7 @@ public class TurretSubsystem extends SubsystemBase {
     LinearQuadraticRegulator<N2, N1, N1> turretController =
         new LinearQuadraticRegulator<>(
             turretPlant,
-            VecBuilder.fill(Units.degreesToRadians(1), Units.degreesToRadians(10)),
+            VecBuilder.fill(Units.degreesToRadians(1), Units.degreesToRadians(4)),
             VecBuilder.fill(12),
             0.020);
     turretController.latencyCompensate(turretPlant, 0.020, 0.017);
