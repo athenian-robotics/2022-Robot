@@ -31,14 +31,14 @@ public class ShootTwo extends SequentialCommandGroup {
         new GuaranteeLimelightData(limelight),
         // Shoot Balls
         // Set shooter power, angle, and offset while turning to goal
-            new ParallelCommandGroup(
-        new GuaranteeLimelightDataEquals(
-            limelight,
-            LimelightDataType.HORIZONTAL_OFFSET,
-            0,
-            turret.currentTurretToleranceRadians),
-        new SetShooterPowerWithLimelight(shooterDataTable, limelight, outtake),
-        new SetHoodAngleWithLimelightTimeSafe(shooterDataTable, limelight, hood)),
+        new ParallelCommandGroup(
+            new GuaranteeLimelightDataEquals(
+                limelight,
+                LimelightDataType.HORIZONTAL_OFFSET,
+                0,
+                turret.currentTurretToleranceRadians),
+            new SetShooterPowerWithLimelight(shooterDataTable, limelight, outtake),
+            new SetHoodAngleWithLimelightTimeSafe(shooterDataTable, limelight, hood)),
         new ShootIndexedBallsForever(indexer, intake, portal).withTimeout(1.7),
         // 1.94 <= distance <= 5 because of shooterDataTable minimums and maximums
         // Return to teleop
