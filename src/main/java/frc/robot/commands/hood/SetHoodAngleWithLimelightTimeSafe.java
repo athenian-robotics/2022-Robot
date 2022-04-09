@@ -15,6 +15,6 @@ public class SetHoodAngleWithLimelightTimeSafe extends SequentialCommandGroup {
         new SetHoodAngleWithLimelight(shooterDataTable, limelightSubsystem, hoodSubsystem),
         new WaitCommand(
             Math.max(
-                (Math.abs(hoodSubsystem.getHoodAngle() - hoodSubsystem.lastHoodAngle) / 6), 0)));
+                (Math.abs(hoodSubsystem.getHoodAngle() - hoodSubsystem.lastHoodAngle) / 6.8), 0)));
   }
 }
