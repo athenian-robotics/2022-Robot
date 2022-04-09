@@ -80,9 +80,10 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void setRPS(double rps) {
-    sys.set(rps * shuffleboardShooterAdjustment);
+    double shooterAdjustment = shooterAdjustmentNTE.getDouble(1);
+    sys.set(rps * shooterAdjustment);
     shooterRunning = true;
-    shooterRPS = rps * shuffleboardShooterAdjustment;
+    shooterRPS = rps * shooterAdjustment;
   }
 
   public double getRPS() {
@@ -105,7 +106,6 @@ public class ShooterSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Shooter Speed", getWheelSpeed());
     SmartDashboard.putNumber("Shooter Power", shooterRPS);
 
-    shuffleboardShooterAdjustment = shooterAdjustmentNTE.getDouble(1);
     // setRPS(shooterPowerNTE.getDouble(0));
 
     if (shooterRunning) {
