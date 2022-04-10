@@ -1,14 +1,15 @@
 package frc.robot.subsystems;
 
-import static frc.robot.Constants.MechanismConstants.*;
-
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
 import java.util.Map;
+
+import static frc.robot.Constants.MechanismConstants.*;
 
 public class HoodSubsystem extends SubsystemBase {
   private final NetworkTableEntry hoodAngleAdjustmentNTE;
@@ -25,7 +26,7 @@ public class HoodSubsystem extends SubsystemBase {
 
     hoodAngleNTE =
         Shuffleboard.getTab("852 - Dashboard")
-            .add("Hood Angle 2", 1)
+            .add("Hood Angle", 1)
             .withWidget(BuiltInWidgets.kTextView)
             .withProperties(Map.of("min", 8, "max", 41))
             .getEntry();

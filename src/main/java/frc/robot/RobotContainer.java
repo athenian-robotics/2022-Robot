@@ -4,10 +4,6 @@
 
 package frc.robot;
 
-import static frc.robot.Constants.MechanismConstants.telescopeSpeed;
-import static frc.robot.Constants.MechanismConstants.winchSpeed;
-import static frc.robot.lib.controllers.FightStick.fightStickLT;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.util.net.PortForwarder;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -30,7 +26,6 @@ import frc.robot.commands.intake.RunIntakeBackwards;
 import frc.robot.commands.intake.RunIntakeWithoutPneumatics;
 import frc.robot.commands.intake.ToggleIntake;
 import frc.robot.commands.portal.QueueBalls;
-import frc.robot.commands.scoring.ShootHighGoalNextToTarget;
 import frc.robot.commands.scoring.ShootLowGoalNextToTarget;
 import frc.robot.commands.scoring.ShootOne;
 import frc.robot.commands.scoring.ShootTwo;
@@ -38,8 +33,13 @@ import frc.robot.commands.turret.TurretTurnToGoalWithLimelightOrManualAdjustTurr
 import frc.robot.lib.controllers.FightStick;
 import frc.robot.lib.shooterData.ShooterDataTable;
 import frc.robot.subsystems.*;
+
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
+
+import static frc.robot.Constants.MechanismConstants.telescopeSpeed;
+import static frc.robot.Constants.MechanismConstants.winchSpeed;
+import static frc.robot.lib.controllers.FightStick.fightStickLT;
 
 public class RobotContainer {
   // CONTROLLERS
@@ -118,7 +118,7 @@ public class RobotContainer {
     FightStick.fightStickR3.whenHeld(
         new WinchSetSpeed(climb, winchSpeed)); // Toggle indexer (tower portion)
     fightStickLT.whenActive(
-        new ShootHighGoalNextToTarget(drivetrain, indexer, intake, shooter, hood, portal, turret));
+        new ShootLowGoalNextToTarget(drivetrain, indexer, intake, shooter, hood, portal, turret));
     FightStick.fightStickX.whenPressed(
         new ShootOne(
             climb, drivetrain, indexer, intake, shooter, portal, limelight, shooterDataTable));

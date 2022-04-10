@@ -25,7 +25,7 @@ public class TurretSubsystem extends SubsystemBase {
   private final LimelightSubsystem limelight;
   private final LimelightDataLatch turretToleranceDistanceLatch;
 
-  public double currentTurretToleranceRadians = Math.toRadians(1);
+  public double currentTurretToleranceRadians = Math.toRadians(5);
   public boolean PIDRunning = false;
 
   public TurretSubsystem(LimelightSubsystem limelight) {
@@ -80,6 +80,7 @@ public class TurretSubsystem extends SubsystemBase {
     try {
       if (turretToleranceDistanceLatch.unlocked()) {
         currentTurretToleranceRadians = Math.toRadians(3.2) / turretToleranceDistanceLatch.open();
+        turretPID.setTolerance(currentTurretToleranceRadians);
         SmartDashboard.putNumber("turret tolerance", Math.toDegrees(currentTurretToleranceRadians));
       }
     } catch (GoalNotFoundException e) {

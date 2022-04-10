@@ -1,15 +1,16 @@
 package frc.robot.subsystems;
 
-import static frc.robot.Constants.MechanismConstants.intakeToIndexerMotorPort;
-
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.lib.colorwheel.ColorWheelUtils;
 import frc.robot.lib.colorwheel.WheelColors;
+
+import static frc.robot.Constants.MechanismConstants.intakeToIndexerMotorPort;
 
 public class PortalSubsystem extends SubsystemBase {
   private final CANSparkMax portalMotor =
@@ -61,5 +62,6 @@ public class PortalSubsystem extends SubsystemBase {
   public void periodic() {
     currentColor = colorWheelUtils.currentColor();
     currentProximity = colorWheelUtils.currentProximity();
+    SmartDashboard.putBoolean("Ball Primed", ballPrimed());
   }
 }
