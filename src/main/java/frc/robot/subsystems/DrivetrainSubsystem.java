@@ -39,15 +39,18 @@ public class DrivetrainSubsystem extends SubsystemBase {
   private final DifferentialDrive drive;
   // Setup autonomous and sensor objects
   final DifferentialDriveOdometry odometry;
+  private final WPI_TalonFX[] driveMotors;
+  private boolean highGear;
 
   public DrivetrainSubsystem() {
     // Initialize motors
-    WPI_TalonFX[] driveMotors = {
-      new WPI_TalonFX(rightRearDrivePort),
-      new WPI_TalonFX(rightFrontDrivePort),
-      new WPI_TalonFX(leftRearDrivePort),
-      new WPI_TalonFX(leftFrontDrivePort)
-    };
+    driveMotors =
+        new WPI_TalonFX[] {
+          new WPI_TalonFX(rightRearDrivePort),
+          new WPI_TalonFX(rightFrontDrivePort),
+          new WPI_TalonFX(leftRearDrivePort),
+          new WPI_TalonFX(leftFrontDrivePort)
+        };
     configureDriveMotors(driveMotors); // Configure motors
 
     leftMotors = new MotorControllerGroup(driveMotors[0], driveMotors[1]);
@@ -231,11 +234,13 @@ public class DrivetrainSubsystem extends SubsystemBase {
   public void shiftUp() { // Shifts up drive shifters
     driveShifterRight.set(DoubleSolenoid.Value.kForward);
     driveShifterLeft.set(DoubleSolenoid.Value.kForward);
+    highGear = true;
   }
 
   public void shiftDown() { // Shift down drive shifters
     driveShifterRight.set(DoubleSolenoid.Value.kReverse);
     driveShifterLeft.set(DoubleSolenoid.Value.kReverse);
+    highGear = false;
   }
 
   public double getVelocity() {
@@ -264,7 +269,14 @@ public class DrivetrainSubsystem extends SubsystemBase {
   public void periodic() {
     // Consistently update the robot's odometry as it moves throughout the field
     odometry.update(gyro.getRotation2d(), leftEncoder.getDistance(), rightEncoder.getDistance());
-
+    for (WPI_TalonFX motor : driveMotors) {
+      if (highGear) {
+        motor.configOpenloopRamp(0.9);
+        motor.configClosedloopRamp(1.2);
+      } else {
+        motor.configClosedloopRamp(0.5);
+      }
+    }
     drive.feed();
   }
 
