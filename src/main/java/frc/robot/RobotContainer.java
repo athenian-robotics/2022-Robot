@@ -4,6 +4,10 @@
 
 package frc.robot;
 
+import static frc.robot.Constants.MechanismConstants.telescopeSpeed;
+import static frc.robot.Constants.MechanismConstants.winchSpeed;
+import static frc.robot.lib.controllers.FightStick.fightStickLT;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.util.net.PortForwarder;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -33,13 +37,8 @@ import frc.robot.commands.turret.TurretTurnToGoalWithLimelightOrManualAdjustTurr
 import frc.robot.lib.controllers.FightStick;
 import frc.robot.lib.shooterData.ShooterDataTable;
 import frc.robot.subsystems.*;
-
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
-
-import static frc.robot.Constants.MechanismConstants.telescopeSpeed;
-import static frc.robot.Constants.MechanismConstants.winchSpeed;
-import static frc.robot.lib.controllers.FightStick.fightStickLT;
 
 public class RobotContainer {
   // CONTROLLERS

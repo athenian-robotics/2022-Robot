@@ -1,6 +1,5 @@
 package frc.robot.commands.auto;
 
-
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -19,33 +18,33 @@ import frc.robot.lib.shooterData.ShooterDataTable;
 import frc.robot.subsystems.*;
 
 public class AutoRoutine7 extends SequentialCommandGroup {
-    public AutoRoutine7(DrivetrainSubsystem drivetrain,
-                        IndexerSubsystem indexer,
-                        IntakeSubsystem intake,
-                        ShooterSubsystem shooter,
-                        TurretSubsystem turret,
-                        HoodSubsystem hood,
-                        PortalSubsystem portal,
-                        LimelightSubsystem limelight,
-                        ShooterDataTable shooterDataTable) {
-        super(
-                new ToggleIntake(intake, portal),
-                new AutoRoutine6(drivetrain, "Auto 7.1", 4, 2, true),
-                new ShootTwo(indexer, intake, shooter, portal, hood, turret, limelight, shooterDataTable),
-                new ToggleIntake(intake, portal),
-                new AutoRoutine6(drivetrain, "Better 7.2", 4, 1.1, false),
-                new TurretSetSetpointRadians(turret, -Math.PI / 2),
-                new WaitCommand(0.25),
-                new DisableIntake(intake),
-                new SetShooterPower(shooter, 17.5),
-                new TurretSetSetpointRadians(turret, -Math.PI / 2),
-                new SetHoodAngleTimeSafe(hood, -Math.PI / 2),
-                new TurretSetSetpointRadians(turret, -Math.PI / 2),
-                new WaitUntilCommand(turret.turretPID::atSetpoint),
-                new ShootIndexedBallsForever(indexer, intake, portal).withTimeout(2),
-                new ParallelCommandGroup(
-                        new DisableShooter(shooter),
-                        new SetHoodAngle(hood, Constants.MechanismConstants.defaultHoodAngle))
-        );
-    }
+  public AutoRoutine7(
+      DrivetrainSubsystem drivetrain,
+      IndexerSubsystem indexer,
+      IntakeSubsystem intake,
+      ShooterSubsystem shooter,
+      TurretSubsystem turret,
+      HoodSubsystem hood,
+      PortalSubsystem portal,
+      LimelightSubsystem limelight,
+      ShooterDataTable shooterDataTable) {
+    super(
+        new ToggleIntake(intake, portal),
+        new AutoRoutine6(drivetrain, "Auto 7.1", 4, 2, true),
+        new ShootTwo(indexer, intake, shooter, portal, hood, turret, limelight, shooterDataTable),
+        new ToggleIntake(intake, portal),
+        new AutoRoutine6(drivetrain, "Better 7.2", 4, 1.1, false),
+        new TurretSetSetpointRadians(turret, -Math.PI / 2),
+        new WaitCommand(0.25),
+        new DisableIntake(intake),
+        new SetShooterPower(shooter, 17.5),
+        new TurretSetSetpointRadians(turret, -Math.PI / 2),
+        new SetHoodAngleTimeSafe(hood, -Math.PI / 2),
+        new TurretSetSetpointRadians(turret, -Math.PI / 2),
+        new WaitUntilCommand(turret.turretPID::atSetpoint),
+        new ShootIndexedBallsForever(indexer, intake, portal).withTimeout(2),
+        new ParallelCommandGroup(
+            new DisableShooter(shooter),
+            new SetHoodAngle(hood, Constants.MechanismConstants.defaultHoodAngle)));
+  }
 }

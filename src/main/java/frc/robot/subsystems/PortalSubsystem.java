@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import static frc.robot.Constants.MechanismConstants.intakeToIndexerMotorPort;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -9,8 +11,6 @@ import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.lib.colorwheel.ColorWheelUtils;
 import frc.robot.lib.colorwheel.WheelColors;
-
-import static frc.robot.Constants.MechanismConstants.intakeToIndexerMotorPort;
 
 public class PortalSubsystem extends SubsystemBase {
   private final CANSparkMax portalMotor =

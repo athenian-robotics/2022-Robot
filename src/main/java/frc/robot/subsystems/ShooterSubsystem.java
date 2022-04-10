@@ -1,5 +1,9 @@
 package frc.robot.subsystems;
 
+import static com.ctre.phoenix.motorcontrol.NeutralMode.Coast;
+import static frc.robot.Constants.MechanismConstants.shooterMotorPortA;
+import static frc.robot.Constants.MechanismConstants.shooterMotorPortB;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.networktables.NetworkTableEntry;
@@ -9,12 +13,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.lib.controllers.SimpleVelocitySystem;
-
 import java.util.Map;
-
-import static com.ctre.phoenix.motorcontrol.NeutralMode.Coast;
-import static frc.robot.Constants.MechanismConstants.shooterMotorPortA;
-import static frc.robot.Constants.MechanismConstants.shooterMotorPortB;
 
 public class ShooterSubsystem extends SubsystemBase {
   // Setup motors, pid controller, and booleans

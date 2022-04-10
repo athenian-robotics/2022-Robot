@@ -1,5 +1,9 @@
 package frc.robot.subsystems;
 
+import static com.ctre.phoenix.motorcontrol.TalonFXControlMode.PercentOutput;
+import static frc.robot.Constants.MechanismConstants.turretMotorPort;
+import static frc.robot.Constants.MechanismConstants.turretTurnSpeed;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
@@ -12,10 +16,6 @@ import frc.robot.Constants;
 import frc.robot.lib.limelight.GoalNotFoundException;
 import frc.robot.lib.limelight.LimelightDataLatch;
 import frc.robot.lib.limelight.LimelightDataType;
-
-import static com.ctre.phoenix.motorcontrol.TalonFXControlMode.PercentOutput;
-import static frc.robot.Constants.MechanismConstants.turretMotorPort;
-import static frc.robot.Constants.MechanismConstants.turretTurnSpeed;
 
 public class TurretSubsystem extends SubsystemBase {
   public final WPI_TalonFX turretMotor = new WPI_TalonFX(turretMotorPort);
@@ -38,10 +38,10 @@ public class TurretSubsystem extends SubsystemBase {
         new SimpleMotorFeedforward(Constants.Turret.ks, Constants.Turret.kv, Constants.Turret.ka);
     turretPID =
         new ProfiledPIDController(
-            2.4, //3.9
+            2.4, // 3.9
             0,
             0.1,
-            new TrapezoidProfile.Constraints(Math.PI/2, Math.PI/4)
+            new TrapezoidProfile.Constraints(Math.PI / 2, Math.PI / 4)
             // 5.85, 1.188
             // 3.85, 0.02, 0.068, new TrapezoidProfile.Constraints(Math.PI / 2, Math.PI / 4)
             );
