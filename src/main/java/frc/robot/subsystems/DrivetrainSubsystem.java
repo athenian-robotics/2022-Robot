@@ -271,8 +271,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
     odometry.update(gyro.getRotation2d(), leftEncoder.getDistance(), rightEncoder.getDistance());
     for (WPI_TalonFX motor : driveMotors) {
       if (highGear) {
-        motor.configOpenloopRamp(0.9);
-        motor.configClosedloopRamp(1.2);
+        motor.configOpenloopRamp(0.8);
+        motor.configClosedloopRamp(1.1);
       } else {
         motor.configClosedloopRamp(0.5);
       }
