@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -140,8 +141,8 @@ public class RobotContainer {
     //              else drivetrain.setDefaultCommand(new ArcadeDrive(drivetrain, xboxController));
     //            },
     //            drivetrain));
-    //    xboxLP.whenPressed(new InstantCommand(drivetrain::shiftDown, drivetrain)); // Shift down
-    //    xboxRP.whenPressed(new InstantCommand(drivetrain::shiftUp, drivetrain)); // Shift up
+    xboxLP.whenPressed(new InstantCommand(drivetrain::shiftDown, drivetrain)); // Shift down
+    xboxRP.whenPressed(new InstantCommand(drivetrain::shiftUp, drivetrain)); // Shift up
     xboxX.whenHeld(new RunIntakeBackwards(intake, portal));
     xboxY.whenPressed(new SetHoodAngleTimeSafe(hood, 10));
   }
@@ -223,6 +224,18 @@ public class RobotContainer {
             portal,
             limelight,
             shooterDataTable));
+    //    chooser.addOption(
+    //        "7: fucky wucky",
+    //        new AutoRoutine7(
+    //            drivetrain,
+    //            indexer,
+    //            intake,
+    //            shooter,
+    //            turret,
+    //            hood,
+    //            portal,
+    //            limelight,
+    //            shooterDataTable));
   }
 
   public void configureDefaultCommands() {
