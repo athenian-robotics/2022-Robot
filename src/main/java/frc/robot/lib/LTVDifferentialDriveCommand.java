@@ -71,7 +71,7 @@ public class LTVDifferentialDriveCommand extends CommandBase {
     double leftVelo = speed.get().leftMetersPerSecond;
     double rightVelo = speed.get().rightMetersPerSecond;
 
-    LTVDifferentialDriveController.WheelVoltages wheelVolts =
+    var wheelVolts =
         controller.calculate(pose.get(), leftVelo, rightVelo, trajRef);
 
     output.accept(wheelVolts.left, wheelVolts.right);
