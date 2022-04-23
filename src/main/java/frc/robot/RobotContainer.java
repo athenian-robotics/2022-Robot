@@ -224,18 +224,18 @@ public class RobotContainer {
             portal,
             limelight,
             shooterDataTable));
-    //    chooser.addOption(
-    //        "7: fucky wucky",
-    //        new AutoRoutine7(
-    //            drivetrain,
-    //            indexer,
-    //            intake,
-    //            shooter,
-    //            turret,
-    //            hood,
-    //            portal,
-    //            limelight,
-    //            shooterDataTable));
+    chooser.addOption(
+        "7: fucky wucky",
+        new AutoRoutine7(
+            drivetrain,
+            indexer,
+            intake,
+            shooter,
+            turret,
+            hood,
+            portal,
+            limelight,
+            shooterDataTable));
   }
 
   public void configureDefaultCommands() {

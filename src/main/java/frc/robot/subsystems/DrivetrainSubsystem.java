@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.lib.motors.TalonFXFactory;
 
 public class DrivetrainSubsystem extends SubsystemBase {
   // Setup drive objects
@@ -40,16 +41,15 @@ public class DrivetrainSubsystem extends SubsystemBase {
   // Setup autonomous and sensor objects
   final DifferentialDriveOdometry odometry;
   private final WPI_TalonFX[] driveMotors;
-  private boolean highGear;
 
   public DrivetrainSubsystem() {
     // Initialize motors
     driveMotors =
         new WPI_TalonFX[] {
-          new WPI_TalonFX(rightRearDrivePort),
-          new WPI_TalonFX(rightFrontDrivePort),
-          new WPI_TalonFX(leftRearDrivePort),
-          new WPI_TalonFX(leftFrontDrivePort)
+          TalonFXFactory.createDefaultTalon(rightRearDrivePort),
+          TalonFXFactory.createDefaultTalon(rightFrontDrivePort),
+          TalonFXFactory.createDefaultTalon(leftRearDrivePort),
+          TalonFXFactory.createDefaultTalon(leftFrontDrivePort)
         };
     configureDriveMotors(driveMotors); // Configure motors
 
@@ -109,7 +109,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     double rightPower =
         ((maxDriveSpeed - minDriveSpeed) * Math.abs(rightVelocity) + minDriveSpeed) * rightSign;
 
-    drive.tankDrive(leftVelocity, rightVelocity);
+    drive.tankDrive(leftPower, rightPower);
   }
 
   /**
@@ -147,8 +147,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
   public void configureDriveMotors(TalonFX[] driveMotors) {
     for (TalonFX motor : driveMotors) {
       motor.configFactoryDefault(); // Initialize motor set up
-      motor.configOpenloopRamp(0.7); // Ramp up (Trapezoid)
-      motor.configClosedloopRamp(0.7); // Ramp down (Trapezoid)
+      motor.configOpenloopRamp(0.6); // Ramp up (Trapezoid)
+      motor.configClosedloopRamp(0.55); // Ramp down (Trapezoid)
       motor.setNeutralMode(
           NeutralMode.Brake); // Default robot mode should be Coasting (So it doesn't wobble
       // cuz top heavy yaknow)
@@ -175,27 +175,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
     return odometry;
   }
 
-  public int getLeftEncoderCount() {
-    return this.leftEncoder.get();
-  } // Returns left encoder raw count
-
-  public int getRightEncoderCount() {
-    return this.rightEncoder.get();
-  } // Returns right encoder raw count
-
   public double getRightDistanceDriven() {
     return rightEncoder.getDistance();
   } // Returns the distance the right
   // side has driven
-
-  public double getLeftDistanceDriven() {
-    return leftEncoder.getDistance();
-  } // Returns the distance the left side
-  // has driven
-
-  public double getGyroAngle() {
-    return gyro.getAngle() % 360;
-  } // Returns the total accumulated yaw scaled under 360
 
   public double getGyroYaw() {
     return gyro.getYaw();
@@ -233,14 +216,22 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
   public void shiftUp() { // Shifts up drive shifters
     driveShifterRight.set(DoubleSolenoid.Value.kForward);
+
     driveShifterLeft.set(DoubleSolenoid.Value.kForward);
-    highGear = true;
+    for (WPI_TalonFX motor : driveMotors) {
+      motor.configOpenloopRamp(0.8);
+      motor.configClosedloopRamp(1.1);
+    }
   }
 
   public void shiftDown() { // Shift down drive shifters
     driveShifterRight.set(DoubleSolenoid.Value.kReverse);
     driveShifterLeft.set(DoubleSolenoid.Value.kReverse);
-    highGear = false;
+    for (WPI_TalonFX motor : driveMotors) {
+
+      motor.configClosedloopRamp(0.64);
+      motor.configOpenloopRamp(0.57);
+    }
   }
 
   public double getVelocity() {
@@ -269,30 +260,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
   public void periodic() {
     // Consistently update the robot's odometry as it moves throughout the field
     odometry.update(gyro.getRotation2d(), leftEncoder.getDistance(), rightEncoder.getDistance());
-    for (WPI_TalonFX motor : driveMotors) {
-      if (highGear) {
-        motor.configOpenloopRamp(0.8);
-        motor.configClosedloopRamp(1.1);
-      } else {
-        motor.configClosedloopRamp(0.5);
-      }
-    }
     drive.feed();
-  }
-
-  public double getTangentialVelocity(double angle, double distance) {
-    double theta = 90 + Math.toDegrees(angle);
-    double v =
-        Constants.AutoConstants.kDriveKinematics.toChassisSpeeds(getWheelSpeeds()).vxMetersPerSecond
-            * Constants.looptime;
-
-    double side =
-        Math.sqrt(
-            Math.pow(v, 2)
-                + Math.pow(distance, 2)
-                - 2 * v * distance * Math.cos(Math.toRadians(theta)));
-    return Math.toRadians(180)
-        - Math.toRadians(theta)
-        - Math.asin((Math.sin(Math.toRadians(theta)) * distance) / side);
   }
 }
