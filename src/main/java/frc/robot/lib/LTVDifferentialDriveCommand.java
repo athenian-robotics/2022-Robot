@@ -1,7 +1,6 @@
 package frc.robot.lib;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory;
@@ -16,10 +15,8 @@ public class LTVDifferentialDriveCommand extends CommandBase {
   private final Timer timer = new Timer();
   private final Trajectory trajectory;
   private final Supplier<Pose2d> pose;
-  private final DifferentialDriveKinematics kinematics;
   private final Supplier<DifferentialDriveWheelSpeeds> speed;
   private final BiConsumer<Double, Double> output;
-  private DifferentialDriveWheelSpeeds prevSpeeds;
   private double prevTime;
 
   public LTVDifferentialDriveCommand(
@@ -33,7 +30,6 @@ public class LTVDifferentialDriveCommand extends CommandBase {
 
     this.trajectory = trajectory;
     this.pose = pose;
-    this.kinematics = kinematics;
     this.speed = wheelSpeeds;
     this.output = outputVolts;
     this.controller = controller;
@@ -46,12 +42,6 @@ public class LTVDifferentialDriveCommand extends CommandBase {
     timer.reset();
     timer.start();
     Trajectory.State initialState = trajectory.sample(0);
-    prevSpeeds =
-        kinematics.toWheelSpeeds(
-            new ChassisSpeeds(
-                initialState.velocityMetersPerSecond,
-                0,
-                initialState.curvatureRadPerMeter * initialState.velocityMetersPerSecond));
     prevTime = -1;
   }
 
@@ -59,7 +49,6 @@ public class LTVDifferentialDriveCommand extends CommandBase {
   public void execute() {
 
     double curTime = timer.get();
-    double dt = curTime - prevTime;
 
     if (prevTime < 0) {
       output.accept(0.0, 0.0);
@@ -71,8 +60,7 @@ public class LTVDifferentialDriveCommand extends CommandBase {
     double leftVelo = speed.get().leftMetersPerSecond;
     double rightVelo = speed.get().rightMetersPerSecond;
 
-    var wheelVolts =
-        controller.calculate(pose.get(), leftVelo, rightVelo, trajRef);
+    var wheelVolts = controller.calculate(pose.get(), leftVelo, rightVelo, trajRef);
 
     output.accept(wheelVolts.left, wheelVolts.right);
     prevTime = curTime;

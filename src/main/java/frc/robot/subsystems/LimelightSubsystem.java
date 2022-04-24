@@ -1,9 +1,12 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.networktables.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.lib.TimestampedPose2d;
 import frc.robot.lib.limelight.LimelightDataLatch;
 import frc.robot.lib.limelight.LimelightDataType;
 import java.util.LinkedList;
@@ -12,9 +15,36 @@ import java.util.LinkedList;
 public class LimelightSubsystem extends SubsystemBase {
   public final LimelightDataLatchManager latchManager = new LimelightDataLatchManager();
   final NetworkTable limelight; // used to be final?
+  final TurretSubsystem turret;
+  TimestampedPose2d pose = new TimestampedPose2d(new Pose2d(), 0);
 
-  public LimelightSubsystem(String tableName) {
+  public LimelightSubsystem(String tableName, TurretSubsystem turret) {
     this.limelight = NetworkTableInstance.getDefault().getTable(tableName);
+
+    limelight.addEntryListener(
+        "llpython", this::updatePose, EntryListenerFlags.kNew | EntryListenerFlags.kUpdate);
+    this.turret = turret;
+  }
+
+  private void updatePose(
+      NetworkTable networkTable,
+      String s,
+      NetworkTableEntry networkTableEntry,
+      NetworkTableValue networkTableValue,
+      int i) {
+    double distance = networkTableValue.getDoubleArray()[0];
+    double angleOffset = networkTableValue.getDoubleArray()[1];
+    long time = networkTableValue.getTime();
+    double angle = angleOffset + turret.getTurretAngleRadians();
+    Pose2d pose =
+        new Pose2d(
+            new Translation2d(distance, new Rotation2d(Math.PI / 2 + angle)),
+            new Rotation2d(-angle));
+    this.pose = new TimestampedPose2d(pose, time);
+  }
+
+  public TimestampedPose2d getLatestPose() {
+    return this.pose;
   }
 
   public void addLatch(LimelightDataLatch latch) {
@@ -24,12 +54,8 @@ public class LimelightSubsystem extends SubsystemBase {
   public void disable() {
     latchManager.clearPool();
   }
-  //  TODO: get absolute position and tweak pose estimator
-  //  public Pose2d getLimelightPose() {
-  //    return new Pose2d(
-  //
-  //    );
-  //  }
+
+  // i hate limelightdatalatch
 
   public void periodic() {
     Double[] lloutput =

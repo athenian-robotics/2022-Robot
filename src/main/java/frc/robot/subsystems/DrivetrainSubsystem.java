@@ -24,6 +24,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
   // Setup drive objects
   public final Encoder rightEncoder;
   public final Encoder leftEncoder;
+  // Setup autonomous and sensor objects
+  final DifferentialDriveOdometry odometry;
   private final AHRS gyro = new AHRS(SerialPort.Port.kMXP);
   private final DoubleSolenoid driveShifterRight =
       new DoubleSolenoid(
@@ -38,8 +40,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
   private final MotorControllerGroup leftMotors;
   private final MotorControllerGroup rightMotors;
   private final DifferentialDrive drive;
-  // Setup autonomous and sensor objects
-  final DifferentialDriveOdometry odometry;
   private final WPI_TalonFX[] driveMotors;
 
   public DrivetrainSubsystem() {
@@ -261,5 +261,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
     // Consistently update the robot's odometry as it moves throughout the field
     odometry.update(gyro.getRotation2d(), leftEncoder.getDistance(), rightEncoder.getDistance());
     drive.feed();
+  }
+
+  public double getLeftDistanceDriven() {
+    return leftEncoder.getDistance();
   }
 }

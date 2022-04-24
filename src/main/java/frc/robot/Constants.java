@@ -16,13 +16,13 @@ public final class Constants {
     public static final double kaVoltSecondsSquaredPerMeter = 0.51012;
     public static final DifferentialDriveKinematics kDriveKinematics =
         new DifferentialDriveKinematics(DriveConstants.trackWidth);
-    public static final double maxVolts = 7.0;
     public static final double maxAutoSpeed = 4.5; // meters per second 3
     public static final double maxAutoAcceleration = 2.5; // meters per second per second  1.5
     public static final double kRamseteB = 2.0;
     public static final double kRamseteZeta = 0.7;
     public static final double kPDriveVel = 4.5729;
-    public static final double maxAutoTurn = 0.55;
+    public static final double kvAngular = 1; // use sys id angular drivetrain thing
+    public static final double kaAngular = 1; // use sys id angular drivetrain thing
   }
 
   public static final class DriveConstants {

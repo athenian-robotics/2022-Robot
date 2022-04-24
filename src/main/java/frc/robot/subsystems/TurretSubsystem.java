@@ -8,18 +8,16 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
+import frc.robot.RobotContainer;
 import frc.robot.lib.limelight.GoalNotFoundException;
 import frc.robot.lib.limelight.LimelightDataLatch;
 import frc.robot.lib.limelight.LimelightDataType;
 
 public class TurretSubsystem extends SubsystemBase {
   public final WPI_TalonFX turretMotor = new WPI_TalonFX(turretMotorPort);
-  public final SimpleMotorFeedforward feed;
   public final ProfiledPIDController turretPID;
 
   private final LimelightSubsystem limelight;
@@ -28,14 +26,12 @@ public class TurretSubsystem extends SubsystemBase {
   public double currentTurretToleranceRadians = Math.toRadians(5);
   public boolean PIDRunning = false;
 
-  public TurretSubsystem(LimelightSubsystem limelight) {
-    this.limelight = limelight;
+  public TurretSubsystem() {
+    this.limelight = RobotContainer.limelight;
     turretMotor.setInverted(false);
     turretMotor.setNeutralMode(NeutralMode.Brake);
 
     turretToleranceDistanceLatch = new LimelightDataLatch(LimelightDataType.DISTANCE, 16);
-    feed =
-        new SimpleMotorFeedforward(Constants.Turret.ks, Constants.Turret.kv, Constants.Turret.ka);
     turretPID =
         new ProfiledPIDController(
             2.4, // 3.9

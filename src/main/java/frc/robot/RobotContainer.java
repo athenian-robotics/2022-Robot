@@ -8,7 +8,6 @@ import static frc.robot.Constants.MechanismConstants.telescopeSpeed;
 import static frc.robot.Constants.MechanismConstants.winchSpeed;
 import static frc.robot.lib.controllers.FightStick.fightStickLT;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.util.net.PortForwarder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
@@ -42,6 +41,21 @@ import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 
 public class RobotContainer {
+  public static final XboxController xboxController =
+      new XboxController(Constants.OIConstants.xboxControllerPort);
+  // SUBSYSTEMS
+  public static final DrivetrainSubsystem drivetrain = new DrivetrainSubsystem();
+  public static final IndexerSubsystem indexer = new IndexerSubsystem();
+  public static final PortalSubsystem portal = new PortalSubsystem();
+  public static final IntakeSubsystem intake = new IntakeSubsystem();
+  public static final ClimberSubsystem climb = new ClimberSubsystem();
+  public static final ShooterSubsystem shooter = new ShooterSubsystem();
+  public static final TurretSubsystem turret = new TurretSubsystem();
+  public static final LimelightSubsystem limelight =
+      new LimelightSubsystem("limelight-arc", turret);
+  public static final PoseEstimator poseEstimator = new PoseEstimator(drivetrain, limelight);
+  public static final HoodSubsystem hood = new HoodSubsystem();
+  public static final LEDSubsystem led = new LEDSubsystem();
   // CONTROLLERS
   public static JoystickButton xboxA;
   public static JoystickButton xboxB;
@@ -55,24 +69,10 @@ public class RobotContainer {
   public static JoystickButton xboxHamburger;
   public static Trigger xboxLS;
   public static Axis xboxRS;
-  public static final XboxController xboxController =
-      new XboxController(Constants.OIConstants.xboxControllerPort);
-  final SendableChooser<SequentialCommandGroup> chooser = new SendableChooser<>();
-  // SUBSYSTEMS
-  public static final LimelightSubsystem limelight = new LimelightSubsystem("limelight-arc");
-  public static final DrivetrainSubsystem drivetrain = new DrivetrainSubsystem();
-  public static final IndexerSubsystem indexer = new IndexerSubsystem();
-  public static final PortalSubsystem portal = new PortalSubsystem();
-  public static final IntakeSubsystem intake = new IntakeSubsystem();
-  public static final ClimberSubsystem climb = new ClimberSubsystem();
-  public static final ShooterSubsystem shooter = new ShooterSubsystem();
-  public static final TurretSubsystem turret = new TurretSubsystem(limelight);
-  public static final HoodSubsystem hood = new HoodSubsystem();
-  public static final LEDSubsystem led = new LEDSubsystem();
-  public static PoseEstimator poseEstimator;
   // MISC
   public static DriverStation.Alliance alliance = DriverStation.Alliance.Blue;
   public static ShooterDataTable shooterDataTable;
+  final SendableChooser<SequentialCommandGroup> chooser = new SendableChooser<>();
 
   // Sets up controllers, configures controllers, and sets the default drive mode (tank or arcade)
   public RobotContainer() {
@@ -94,8 +94,6 @@ public class RobotContainer {
     configureAutoChooser();
     configureDefaultCommands();
     portForwardLimelightPorts();
-    // TODO: get init pose from shuffle board
-    poseEstimator = new PoseEstimator(drivetrain, limelight, new Pose2d());
 
     Shuffleboard.getTab("852 - Dashboard")
         .add("Chooser", chooser)

@@ -19,13 +19,11 @@ public class ShooterSubsystem extends SubsystemBase {
   // Setup motors, pid controller, and booleans
   private final TalonFX shooterMotorFront = new TalonFX(shooterMotorPortA);
   private final NetworkTableEntry shooterAdjustmentNTE;
-  private final NetworkTableEntry shooterPowerNTE;
-
+  // private final NetworkTableEntry shooterPowerNTE; // used for shooterdata table
+  private final SimpleVelocitySystem sys;
   public boolean shooterRunning = false;
   public double shuffleboardShooterPower;
   public double shuffleboardShooterAdjustment;
-
-  private final SimpleVelocitySystem sys;
   private double shooterRPS = 0;
 
   public ShooterSubsystem() {
@@ -44,12 +42,13 @@ public class ShooterSubsystem extends SubsystemBase {
             .withProperties(Map.of("min", 0.75, "max", 1.25, "default value", 1))
             .getEntry();
 
-    shooterPowerNTE =
-        Shuffleboard.getTab("852 - Dashboard")
-            .add("Shooter Power", 0)
-            .withWidget(BuiltInWidgets.kTextView)
-            .withProperties(Map.of("min", 0, "max", 500))
-            .getEntry();
+    //    shooterPowerNTE =
+    //        Shuffleboard.getTab("852 - Dashboard")
+    //            .add("Shooter Power", 0)
+    //            .withWidget(BuiltInWidgets.kTextView)
+    //            .withProperties(Map.of("min", 0, "max", 500))
+    //            .getEntry();
+    //            for shooterdata table
 
     shooterMotorFront.configVoltageCompSaturation(12);
     shooterMotorBack.configVoltageCompSaturation(12);
@@ -79,15 +78,15 @@ public class ShooterSubsystem extends SubsystemBase {
     return shooterMotorFront.getSelectedSensorVelocity() / 4096;
   }
 
+  public double getRPS() {
+    return sys.getVelocity();
+  }
+
   public void setRPS(double rps) {
     double shooterAdjustment = shooterAdjustmentNTE.getDouble(1);
     sys.set(rps * shooterAdjustment);
     shooterRunning = true;
     shooterRPS = rps * shooterAdjustment;
-  }
-
-  public double getRPS() {
-    return sys.getVelocity();
   }
 
   public double getTargetRPS() {
@@ -106,7 +105,7 @@ public class ShooterSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Shooter Speed", getWheelSpeed());
     SmartDashboard.putNumber("Shooter Power", shooterRPS);
 
-    // setRPS(shooterPowerNTE.getDouble(0));
+    // setRPS(shooterPowerNTE.getDouble(0)); used for shooterdata table
 
     if (shooterRunning) {
       sys.update(getWheelSpeed());

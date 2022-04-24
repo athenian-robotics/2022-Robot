@@ -29,8 +29,7 @@ public class FiveBallBottomLeft extends SequentialCommandGroup {
         new ShootTwo(indexer, intake, shooter, portal, hood, turret, limelight, shooterDataTable),
         new PPRamsete(drivetrain, "Auto Routine 1 Part 2", 4, 1.5, false), // turn back
         new ToggleIntake(intake, portal),
-        new PPRamsete(
-            drivetrain, "Auto Routine 1 Part 2.25", 4, 1.5, false), // intake other ball
+        new PPRamsete(drivetrain, "Auto Routine 1 Part 2.25", 4, 1.5, false), // intake other ball
         new TurretSetSetpointRadians(turret, -Math.PI),
         new ShootTwo(indexer, intake, shooter, portal, hood, turret, limelight, shooterDataTable)
             .withTimeout(1.5),

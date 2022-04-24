@@ -28,37 +28,6 @@ public class LTVDifferentialDriveController {
   private Matrix<N5, N1> m_error = new Matrix<>(Nat.N5(), Nat.N1());
   private Matrix<N5, N1> m_tolerance = new Matrix<>(Nat.N5(), Nat.N1());
 
-  /** Motor voltages for a differential drive. */
-  @SuppressWarnings("MemberName")
-  public static class WheelVoltages {
-    public double left;
-    public double right;
-
-    public WheelVoltages() {}
-
-    public WheelVoltages(double left, double right) {
-      this.left = left;
-      this.right = right;
-    }
-  }
-
-  /** States of the drivetrain system. */
-  enum State {
-    kX(0),
-    kY(1),
-    kHeading(2),
-    kLeftVelocity(3),
-    kRightVelocity(4);
-
-    @SuppressWarnings("MemberName")
-    public final int value;
-
-    @SuppressWarnings("ParameterName")
-    State(int i) {
-      this.value = i;
-    }
-  }
-
   /**
    * Constructs a linear time-varying differential drive controller.
    *
@@ -276,5 +245,36 @@ public class LTVDifferentialDriveController {
             * (1 - (desiredState.curvatureRadPerMeter * m_trackwidth / 2.0)),
         desiredState.velocityMetersPerSecond
             * (1 + (desiredState.curvatureRadPerMeter * m_trackwidth / 2.0)));
+  }
+
+  /** States of the drivetrain system. */
+  enum State {
+    kX(0),
+    kY(1),
+    kHeading(2),
+    kLeftVelocity(3),
+    kRightVelocity(4);
+
+    @SuppressWarnings("MemberName")
+    public final int value;
+
+    @SuppressWarnings("ParameterName")
+    State(int i) {
+      this.value = i;
+    }
+  }
+
+  /** Motor voltages for a differential drive. */
+  @SuppressWarnings("MemberName")
+  public static class WheelVoltages {
+    public double left;
+    public double right;
+
+    public WheelVoltages() {}
+
+    public WheelVoltages(double left, double right) {
+      this.left = left;
+      this.right = right;
+    }
   }
 }

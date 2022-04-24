@@ -9,43 +9,6 @@ import com.ctre.phoenix.sensors.SensorVelocityMeasPeriod;
 public class TalonFXFactory {
 
   private static final int timeoutMs = 100;
-
-  public static class Configuration {
-    public NeutralMode NEUTRAL_MODE = NeutralMode.Coast;
-    // factory default
-    public double NEUTRAL_DEADBAND = 0.04;
-
-    public SensorInitializationStrategy SENSOR_INITIALIZATION_STRATEGY =
-        SensorInitializationStrategy.BootToZero;
-    public double SENSOR_OFFSET_DEGREES = 0;
-
-    public boolean ENABLE_SUPPLY_CURRENT_LIMIT = false;
-    public boolean ENABLE_STATOR_CURRENT_LIMIT = false;
-
-    public boolean ENABLE_SOFT_LIMIT = false;
-    public boolean ENABLE_LIMIT_SWITCH = false;
-    public int FORWARD_SOFT_LIMIT = 0;
-    public int REVERSE_SOFT_LIMIT = 0;
-
-    public boolean INVERTED = false;
-    public boolean SENSOR_PHASE = false;
-
-    public int CONTROL_FRAME_PERIOD_MS = 10;
-    public int MOTION_CONTROL_FRAME_PERIOD_MS = 1000;
-    public int GENERAL_STATUS_FRAME_RATE_MS = 10;
-    public int FEEDBACK_STATUS_FRAME_RATE_MS = 1000;
-    public int QUAD_ENCODER_STATUS_FRAME_RATE_MS = 1000;
-    public int ANALOG_TEMP_VBAT_STATUS_FRAME_RATE_MS = 1000;
-    public int PULSE_WIDTH_STATUS_FRAME_RATE_MS = 1000;
-
-    public SensorVelocityMeasPeriod VELOCITY_MEASUREMENT_PERIOD =
-        SensorVelocityMeasPeriod.Period_100Ms;
-    public int VELOCITY_MEASUREMENT_ROLLING_AVERAGE_WINDOW = 64;
-
-    public double OPEN_LOOP_RAMP_RATE = 0.0;
-    public double CLOSED_LOOP_RAMP_RATE = 0.0;
-  }
-
   private static final Configuration defaultConfiguration = new Configuration();
   private static final Configuration slaveConfiguration = new Configuration();
 
@@ -161,5 +124,36 @@ public class TalonFXFactory {
     talon.setControlFramePeriod(ControlFrame.Control_3_General, config.CONTROL_FRAME_PERIOD_MS);
 
     return talon;
+  }
+
+  public static class Configuration {
+    public final NeutralMode NEUTRAL_MODE = NeutralMode.Coast;
+    // factory default
+    public final double NEUTRAL_DEADBAND = 0.04;
+
+    public final SensorInitializationStrategy SENSOR_INITIALIZATION_STRATEGY =
+        SensorInitializationStrategy.BootToZero;
+    public final double SENSOR_OFFSET_DEGREES = 0;
+
+    public final boolean ENABLE_SUPPLY_CURRENT_LIMIT = false;
+    public final boolean ENABLE_STATOR_CURRENT_LIMIT = false;
+    public final boolean ENABLE_LIMIT_SWITCH = false;
+    public final int FORWARD_SOFT_LIMIT = 0;
+    public final int REVERSE_SOFT_LIMIT = 0;
+    public final boolean INVERTED = false;
+    public final boolean SENSOR_PHASE = false;
+    public final SensorVelocityMeasPeriod VELOCITY_MEASUREMENT_PERIOD =
+        SensorVelocityMeasPeriod.Period_100Ms;
+    public final int VELOCITY_MEASUREMENT_ROLLING_AVERAGE_WINDOW = 64;
+    public final double OPEN_LOOP_RAMP_RATE = 0.0;
+    public final double CLOSED_LOOP_RAMP_RATE = 0.0;
+    public boolean ENABLE_SOFT_LIMIT = false;
+    public int CONTROL_FRAME_PERIOD_MS = 10;
+    public int MOTION_CONTROL_FRAME_PERIOD_MS = 1000;
+    public int GENERAL_STATUS_FRAME_RATE_MS = 10;
+    public int FEEDBACK_STATUS_FRAME_RATE_MS = 1000;
+    public int QUAD_ENCODER_STATUS_FRAME_RATE_MS = 1000;
+    public int ANALOG_TEMP_VBAT_STATUS_FRAME_RATE_MS = 1000;
+    public int PULSE_WIDTH_STATUS_FRAME_RATE_MS = 1000;
   }
 }
