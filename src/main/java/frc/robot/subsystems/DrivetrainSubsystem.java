@@ -112,31 +112,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
     drive.tankDrive(leftPower, rightPower);
   }
 
-  /**
-   * Tank drive without deadband, giving full control of velocities to PID controller
-   *
-   * @param leftVelocity Velocity of the left wheels
-   * @param rightVelocity Velocity of the right wheels
-   */
-  public void autoTankDrive(double leftVelocity, double rightVelocity) {
-    setMotorPercentOutput(leftVelocity, rightVelocity);
-  }
-
   public void tankDriveVolts(double leftVolts, double rightVolts) {
     leftMotors.setVoltage(leftVolts);
     rightMotors.setVoltage(rightVolts);
     drive.feed();
-  }
-
-  /**
-   * Set the front wheels to a desired output. Units: Percentage
-   *
-   * @param leftOutput Left front wheel output percentage
-   * @param rightOutput Right front wheel output percentage
-   */
-  public void setMotorPercentOutput(double leftOutput, double rightOutput) {
-    leftMotors.set(leftOutput);
-    rightMotors.set(rightOutput);
   }
 
   /**
@@ -171,38 +150,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
     return gyro.getRotation2d();
   }
 
-  public DifferentialDriveOdometry getOdometry() {
-    return odometry;
-  }
-
   public double getRightDistanceDriven() {
     return rightEncoder.getDistance();
   } // Returns the distance the right
   // side has driven
-
-  public double getGyroYaw() {
-    return gyro.getYaw();
-  } // Returns the gyro's rotation about the Z-axis
-
-  public void resetGyro() {
-    gyro.reset();
-  } // Zero Gyro's angle
-
-  public void setGyroOffset(double angle) {
-    gyro.setAngleAdjustment(angle);
-  } //  Sets the gyro's offset (units: degrees)
-
-  public double getHeading() {
-    return Math.IEEEremainder(-gyro.getAngle(), 360);
-  } // Gets the gyro's heading, scaled
-
-  public double getGyroRateRadians() {
-    return Math.toRadians(gyro.getRate());
-  }
-
-  public double getGyroAccelRadians() {
-    return gyro.getWorldLinearAccelZ();
-  }
 
   private void resetEncoders() { // Resets the drive encoders
     leftEncoder.reset();
@@ -234,11 +185,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
     }
   }
 
-  public double getVelocity() {
-    return -Constants.AutoConstants.kDriveKinematics.toChassisSpeeds(getWheelSpeeds())
-        .omegaRadiansPerSecond;
-  }
-
   public Pose2d getPose() { // Returns the Pose2d object of the robot in meters
     return odometry.getPoseMeters();
   }
@@ -249,7 +195,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
   }
 
   public void disable() { // Disables drivetrain movement
-    drive.tankDrive(0, 0);
+    drive.stopMotor();
   }
 
   /**

@@ -43,7 +43,6 @@ public final class Constants {
 
     public static final double minDriveSpeed = 0.1;
     public static final double maxDriveSpeed = 1.0;
-    public static final double maxAutoSpeed = 0.55;
   }
 
   public static final class OIConstants {

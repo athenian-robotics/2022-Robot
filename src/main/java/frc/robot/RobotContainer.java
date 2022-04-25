@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -118,8 +119,7 @@ public class RobotContainer {
     fightStickLT.whenActive(
         new ShootLowGoalNextToTarget(drivetrain, indexer, intake, shooter, hood, portal, turret));
     FightStick.fightStickX.whenPressed(
-        new ShootOne(
-            climb, drivetrain, indexer, intake, shooter, portal, limelight, shooterDataTable));
+        new ShootOne(drivetrain, indexer, intake, shooter, portal, limelight, shooterDataTable));
 
     xboxB.whenPressed(
         new ShootLowGoalNextToTarget(drivetrain, indexer, intake, shooter, hood, portal, turret));
@@ -131,14 +131,19 @@ public class RobotContainer {
     // have fun with this - jason and jacob '22   ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ
     // two things: the amonguses broke CI and i had to fix and u wrote it wrong,
     // u should have used instant commands instead of functional commands rohan '24
-    //    xboxSquares.whenPressed(
-    //        new InstantCommand( // Toggle drive mode
-    //            () -> {
-    //              if (drivetrain.getDefaultCommand() instanceof ArcadeDrive)
-    //                drivetrain.setDefaultCommand(new TankDrive(drivetrain, xboxController));
-    //              else drivetrain.setDefaultCommand(new ArcadeDrive(drivetrain, xboxController));
-    //            },
-    //            drivetrain));
+    xboxSquares.whenPressed(
+        new InstantCommand( // Toggle drive mode
+            () -> {
+              if (drivetrain.getDefaultCommand() instanceof ArcadeDrive)
+                drivetrain.setDefaultCommand(
+                    new RunCommand(
+                        () ->
+                            drivetrain.tankDrive(
+                                -xboxController.getLeftY(), -xboxController.getRightY()),
+                        drivetrain));
+              else drivetrain.setDefaultCommand(new ArcadeDrive(drivetrain, xboxController));
+            },
+            drivetrain));
     xboxLP.whenPressed(new InstantCommand(drivetrain::shiftDown, drivetrain)); // Shift down
     xboxRP.whenPressed(new InstantCommand(drivetrain::shiftUp, drivetrain)); // Shift up
     xboxX.whenHeld(new RunIntakeBackwards(intake, portal));

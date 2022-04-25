@@ -1,17 +1,12 @@
 package frc.robot.commands.auto;
 
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Constants;
 import frc.robot.commands.hood.SetHoodAngle;
 import frc.robot.commands.hood.SetHoodAngleTimeSafe;
 import frc.robot.commands.indexer.ShootIndexedBallsForever;
-import frc.robot.commands.intake.DisableIntake;
 import frc.robot.commands.intake.ToggleIntake;
 import frc.robot.commands.scoring.ShootTwo;
-import frc.robot.commands.shooter.DisableShooter;
 import frc.robot.commands.shooter.SetShooterPower;
 import frc.robot.commands.turret.TurretSetSetpointRadians;
 import frc.robot.lib.shooterData.ShooterDataTable;
@@ -36,7 +31,7 @@ public class TwoBallTopLeftDefense extends SequentialCommandGroup {
         new PPRamsete(drivetrain, "Better 7.2", 4, 1.1, false),
         new TurretSetSetpointRadians(turret, -Math.PI / 2),
         new WaitCommand(0.25),
-        new DisableIntake(intake),
+        new InstantCommand(intake::disable, intake),
         new SetShooterPower(shooter, 17.5),
         new TurretSetSetpointRadians(turret, -Math.PI / 2),
         new SetHoodAngleTimeSafe(hood, -Math.PI / 2),
@@ -44,7 +39,7 @@ public class TwoBallTopLeftDefense extends SequentialCommandGroup {
         new WaitUntilCommand(turret.turretPID::atSetpoint),
         new ShootIndexedBallsForever(indexer, intake, portal).withTimeout(2),
         new ParallelCommandGroup(
-            new DisableShooter(shooter),
+            new InstantCommand(shooter::disable, shooter),
             new SetHoodAngle(hood, Constants.MechanismConstants.defaultHoodAngle)));
   }
 }

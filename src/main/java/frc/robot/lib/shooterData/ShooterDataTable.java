@@ -84,7 +84,7 @@ public class ShooterDataTable implements Serializable {
   // gets the desired specs for shooter at a distance, linearly interpolating between the
   // two closest data points.
   public ShooterSpec getSpecs(double distance) {
-    distance = distance * shooterDataTableScalar;
+    distance *= shooterDataTableScalar;
     if (distance <= MINDIST || distance >= MAXDIST) return new ShooterSpec();
     if (dataTable.containsKey(distance)) return dataTable.get(distance);
 
