@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
 import frc.robot.lib.motors.TalonFXFactory;
 
 public class DrivetrainSubsystem extends SubsystemBase {
@@ -203,14 +204,29 @@ public class DrivetrainSubsystem extends SubsystemBase {
    */
   @Override
   public void periodic() {
-    dt = Timer.getFPGATimestamp() - lastTime;
     // Consistently update the robot's odometry as it moves throughout the field
     odometry.update(gyro.getRotation2d(), leftEncoder.getDistance(), rightEncoder.getDistance());
     drive.feed();
-    lastTime = Timer.getFPGATimestamp();
   }
 
   public double getLeftDistanceDriven() {
     return leftEncoder.getDistance();
+  }
+
+  public double getPositionOffset(double angle, double distance) {
+    double velocity = kDriveKinematics.toChassisSpeeds(getWheelSpeeds()).vxMetersPerSecond;
+    double TOF =
+        RobotContainer.shooterDataTable.getSpecs(RobotContainer.limelight.distance).getTOF();
+    Translation2d displacementVector = new Translation2d(distance, new Rotation2d(-angle));
+    Translation2d linearVelocityVector = new Translation2d(velocity, new Rotation2d(0));
+    double side = TOF * velocity;
+    double tofOffset = Math.atan(side / distance);
+    double angularVelocity =
+        kDriveKinematics.toChassisSpeeds(getWheelSpeeds()).omegaRadiansPerSecond;
+    // cross product
+    double cross =
+        displacementVector.getX() * linearVelocityVector.getY()
+            - displacementVector.getY() * linearVelocityVector.getX();
+    return Math.toRadians(90) + ((cross + angularVelocity) * Constants.looptime) - tofOffset;
   }
 }

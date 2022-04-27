@@ -36,7 +36,6 @@ public class TwoBallTopLeftDefense extends SequentialCommandGroup {
         new TurretSetSetpointRadians(turret, -Math.PI / 2),
         new SetHoodAngleTimeSafe(hood, -Math.PI / 2),
         new TurretSetSetpointRadians(turret, -Math.PI / 2),
-        new WaitUntilCommand(turret.turretPID::atSetpoint),
         new ShootIndexedBallsForever(indexer, intake, portal).withTimeout(2),
         new ParallelCommandGroup(
             new InstantCommand(shooter::disable, shooter),

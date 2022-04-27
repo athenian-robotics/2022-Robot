@@ -42,23 +42,23 @@ public class ShooterDataTable implements Serializable {
     //    dt.addSpecs(6.42, 41, 52.7);
     //    dt.addSpecs(6.57, 41, 53.35);
 
-    dt.addSpecs(1.94, 25, 34.75);
-    dt.addSpecs(2.34, 27, 34);
-    dt.addSpecs(2.49, 28, 34.5);
-    dt.addSpecs(2.78, 28.55, 34.71);
-    dt.addSpecs(2.98, 29.2, 35.2);
-    dt.addSpecs(3.29, 29.72, 35.7);
-    dt.addSpecs(3.51, 31, 37.2);
-    dt.addSpecs(3.76, 35, 38.2);
-    dt.addSpecs(4.01, 38, 40.9);
-    dt.addSpecs(4.27, 38.13, 40.96);
-    dt.addSpecs(4.56, 39.5, 41.1);
-    dt.addSpecs(4.82, 40.5, 41.28);
-    dt.addSpecs(5.00, 41, 42.3);
-    dt.addSpecs(6.5, 41, 53.35);
-    for (double i = 5.1; i < 8; i += 0.1) {
-      dt.addSpecs(i, 41, 72.3067 * Math.log(i) - 8.23734);
-    } // evil hack
+    //    dt.addSpecs(1.94, 25, 34.75, );
+    //    dt.addSpecs(2.34, 27, 34);
+    //    dt.addSpecs(2.49, 28, 34.5);
+    //    dt.addSpecs(2.78, 28.55, 34.71);
+    //    dt.addSpecs(2.98, 29.2, 35.2);
+    //    dt.addSpecs(3.29, 29.72, 35.7);
+    //    dt.addSpecs(3.51, 31, 37.2);
+    //    dt.addSpecs(3.76, 35, 38.2);
+    //    dt.addSpecs(4.01, 38, 40.9);
+    //    dt.addSpecs(4.27, 38.13, 40.96);
+    //    dt.addSpecs(4.56, 39.5, 41.1);
+    //    dt.addSpecs(4.82, 40.5, 41.28);
+    //    dt.addSpecs(5.00, 41, 42.3);
+    //    dt.addSpecs(6.5, 41, 53.35);
+    //    for (double i = 5.1; i < 8; i += 0.1) {
+    //      dt.addSpecs(i, 41, 72.3067 * Math.log(i) - 8.23734);
+    //    } // evil hack
 
     try {
       FileOutputStream fileOut = new FileOutputStream("src/main/deploy/dt.ser");
@@ -76,8 +76,8 @@ public class ShooterDataTable implements Serializable {
   }
 
   // adds specs at a desired distance, rounded down to the nearest standard distance
-  public void addSpecs(double distance, double hoodAngle, double power) {
-    ShooterSpec newSpec = new ShooterSpec(hoodAngle, power);
+  public void addSpecs(double distance, double hoodAngle, double power, double TOF) {
+    ShooterSpec newSpec = new ShooterSpec(hoodAngle, power, TOF);
     dataTable.put(distance, newSpec);
   }
 
@@ -97,6 +97,7 @@ public class ShooterDataTable implements Serializable {
     double weight1 = 1 - weight2;
     return new ShooterSpec(
         s1.getAngle() * weight1 + s2.getAngle() * weight2,
-        s1.getPower() * weight1 + s2.getPower() * weight2);
+        s1.getPower() * weight1 + s2.getPower() * weight2,
+        s1.getTOF() * weight1 + s2.getTOF() * weight2);
   }
 }

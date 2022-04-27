@@ -14,6 +14,7 @@ import java.util.LinkedList;
 // YOU DON'T NEED TO REQUIRE LIMELIGHTSUBSYSTEM IN COMMANDS!
 public class LimelightSubsystem extends SubsystemBase {
   public final LimelightDataLatchManager latchManager = new LimelightDataLatchManager();
+  public double distance;
   final NetworkTable limelight; // used to be final?
   final TurretSubsystem turret;
   TimestampedPose2d pose = new TimestampedPose2d(new Pose2d(), 0);
@@ -24,6 +25,7 @@ public class LimelightSubsystem extends SubsystemBase {
     limelight.addEntryListener(
         "llpython", this::updatePose, EntryListenerFlags.kNew | EntryListenerFlags.kUpdate);
     this.turret = turret;
+    distance = 0;
   }
 
   private void updatePose(
@@ -32,7 +34,7 @@ public class LimelightSubsystem extends SubsystemBase {
       NetworkTableEntry networkTableEntry,
       NetworkTableValue networkTableValue,
       int i) {
-    double distance = networkTableValue.getDoubleArray()[0];
+    distance = networkTableValue.getDoubleArray()[0];
     double angleOffset = networkTableValue.getDoubleArray()[1];
     long time = networkTableValue.getTime();
     double angle = angleOffset + turret.getTurretAngleRadians();

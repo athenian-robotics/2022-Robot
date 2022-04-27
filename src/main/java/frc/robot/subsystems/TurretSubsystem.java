@@ -4,6 +4,7 @@ import static com.ctre.phoenix.motorcontrol.TalonFXControlMode.PercentOutput;
 import static frc.robot.Constants.MechanismConstants.turretMotorPort;
 import static frc.robot.Constants.MechanismConstants.turretTurnSpeed;
 import static frc.robot.RobotContainer.drivetrain;
+import static frc.robot.RobotContainer.limelight;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -22,6 +23,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
 import frc.robot.lib.limelight.GoalNotFoundException;
 import frc.robot.lib.limelight.LimelightDataLatch;
 import frc.robot.lib.limelight.LimelightDataType;
@@ -41,8 +43,8 @@ public class TurretSubsystem extends SubsystemBase {
   public boolean LQRRunning = false;
   private double distance;
 
-  public TurretSubsystem(LimelightSubsystem limelight, DrivetrainSubsystem drivetrain) {
-    this.limelight = limelight;
+  public TurretSubsystem() {
+    this.limelight = RobotContainer.limelight;
     turretMotor.setInverted(false);
     turretMotor.setNeutralMode(NeutralMode.Brake);
 
@@ -115,10 +117,9 @@ public class TurretSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     double Tgoal =
-        Math.toDegrees(
-            goal.position
-                + drivetrain.getPositionOffset(goal.position + getTurretAngleRadians(), distance));
-    SmartDashboard.putNumber("goal", Tgoal);
+        goal.position
+            + drivetrain.getPositionOffset(goal.position + getTurretAngleRadians(), distance);
+    SmartDashboard.putNumber("goal", Math.toDegrees(Tgoal));
     SmartDashboard.putNumber("curr", Math.toDegrees(getTurretAngleRadians()));
     updateCurrentTurretTolerance();
     if (LQRRunning) {
