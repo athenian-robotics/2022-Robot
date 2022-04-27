@@ -14,20 +14,20 @@ import frc.robot.Constants;
 import frc.robot.subsystems.DrivetrainSubsystem;
 
 // generalized auto movement command :)
-public class AutoRoutine6 extends CommandBase {
+public class PPRamsete extends CommandBase {
   private final RamseteCommand ramseteCommand;
   private final PathPlannerTrajectory trajectory;
   private final DrivetrainSubsystem drivetrain;
-  private final boolean resetOdomety;
+  private final boolean resetOdometry;
 
-  public AutoRoutine6(
+  public PPRamsete(
       DrivetrainSubsystem drivetrainSubsystem,
       String pathName,
       double maxVel,
       double maxAccel,
       boolean resetOdometry) {
     this.drivetrain = drivetrainSubsystem;
-    this.resetOdomety = resetOdometry;
+    this.resetOdometry = resetOdometry;
     addRequirements(drivetrainSubsystem);
 
     // load path from name
@@ -56,7 +56,7 @@ public class AutoRoutine6 extends CommandBase {
   /** The initial subroutine of a command. Called once when the command is initially scheduled. */
   @Override
   public void initialize() {
-    if (resetOdomety)
+    if (resetOdometry)
       drivetrain.resetOdometry(
           trajectory.getInitialPose()); // Reset odometry to the starting pose of the trajectory.
     ramseteCommand.initialize();

@@ -7,8 +7,8 @@ import frc.robot.commands.turret.TurretSetSetpointRadians;
 import frc.robot.lib.shooterData.ShooterDataTable;
 import frc.robot.subsystems.*;
 
-public class AutoRoutine5 extends SequentialCommandGroup {
-  public AutoRoutine5(
+public class TwoBallMidBottom extends SequentialCommandGroup {
+  public TwoBallMidBottom(
       DrivetrainSubsystem drivetrain,
       IndexerSubsystem indexer,
       IntakeSubsystem intake,
@@ -20,7 +20,7 @@ public class AutoRoutine5 extends SequentialCommandGroup {
       ShooterDataTable shooterDataTable) {
     addCommands(
         new ToggleIntake(intake, portal),
-        new AutoRoutine6(drivetrain, "Auto Routine 5 Part 1", 4, .6, true),
+        new PPRamsete(drivetrain, "Auto Routine 5 Part 1", 4, .6, true),
         new TurretSetSetpointRadians(turret, -Math.PI),
         new ShootTwo(indexer, intake, shooter, portal, hood, turret, limelight, shooterDataTable));
   }

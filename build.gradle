@@ -97,6 +97,7 @@ wrapper {
 }
 
 compileJava.options.encoding = 'UTF-8'
+compileJava.dependsOn 'spotlessApply'
 
 spotless {
     java {

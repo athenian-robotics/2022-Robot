@@ -7,44 +7,16 @@ import java.io.Serializable;
 import java.util.TreeMap;
 
 public class ShooterDataTable implements Serializable {
-  // private ShooterSpec[] dataTable;
-  private final TreeMap<Double, ShooterSpec> dataTable;
   private static final double MINDIST = 1.94;
   private static final double MAXDIST = 8;
-
   private static final double shooterDataTableScalar =
       1; // we had to change the limelight code and scale the distances to what they used to be
+  // private ShooterSpec[] dataTable;
+  private final TreeMap<Double, ShooterSpec> dataTable;
 
   // Sets up the data table and pushes in empty specs
   public ShooterDataTable() {
     this.dataTable = new TreeMap<>();
-  }
-
-  // adds specs at a desired distance, rounded down to the nearest standard distance
-  public void addSpecs(double distance, double hoodAngle, double power) {
-    ShooterSpec newSpec = new ShooterSpec(hoodAngle, power);
-    dataTable.put(distance, newSpec);
-    // int index = (int) ((distance - MINDIST) * K + 0.005);
-    // dataTable[index] = newSpec;
-  }
-
-  // gets the desired specs for shooter at a distance, linearly interpolating between the
-  // two closest data points.
-  public ShooterSpec getSpecs(double distance) {
-    distance = distance * shooterDataTableScalar;
-    if (distance <= MINDIST || distance >= MAXDIST) return new ShooterSpec();
-    if (dataTable.containsKey(distance)) return dataTable.get(distance);
-
-    double prevDist = dataTable.lowerKey(distance);
-    double nextDist = dataTable.higherKey(distance);
-    ShooterSpec s1 = dataTable.get(prevDist);
-    ShooterSpec s2 = dataTable.get(nextDist);
-    double diffDist = nextDist - prevDist;
-    double weight2 = (nextDist - distance) / diffDist;
-    double weight1 = 1 - weight2;
-    return new ShooterSpec(
-        s1.getAngle() * weight1 + s2.getAngle() * weight2,
-        s1.getPower() * weight1 + s2.getPower() * weight2);
   }
 
   // main method for testing
@@ -86,8 +58,8 @@ public class ShooterDataTable implements Serializable {
     dt.addSpecs(6.5, 41, 53.35);
     for (double i = 5.1; i < 8; i += 0.1) {
       dt.addSpecs(i, 41, 72.3067 * Math.log(i) - 8.23734);
-    }
-    // System.out.println(dt.getSpecs(6.5));
+    } // evil hack
+
     try {
       FileOutputStream fileOut = new FileOutputStream("src/main/deploy/dt.ser");
       System.out.println("built file output stream");
@@ -101,5 +73,30 @@ public class ShooterDataTable implements Serializable {
     } catch (IOException e) {
       System.out.println(e + " encountered. " + "Wow, such empty");
     }
+  }
+
+  // adds specs at a desired distance, rounded down to the nearest standard distance
+  public void addSpecs(double distance, double hoodAngle, double power) {
+    ShooterSpec newSpec = new ShooterSpec(hoodAngle, power);
+    dataTable.put(distance, newSpec);
+  }
+
+  // gets the desired specs for shooter at a distance, linearly interpolating between the
+  // two closest data points.
+  public ShooterSpec getSpecs(double distance) {
+    distance *= shooterDataTableScalar;
+    if (distance <= MINDIST || distance >= MAXDIST) return new ShooterSpec();
+    if (dataTable.containsKey(distance)) return dataTable.get(distance);
+
+    double prevDist = dataTable.lowerKey(distance);
+    double nextDist = dataTable.higherKey(distance);
+    ShooterSpec s1 = dataTable.get(prevDist);
+    ShooterSpec s2 = dataTable.get(nextDist);
+    double diffDist = nextDist - prevDist;
+    double weight2 = (nextDist - distance) / diffDist;
+    double weight1 = 1 - weight2;
+    return new ShooterSpec(
+        s1.getAngle() * weight1 + s2.getAngle() * weight2,
+        s1.getPower() * weight1 + s2.getPower() * weight2);
   }
 }

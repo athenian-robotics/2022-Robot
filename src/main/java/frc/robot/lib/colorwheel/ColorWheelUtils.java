@@ -1,6 +1,7 @@
 package frc.robot.lib.colorwheel;
 
-import static frc.robot.lib.colorwheel.WheelColors.*;
+import static frc.robot.lib.colorwheel.WheelColors.BLUE;
+import static frc.robot.lib.colorwheel.WheelColors.RED;
 
 import com.revrobotics.ColorSensorV3;
 import edu.wpi.first.wpilibj.I2C;

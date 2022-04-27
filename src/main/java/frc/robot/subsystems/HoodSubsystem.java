@@ -14,7 +14,6 @@ public class HoodSubsystem extends SubsystemBase {
   private final NetworkTableEntry hoodAngleAdjustmentNTE;
   private final Servo leftHoodAngleServo = new Servo(leftHoodServoPort);
   private final Servo rightHoodAngleServo = new Servo(rightHoodServoPort);
-  private final NetworkTableEntry hoodAngleNTE;
   public double lastHoodAngle;
 
   public HoodSubsystem() {
@@ -23,9 +22,9 @@ public class HoodSubsystem extends SubsystemBase {
     rightHoodAngleServo.setBounds(
         2.0, 1.8, 1.5, 1.2, 1.0); // Manufacturer specified for Actuonix linear servos
 
-    hoodAngleNTE =
+    NetworkTableEntry hoodAngleNTE =
         Shuffleboard.getTab("852 - Dashboard")
-            .add("Hood Angle 2", 1)
+            .add("Hood Angle", 1)
             .withWidget(BuiltInWidgets.kTextView)
             .withProperties(Map.of("min", 8, "max", 41))
             .getEntry();
@@ -36,6 +35,15 @@ public class HoodSubsystem extends SubsystemBase {
             .withWidget(BuiltInWidgets.kNumberSlider)
             .withProperties(Map.of("min", 0.75, "max", 1.25, "default value", 1))
             .getEntry();
+  }
+
+  public double
+      getHoodAngle() { // Takes the average of the angles (0-1) and scales it into a degree
+    // measurement
+    return ((maximumHoodAngle - minimumHoodAngle)
+            * (leftHoodAngleServo.getAngle() + rightHoodAngleServo.getAngle())
+            / 360)
+        + minimumHoodAngle;
   }
 
   public void setHoodAngle(double angle) {
@@ -54,15 +62,6 @@ public class HoodSubsystem extends SubsystemBase {
               / (maximumHoodAngle - minimumHoodAngle));
       // 0 - 180 DEGREES
     }
-  }
-
-  public double
-      getHoodAngle() { // Takes the average of the angles (0-1) and scales it into a degree
-    // measurement
-    return ((maximumHoodAngle - minimumHoodAngle)
-            * (leftHoodAngleServo.getAngle() + rightHoodAngleServo.getAngle())
-            / 360)
-        + minimumHoodAngle;
   }
 
   public void disable() {
