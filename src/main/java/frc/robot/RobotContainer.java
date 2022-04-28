@@ -144,6 +144,7 @@ public class RobotContainer {
               else drivetrain.setDefaultCommand(new ArcadeDrive(drivetrain, xboxController));
             },
             drivetrain));
+
     xboxLP.whenPressed(new InstantCommand(drivetrain::shiftDown, drivetrain)); // Shift down
     xboxRP.whenPressed(new InstantCommand(drivetrain::shiftUp, drivetrain)); // Shift up
     xboxX.whenHeld(new RunIntakeBackwards(intake, portal));

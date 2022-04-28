@@ -56,5 +56,6 @@ public class PoseEstimator extends SubsystemBase {
     } catch (SingularMatrixException ignored) {
     }
     field.setRobotPose(getPose());
+    SmartDashboard.putData(field);
   }
 }
