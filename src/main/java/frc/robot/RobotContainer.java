@@ -248,8 +248,7 @@ public class RobotContainer {
     drivetrain.setDefaultCommand(
         new ArcadeDrive(drivetrain, xboxController)); // Check for Arcade or Tank
     portal.setDefaultCommand(new QueueBalls(portal));
-    turret.setDefaultCommand(
-        new AimTurret(limelight, turret, poseEstimator));
+    turret.setDefaultCommand(new AimTurret(limelight, turret, poseEstimator));
   }
 
   public void setAlliance(DriverStation.Alliance alliance) {

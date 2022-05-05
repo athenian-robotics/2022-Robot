@@ -41,9 +41,7 @@ public class LimelightSubsystem extends SubsystemBase implements Loggable {
     timeSinceLastUpdate = Timer.getFPGATimestamp() - time;
     double angle = angleOffset + turret.getTurretAngleRadians();
     Pose2d pose =
-        new Pose2d(
-            new Translation2d(distance, new Rotation2d(angle - 90)),
-            new Rotation2d(angle));
+        new Pose2d(new Translation2d(distance, new Rotation2d(angle - 90)), new Rotation2d(angle));
     this.pose = new TimestampedPose2d(pose, time);
     RobotContainer.poseEstimator.addVisionPose(this.pose);
   }

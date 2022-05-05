@@ -64,7 +64,7 @@ public class TurretSubsystem extends SubsystemBase implements Loggable {
 
     // 3.85, 0.02, 0.068 new trap(pi/2,pi/4)
     setTurretStartingAngleDegrees(
-       180); // assume default position is turret starting facing backwards counterclockwise
+        180); // assume default position is turret starting facing backwards counterclockwise
     setTurretSetpointRadians(getTurretAngleRadians());
     turretLoop.reset(VecBuilder.fill(getTurretAngleRadians(), getTurretSpeed()));
   }
@@ -121,7 +121,8 @@ public class TurretSubsystem extends SubsystemBase implements Loggable {
       turretLoop.correct(VecBuilder.fill(getTurretAngleRadians()));
       turretLoop.predict(0.02);
       nextTurretVolts = turretLoop.getU(0);
-      turretMotor.setVoltage(nextTurretVolts + Constants.Turret.ks * Math.signum(turretLoop.getXHat(0)));
+      turretMotor.setVoltage(
+          nextTurretVolts + Constants.Turret.ks * Math.signum(turretLoop.getXHat(0)));
     } else turnTurret(0);
   }
 }
