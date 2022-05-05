@@ -3,8 +3,6 @@ package frc.robot.subsystems;
 import static com.ctre.phoenix.motorcontrol.TalonFXControlMode.PercentOutput;
 import static frc.robot.Constants.MechanismConstants.turretMotorPort;
 import static frc.robot.Constants.MechanismConstants.turretTurnSpeed;
-import static frc.robot.RobotContainer.drivetrain;
-import static frc.robot.RobotContainer.limelight;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -20,35 +18,31 @@ import edu.wpi.first.math.system.LinearSystemLoop;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.RobotContainer;
-import frc.robot.lib.limelight.GoalNotFoundException;
-import frc.robot.lib.limelight.LimelightDataLatch;
-import frc.robot.lib.limelight.LimelightDataType;
+import io.github.oblarg.oblog.Loggable;
+import io.github.oblarg.oblog.annotations.Log;
 
-public class TurretSubsystem extends SubsystemBase {
+public class TurretSubsystem extends SubsystemBase implements Loggable {
   public final WPI_TalonFX turretMotor = new WPI_TalonFX(turretMotorPort);
 
-  private final LimelightSubsystem limelight;
-  private final LimelightDataLatch turretToleranceDistanceLatch;
   private final LinearSystemLoop<N2, N1, N1> turretLoop;
   private final TrapezoidProfile.Constraints constraints =
       new TrapezoidProfile.Constraints(Math.PI / 2, Math.PI / 4);
   private TrapezoidProfile.State lastReference = new TrapezoidProfile.State();
   TrapezoidProfile.State goal = new TrapezoidProfile.State();
 
-  public double currentTurretToleranceRadians = Math.toRadians(1);
-  public boolean LQRRunning = false;
-  private double distance;
+  public boolean LQRRunning = true;
+
+  @Log private double turretGoal;
+  @Log private double nextTurretVolts;
+  @Log private double positionSetpoint;
 
   public TurretSubsystem() {
-    this.limelight = RobotContainer.limelight;
-    turretMotor.setInverted(false);
+    // CCW +
+    turretMotor.setInverted(true);
     turretMotor.setNeutralMode(NeutralMode.Brake);
 
-    turretToleranceDistanceLatch = new LimelightDataLatch(LimelightDataType.DISTANCE, 16);
     LinearSystem<N2, N1, N1> turretPlant =
         LinearSystemId.identifyPositionSystem(Constants.Turret.kv, Constants.Turret.ka);
     KalmanFilter<N2, N1, N1> kalmanFilter =
@@ -56,7 +50,7 @@ public class TurretSubsystem extends SubsystemBase {
             Nat.N2(),
             Nat.N1(),
             turretPlant,
-            VecBuilder.fill(0.47283, 5.6516),
+            VecBuilder.fill(0.001, 0.25288),
             VecBuilder.fill(0.01),
             0.020);
     LinearQuadraticRegulator<N2, N1, N1> turretController =
@@ -66,12 +60,13 @@ public class TurretSubsystem extends SubsystemBase {
             VecBuilder.fill(12),
             0.020);
     turretController.latencyCompensate(turretPlant, 0.020, 0.017);
-    turretLoop = new LinearSystemLoop<>(turretPlant, turretController, kalmanFilter, 12, 0.020);
+    turretLoop = new LinearSystemLoop<>(turretPlant, turretController, kalmanFilter, 3, 0.020);
 
     // 3.85, 0.02, 0.068 new trap(pi/2,pi/4)
     setTurretStartingAngleDegrees(
-        -180); // assume default position is turret starting facing backwards counterclockwise
+       180); // assume default position is turret starting facing backwards counterclockwise
     setTurretSetpointRadians(getTurretAngleRadians());
+    turretLoop.reset(VecBuilder.fill(getTurretAngleRadians(), getTurretSpeed()));
   }
 
   public void turnTurret(double power) {
@@ -86,26 +81,20 @@ public class TurretSubsystem extends SubsystemBase {
     goal = new TrapezoidProfile.State(angle, 0);
   }
 
-  // CW Positive
+  // CCW Positive, 0-360
   public void setTurretSetpointRadians(double angle) {
     goal = new TrapezoidProfile.State(angle, 0);
     LQRRunning = true;
   }
 
+  @Log
   public double getTurretAngleRadians() {
     return Math.toRadians(turretMotor.getSelectedSensorPosition() * 36 / 2048);
   }
 
-  private void updateCurrentTurretTolerance() {
-    try {
-      if (turretToleranceDistanceLatch.unlocked()) {
-        distance = turretToleranceDistanceLatch.open();
-        currentTurretToleranceRadians = Math.toRadians(6) / distance;
-        SmartDashboard.putNumber("turret tolerance", Math.toDegrees(currentTurretToleranceRadians));
-      }
-    } catch (GoalNotFoundException e) {
-      limelight.addLatch(turretToleranceDistanceLatch.reset());
-    }
+  @Log
+  public double getTurretSpeed() {
+    return Math.toRadians(turretMotor.getSelectedSensorVelocity() * 36 / 2048);
   }
 
   public void disable() {
@@ -114,24 +103,25 @@ public class TurretSubsystem extends SubsystemBase {
     LQRRunning = false;
   }
 
+  public boolean atGoal(double tolerance) {
+    return Math.abs(getTurretAngleRadians() - turretGoal) < tolerance;
+  }
+
   @Override
   public void periodic() {
-    double Tgoal =
-        goal.position
-            + drivetrain.getPositionOffset(goal.position + getTurretAngleRadians(), distance);
-    SmartDashboard.putNumber("goal", Math.toDegrees(Tgoal));
-    SmartDashboard.putNumber("curr", Math.toDegrees(getTurretAngleRadians()));
-    updateCurrentTurretTolerance();
+    turretGoal = goal.position /* + drivetrain.getPositionOffset(goal.position, distance) */;
+    if (turretGoal > 270) turretGoal -= 360;
     if (LQRRunning) {
       lastReference =
           (new TrapezoidProfile(
-                  constraints, new TrapezoidProfile.State(Tgoal, goal.velocity), lastReference))
+                  constraints, new TrapezoidProfile.State(turretGoal, 0), lastReference))
               .calculate(0.02);
-      turretLoop.setNextR(lastReference.position, lastReference.velocity);
+      positionSetpoint = lastReference.position;
+      turretLoop.setNextR(positionSetpoint, 0);
       turretLoop.correct(VecBuilder.fill(getTurretAngleRadians()));
       turretLoop.predict(0.02);
-      double next = turretLoop.getU(0);
-      turretMotor.setVoltage(next);
+      nextTurretVolts = turretLoop.getU(0);
+      turretMotor.setVoltage(nextTurretVolts + Constants.Turret.ks * Math.signum(turretLoop.getXHat(0)));
     } else turnTurret(0);
   }
 }

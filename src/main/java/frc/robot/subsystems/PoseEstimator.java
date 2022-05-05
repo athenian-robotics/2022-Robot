@@ -5,18 +5,18 @@ import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.networktables.NetworkTablesJNI;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.lib.TimestampedPose2d;
-import org.ejml.data.SingularMatrixException;
+import io.github.oblarg.oblog.Loggable;
+import io.github.oblarg.oblog.annotations.Log;
 
-public class PoseEstimator extends SubsystemBase {
+public class PoseEstimator extends SubsystemBase implements Loggable {
   private final DrivetrainSubsystem drivetrain;
   private final DifferentialDrivePoseEstimator poseEstimator;
-  private final LimelightSubsystem limelight;
 
-  private final Field2d field = new Field2d();
+  private TimestampedPose2d latestVisionPose;
 
   public PoseEstimator(DrivetrainSubsystem drivetrain, LimelightSubsystem limelight) {
     this.drivetrain = drivetrain;
@@ -28,17 +28,39 @@ public class PoseEstimator extends SubsystemBase {
             VecBuilder.fill(0.05, 0.05, Math.toRadians(1), 0.05, 0.05),
             VecBuilder.fill(0.05, 0.05, Math.toRadians(1)),
             VecBuilder.fill(0.5, 0.5, Math.toRadians(30)));
-    this.limelight = limelight;
-
-    SmartDashboard.putData("field", field);
   }
 
   public Pose2d getPose() {
     return poseEstimator.getEstimatedPosition();
   }
 
+  @Log
+  public Field2d getField() {
+    Field2d field = new Field2d();
+    field.setRobotPose(getPose());
+    return field;
+  }
+
   public void resetPose(Pose2d pose) {
     poseEstimator.resetPosition(pose, drivetrain.getRotation2d());
+  }
+
+  public void addVisionPose(TimestampedPose2d pose) {
+    this.latestVisionPose = pose;
+    try {
+      // poseEstimator.addVisionMeasurement(pose.pose, pose.timestamp);
+    } catch (Exception ignored) {
+
+    }
+  }
+
+  public Pose2d getVisionPose(boolean replaceIfStale) {
+    if (replaceIfStale) {
+      if (NetworkTablesJNI.now() - latestVisionPose.timestamp > 70) {
+        return getPose();
+      }
+    }
+    return latestVisionPose.pose;
   }
 
   @Override
@@ -47,14 +69,11 @@ public class PoseEstimator extends SubsystemBase {
     Rotation2d rotation = drivetrain.getRotation2d();
     double leftDistance = drivetrain.getLeftDistanceDriven();
     double rightDistance = drivetrain.getRightDistanceDriven();
-    TimestampedPose2d visionPose = limelight.getLatestPose();
-    poseEstimator.addVisionMeasurement(visionPose.pose, visionPose.timestamp);
     try {
       Pose2d localizationPose =
           poseEstimator.update(rotation, wheelSpeeds, leftDistance, rightDistance);
 
-    } catch (SingularMatrixException ignored) {
+    } catch (Exception ignored) {
     }
-    field.setRobotPose(getPose());
   }
 }

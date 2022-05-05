@@ -10,11 +10,11 @@ import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
@@ -25,7 +25,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
   public final Encoder rightEncoder;
   public final Encoder leftEncoder;
   // Setup autonomous and sensor objects
-  final DifferentialDriveOdometry odometry;
   private final AHRS gyro = new AHRS(SerialPort.Port.kMXP);
   private final DoubleSolenoid driveShifterRight =
       new DoubleSolenoid(
@@ -74,7 +73,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
     driveShifterLeft.set(DoubleSolenoid.Value.kReverse);
 
     resetEncoders();
-    odometry = new DifferentialDriveOdometry(gyro.getRotation2d());
   }
 
   /**
@@ -143,7 +141,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
    */
   public void resetOdometry(Pose2d pose) {
     resetEncoders();
-    odometry.resetPosition(pose, gyro.getRotation2d());
+    RobotContainer.poseEstimator.resetPose(pose);
   }
 
   public Rotation2d getRotation2d() {
@@ -186,7 +184,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
   }
 
   public Pose2d getPose() { // Returns the Pose2d object of the robot in meters
-    return odometry.getPoseMeters();
+    return RobotContainer.poseEstimator.getPose();
   }
 
   public DifferentialDriveWheelSpeeds
@@ -205,7 +203,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // Consistently update the robot's odometry as it moves throughout the field
-    odometry.update(gyro.getRotation2d(), leftEncoder.getDistance(), rightEncoder.getDistance());
     drive.feed();
   }
 
@@ -213,20 +210,49 @@ public class DrivetrainSubsystem extends SubsystemBase {
     return leftEncoder.getDistance();
   }
 
-  public double getPositionOffset(double angle, double distance) {
+  public double getPositionOffset() {
+    Pose2d pose = RobotContainer.limelight.getLatestPose().pose;
     double velocity = kDriveKinematics.toChassisSpeeds(getWheelSpeeds()).vxMetersPerSecond;
-    double TOF =
-        RobotContainer.shooterDataTable.getSpecs(RobotContainer.limelight.distance).getTOF();
-    Translation2d displacementVector = new Translation2d(distance, new Rotation2d(-angle));
+    double distance = pose.getTranslation().getNorm();
+    double TOF = RobotContainer.shooterDataTable.getSpecs(Math.abs(distance)).getTOF();
+    Translation2d displacementVector = new Pose2d().minus(pose).getTranslation();
     Translation2d linearVelocityVector = new Translation2d(velocity, new Rotation2d(0));
     double side = TOF * velocity;
     double tofOffset = Math.atan(side / distance);
+    if (pose.getRotation().getDegrees() < 180) {
+      tofOffset *= -1;
+    }
     double angularVelocity =
         kDriveKinematics.toChassisSpeeds(getWheelSpeeds()).omegaRadiansPerSecond;
     // cross product
     double cross =
         displacementVector.getX() * linearVelocityVector.getY()
             - displacementVector.getY() * linearVelocityVector.getX();
-    return Math.toRadians(90) + ((cross + angularVelocity) * Constants.looptime) - tofOffset;
+    return ((cross + angularVelocity) * Constants.looptime) - tofOffset;
+  }
+
+  public static double getPositionOffset(
+      double angle, double distance, double velocity, double TOF, double angularVelocity) {
+    Translation2d displacementVector =
+        new Translation2d(distance, new Rotation2d(Math.toRadians(-angle)));
+    Translation2d linearVelocityVector = new Translation2d(velocity, new Rotation2d(0));
+
+    double side = TOF * velocity;
+    double tofOffset = Math.atan(side / distance);
+    if (angle < -180) {
+      tofOffset *= -1;
+    }
+    // cross product
+    double cross =
+        displacementVector.getX() * linearVelocityVector.getY()
+            - displacementVector.getY() * linearVelocityVector.getX();
+
+    double v = ((cross + angularVelocity) * Constants.looptime) - tofOffset;
+    SmartDashboard.putNumber("tof + turret offset", v);
+    return v;
+  }
+
+  public static void main(String[] args) {
+    System.out.println(Math.toDegrees(getPositionOffset(-90, 5, 1, 1.46, 0)));
   }
 }

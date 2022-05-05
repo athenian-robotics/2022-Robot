@@ -6,15 +6,16 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import io.github.oblarg.oblog.annotations.Log;
 import java.util.Map;
 
 public class HoodSubsystem extends SubsystemBase {
   private final NetworkTableEntry hoodAngleAdjustmentNTE;
   private final Servo leftHoodAngleServo = new Servo(leftHoodServoPort);
   private final Servo rightHoodAngleServo = new Servo(rightHoodServoPort);
-  public double lastHoodAngle;
+
+  @Log public double lastHoodAngle;
 
   public HoodSubsystem() {
     leftHoodAngleServo.setBounds(
@@ -37,6 +38,7 @@ public class HoodSubsystem extends SubsystemBase {
             .getEntry();
   }
 
+  @Log
   public double
       getHoodAngle() { // Takes the average of the angles (0-1) and scales it into a degree
     // measurement
@@ -70,10 +72,5 @@ public class HoodSubsystem extends SubsystemBase {
   }
 
   @Override
-  public void periodic() {
-    SmartDashboard.putNumber("Hood Angle", getHoodAngle());
-    SmartDashboard.putNumber("lastHoodAngle", lastHoodAngle);
-
-    // setHoodAngle(hoodAngleNTE.getDouble(31));
-  }
+  public void periodic() {}
 }

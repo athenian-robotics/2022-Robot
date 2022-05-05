@@ -9,9 +9,9 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import io.github.oblarg.oblog.annotations.Log;
 
 public class IntakeSubsystem extends SubsystemBase {
   // Configure intake motor, solenoid, and booleans
@@ -22,7 +22,7 @@ public class IntakeSubsystem extends SubsystemBase {
   private final DoubleSolenoid leftIntakePneumatic =
       new DoubleSolenoid(PneumaticsModuleType.CTREPCM, pneumaticPortLeftA, pneumaticPortLeftB);
 
-  public boolean isRunning = false;
+  @Log public boolean isRunning = false;
   public boolean isExtended = false;
 
   public IntakeSubsystem() {
@@ -80,7 +80,5 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   @Override
-  public void periodic() {
-    SmartDashboard.putBoolean("Intake Active", isRunning);
-  }
+  public void periodic() {}
 }

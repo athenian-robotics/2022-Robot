@@ -4,11 +4,14 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.util.Units;
 
 public final class Constants {
   public static final double looptime = 0.02;
+  public static final Pose2d hub = new Pose2d(8.25, 4.15, new Rotation2d(0));
 
   public static final class AutoConstants {
     public static final double ksVolts = 0.55834;
@@ -113,8 +116,8 @@ public final class Constants {
   }
 
   public static final class Turret {
-    public static final double ks = 0.22074;
-    public static final double ka = 0.024872;
-    public static final double kv = 0.20592;
+    public static final double ks = 0.192422;
+    public static final double ka = 0.22218;
+    public static final double kv = 0.03877;
   }
 }

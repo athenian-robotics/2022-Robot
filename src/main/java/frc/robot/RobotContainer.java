@@ -34,10 +34,11 @@ import frc.robot.commands.portal.QueueBalls;
 import frc.robot.commands.scoring.ShootLowGoalNextToTarget;
 import frc.robot.commands.scoring.ShootOne;
 import frc.robot.commands.scoring.ShootTwo;
-import frc.robot.commands.turret.TurretTurnToGoalWithLimelightOrManualAdjustTurret;
+import frc.robot.commands.turret.AimTurret;
 import frc.robot.lib.controllers.FightStick;
 import frc.robot.lib.shooterData.ShooterDataTable;
 import frc.robot.subsystems.*;
+import io.github.oblarg.oblog.Logger;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 
@@ -99,6 +100,7 @@ public class RobotContainer {
     Shuffleboard.getTab("852 - Dashboard")
         .add("Chooser", chooser)
         .withWidget(BuiltInWidgets.kComboBoxChooser);
+    Logger.configureLoggingAndConfig(this, false);
   }
 
   // Configures xbox buttons to commands
@@ -119,7 +121,8 @@ public class RobotContainer {
     fightStickLT.whenActive(
         new ShootLowGoalNextToTarget(drivetrain, indexer, intake, shooter, hood, portal, turret));
     FightStick.fightStickX.whenPressed(
-        new ShootOne(drivetrain, indexer, intake, shooter, portal, limelight, shooterDataTable));
+        new ShootOne(
+            drivetrain, indexer, intake, shooter, turret, portal, limelight, shooterDataTable));
 
     xboxB.whenPressed(
         new ShootLowGoalNextToTarget(drivetrain, indexer, intake, shooter, hood, portal, turret));
@@ -246,7 +249,7 @@ public class RobotContainer {
         new ArcadeDrive(drivetrain, xboxController)); // Check for Arcade or Tank
     portal.setDefaultCommand(new QueueBalls(portal));
     turret.setDefaultCommand(
-        new TurretTurnToGoalWithLimelightOrManualAdjustTurret(limelight, turret));
+        new AimTurret(limelight, turret, poseEstimator));
   }
 
   public void setAlliance(DriverStation.Alliance alliance) {
@@ -281,7 +284,6 @@ public class RobotContainer {
     indexer.disable();
     intake.disable();
     led.disable();
-    limelight.disable();
     portal.disable();
     shooter.disable();
     turret.disable();

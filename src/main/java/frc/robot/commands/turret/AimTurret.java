@@ -2,31 +2,36 @@ package frc.robot.commands.turret;
 
 import static frc.robot.Constants.MechanismConstants.slowTurretTurnSpeed;
 import static frc.robot.Constants.MechanismConstants.turretTurnSpeed;
+import static frc.robot.Constants.hub;
+import static frc.robot.RobotContainer.poseEstimator;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.lib.controllers.FightStick;
-import frc.robot.lib.limelight.GoalNotFoundException;
-import frc.robot.lib.limelight.LimelightDataLatch;
-import frc.robot.lib.limelight.LimelightDataType;
 import frc.robot.subsystems.LimelightSubsystem;
+import frc.robot.subsystems.PoseEstimator;
 import frc.robot.subsystems.TurretSubsystem;
 
-public class TurretTurnToGoalWithLimelightOrManualAdjustTurret extends CommandBase {
+/* Aims the turret with vision or poseestimator with manual override*/
+public class AimTurret extends CommandBase {
   private final LimelightSubsystem limelightSubsystem;
   private final TurretSubsystem turretSubsystem;
-  private final LimelightDataLatch offsetLatch;
+  private final PoseEstimator poseEstimator;
 
-  public TurretTurnToGoalWithLimelightOrManualAdjustTurret(
-      LimelightSubsystem limelightSubsystem, TurretSubsystem turretSubsystem) {
+  public AimTurret(
+      LimelightSubsystem limelightSubsystem,
+      TurretSubsystem turretSubsystem,
+      PoseEstimator poseEstimator) {
+    this.poseEstimator = poseEstimator;
     this.limelightSubsystem = limelightSubsystem;
     this.turretSubsystem = turretSubsystem;
-    offsetLatch = new LimelightDataLatch(LimelightDataType.HORIZONTAL_OFFSET, 5);
     addRequirements(this.limelightSubsystem, this.turretSubsystem);
   }
 
   @Override
   public void initialize() {
-    limelightSubsystem.addLatch(offsetLatch.reset());
     turretSubsystem.turnTurret(0);
   }
 
@@ -43,16 +48,19 @@ public class TurretTurnToGoalWithLimelightOrManualAdjustTurret extends CommandBa
     } else if (FightStick.fightStickShare.get()) {
       turretSubsystem.disable();
     } else {
-      try {
-        if (offsetLatch.unlocked()) {
+      if (Timer.getFPGATimestamp() - limelightSubsystem.getLatestPose().timestamp < 0.07) {
+        turretSubsystem.setTurretSetpointRadians(
+            limelightSubsystem.getLatestPose().pose.getRotation().getRadians());
+      } else {
+        if (limelightSubsystem.timeSinceLastUpdate < 0.07) {
+          turretSubsystem.setTurretSetpointRadians(limelightSubsystem.angleOffset);
+        } else {
           turretSubsystem.setTurretSetpointRadians(
-              offsetLatch.open() + turretSubsystem.getTurretAngleRadians());
-          throw new GoalNotFoundException(); // shortcut to latch reset  vvv  (since we've expended
-          // it)
+              hub.minus(poseEstimator.getPose()).getRotation().getRadians()
+                  + Math.sin(
+                      hub.minus(poseEstimator.getPose()).getTranslation().getY()
+                          / hub.minus(poseEstimator.getPose()).getTranslation().getX()));
         }
-      } catch (GoalNotFoundException e) {
-        limelightSubsystem.addLatch(
-            offsetLatch.reset()); // assuming we want to look for the goal forever
       }
     }
   }

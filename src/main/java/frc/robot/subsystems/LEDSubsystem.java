@@ -48,6 +48,6 @@ public class LEDSubsystem extends SubsystemBase {
   }
 
   public void periodic() {
-    if (continuousOutputEnabled) update();
+    // if (continuousOutputEnabled) update();
   }
 }

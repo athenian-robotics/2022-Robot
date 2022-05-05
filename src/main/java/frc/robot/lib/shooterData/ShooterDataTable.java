@@ -22,43 +22,43 @@ public class ShooterDataTable implements Serializable {
   // main method for testing
   public static void main(String[] args) {
     ShooterDataTable dt = new ShooterDataTable();
-    //    dt.addSpecs(1.95, 21, 34.8);
-    //    dt.addSpecs(2.11, 21.53, 35.4);
-    //    dt.addSpecs(2.25, 22, 36);
-    //    dt.addSpecs(2.40, 23, 36.4);
-    //    dt.addSpecs(2.54, 23.7, 37);
-    //    dt.addSpecs(2.85, 27.7, 37.2);
-    //    dt.addSpecs(3.18, 28.5, 37.9);
-    //    dt.addSpecs(3.41, 30.4, 38.5);
-    //    dt.addSpecs(3.67, 32.5, 40.5);
-    //    dt.addSpecs(3.96, 36, 43);
-    //    dt.addSpecs(4.37, 36.8, 43.8);
-    //    dt.addSpecs(4.67, 37.6, 44.65);
-    //    dt.addSpecs(4.93, 39, 45.4);
-    //    dt.addSpecs(5.31, 39.8, 46.9);
-    //    dt.addSpecs(5.56, 40.5, 47.8);
-    //    dt.addSpecs(5.85, 41, 49.5);
-    //    dt.addSpecs(6.09, 41, 51.65);
-    //    dt.addSpecs(6.42, 41, 52.7);
-    //    dt.addSpecs(6.57, 41, 53.35);
+    //        dt.addSpecs(1.95, 21, 34.8);
+    //        dt.addSpecs(2.11, 21.53, 35.4);
+    //        dt.addSpecs(2.25, 22, 36);
+    //        dt.addSpecs(2.40, 23, 36.4);
+    //        dt.addSpecs(2.54, 23.7, 37);
+    //        dt.addSpecs(2.85, 27.7, 37.2);
+    //        dt.addSpecs(3.18, 28.5, 37.9);
+    //        dt.addSpecs(3.41, 30.4, 38.5);
+    //        dt.addSpecs(3.67, 32.5, 40.5);
+    //        dt.addSpecs(3.96, 36, 43);
+    //        dt.addSpecs(4.37, 36.8, 43.8);
+    //        dt.addSpecs(4.67, 37.6, 44.65);
+    //        dt.addSpecs(4.93, 39, 45.4);
+    //        dt.addSpecs(5.31, 39.8, 46.9);
+    //        dt.addSpecs(5.56, 40.5, 47.8);
+    //        dt.addSpecs(5.85, 41, 49.5);
+    //        dt.addSpecs(6.09, 41, 51.65);
+    //        dt.addSpecs(6.42, 41, 52.7);
+    //        dt.addSpecs(6.57, 41, 53.35);
 
-    //    dt.addSpecs(1.94, 25, 34.75, );
-    //    dt.addSpecs(2.34, 27, 34);
-    //    dt.addSpecs(2.49, 28, 34.5);
-    //    dt.addSpecs(2.78, 28.55, 34.71);
-    //    dt.addSpecs(2.98, 29.2, 35.2);
-    //    dt.addSpecs(3.29, 29.72, 35.7);
-    //    dt.addSpecs(3.51, 31, 37.2);
-    //    dt.addSpecs(3.76, 35, 38.2);
-    //    dt.addSpecs(4.01, 38, 40.9);
-    //    dt.addSpecs(4.27, 38.13, 40.96);
-    //    dt.addSpecs(4.56, 39.5, 41.1);
-    //    dt.addSpecs(4.82, 40.5, 41.28);
-    //    dt.addSpecs(5.00, 41, 42.3);
-    //    dt.addSpecs(6.5, 41, 53.35);
-    //    for (double i = 5.1; i < 8; i += 0.1) {
-    //      dt.addSpecs(i, 41, 72.3067 * Math.log(i) - 8.23734);
-    //    } // evil hack
+    dt.addSpecs(1.94, 25, 34.75, 0.01);
+    dt.addSpecs(2.34, 27, 34, 0.01);
+    dt.addSpecs(2.49, 28, 34.5, 0.01);
+    dt.addSpecs(2.78, 28.55, 34.71, 0.01);
+    dt.addSpecs(2.98, 29.2, 35.2, 0.01);
+    dt.addSpecs(3.29, 29.72, 35.7, 0.01);
+    dt.addSpecs(3.51, 31, 37.2, 0.01);
+    dt.addSpecs(3.76, 35, 38.2, 0.01);
+    dt.addSpecs(4.01, 38, 40.9, 0.01);
+    dt.addSpecs(4.27, 38.13, 40.96, 0.01);
+    dt.addSpecs(4.56, 39.5, 41.1, 0.01);
+    dt.addSpecs(4.82, 40.5, 41.28, 0.01);
+    dt.addSpecs(5.00, 41, 42.3, 0.01);
+    dt.addSpecs(6.5, 41, 53.35, 0.01);
+    for (double i = 5.1; i < 8; i += 0.1) {
+      dt.addSpecs(i, 41, 72.3067 * Math.log(i) - 8.23734, 0.01);
+    } // evil hack
 
     try {
       FileOutputStream fileOut = new FileOutputStream("src/main/deploy/dt.ser");

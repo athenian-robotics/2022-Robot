@@ -12,19 +12,23 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
 import frc.robot.lib.controllers.SimpleVelocitySystem;
+import io.github.oblarg.oblog.Loggable;
+import io.github.oblarg.oblog.annotations.Log;
 import java.util.Map;
 
-public class ShooterSubsystem extends SubsystemBase {
+public class ShooterSubsystem extends SubsystemBase implements Loggable {
   // Setup motors, pid controller, and booleans
   private final TalonFX shooterMotorFront = new TalonFX(shooterMotorPortA);
   private final NetworkTableEntry shooterAdjustmentNTE;
   // private final NetworkTableEntry shooterPowerNTE; // used for shooterdata table
   private final SimpleVelocitySystem sys;
-  public boolean shooterRunning = false;
   public double shuffleboardShooterPower;
   public double shuffleboardShooterAdjustment;
-  private double shooterRPS = 0;
+
+  @io.github.oblarg.oblog.annotations.Log private double shooterRPS = 0;
+  @Log private double goal;
 
   public ShooterSubsystem() {
     shooterMotorFront.setInverted(false);
@@ -71,11 +75,11 @@ public class ShooterSubsystem extends SubsystemBase {
     if (power > 1.0) power = 1.0;
     if (power < 0.0) power = 0.0;
     shooterMotorFront.set(ControlMode.PercentOutput, power);
-    shooterRunning = true;
   }
 
+  @Log
   public double getWheelSpeed() {
-    return shooterMotorFront.getSelectedSensorVelocity() / 4096;
+    return shooterMotorFront.getSelectedSensorVelocity() / 2048;
   }
 
   public double getRPS() {
@@ -85,7 +89,6 @@ public class ShooterSubsystem extends SubsystemBase {
   public void setRPS(double rps) {
     double shooterAdjustment = shooterAdjustmentNTE.getDouble(1);
     sys.set(rps * shooterAdjustment);
-    shooterRunning = true;
     shooterRPS = rps * shooterAdjustment;
   }
 
@@ -96,20 +99,16 @@ public class ShooterSubsystem extends SubsystemBase {
   public void disable() { // Disables shooter
     setShooterPower(0);
     shooterRPS = 0;
-    shooterRunning = false;
   }
 
   @Override
   public void periodic() {
-    SmartDashboard.putBoolean("Shooter Active", shooterRunning);
-    SmartDashboard.putNumber("Shooter Speed", getWheelSpeed());
     SmartDashboard.putNumber("Shooter Power", shooterRPS);
 
     // setRPS(shooterPowerNTE.getDouble(0)); used for shooterdata table
-
-    if (shooterRunning) {
-      sys.update(getWheelSpeed());
-      setShooterPower(sys.getOutput());
-    }
+    goal = RobotContainer.shooterDataTable.getSpecs(RobotContainer.limelight.distance).getPower();
+    setRPS(goal);
+    sys.update(getWheelSpeed());
+    setShooterPower(sys.getOutput());
   }
 }
