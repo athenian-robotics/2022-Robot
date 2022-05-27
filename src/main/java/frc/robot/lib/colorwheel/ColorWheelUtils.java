@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 
 public class ColorWheelUtils {
-  private final I2C.Port i2cPort = I2C.Port.kOnboard;
+  private final I2C.Port i2cPort = I2C.Port.kMXP;
   private final ColorSensorV3 colorSensor = new ColorSensorV3(i2cPort);
 
   public ColorWheelUtils() {}

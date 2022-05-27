@@ -1,10 +1,14 @@
 package frc.robot.subsystems;
 
 import static frc.robot.Constants.MechanismConstants.intakeToIndexerMotorPort;
+import static frc.robot.RobotContainer.indexer;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
@@ -23,16 +27,16 @@ public class PortalSubsystem extends SubsystemBase {
     portalMotor.setInverted(true);
   }
 
-  public void startPortal() {
-    portalMotor.set(Constants.MechanismConstants.intakeToIndexerSpeed);
+  public Command startPortal() {
+    return new InstantCommand(this::run);
   }
 
   public void startPortalInverted() {
     portalMotor.set(-Constants.MechanismConstants.intakeToIndexerSpeed);
   }
 
-  public void stopPortal() {
-    portalMotor.set(0);
+  public Command stopPortal() {
+    return new InstantCommand(this::run2);
   }
 
   public boolean ballPrimed() {
@@ -59,8 +63,17 @@ public class PortalSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    //    currentColor = colorWheelUtils.currentColor();
-    //    currentProximity = colorWheelUtils.currentProximity();
-    //    SmartDashboard.putBoolean("Ball Primed", ballPrimed());
+    currentColor = colorWheelUtils.currentColor();
+    currentProximity = colorWheelUtils.currentProximity();
+    if (ballPrimed() && !indexer.fuckLeoButNotInASexualMannerMoreOfADerogatoryone) run2();
+    SmartDashboard.putBoolean("Ball Primed", ballPrimed());
+  }
+
+  public void run() {
+    portalMotor.set(Constants.MechanismConstants.intakeToIndexerSpeed);
+  }
+
+  public void run2() {
+    portalMotor.set(0);
   }
 }

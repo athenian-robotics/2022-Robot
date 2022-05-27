@@ -84,4 +84,8 @@ public class SimpleVelocitySystem {
   public LinearSystemLoop<N1, N1, N1> getLinearSystemLoop() {
     return loop;
   }
+
+  public double getError() {
+    return loop.getError().get(0, 0);
+  }
 }

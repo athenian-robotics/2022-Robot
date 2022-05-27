@@ -5,12 +5,13 @@ import static frc.robot.Constants.PneumaticConstants.*;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
 import io.github.oblarg.oblog.annotations.Log;
 
 public class IntakeSubsystem extends SubsystemBase {
@@ -22,63 +23,85 @@ public class IntakeSubsystem extends SubsystemBase {
   private final DoubleSolenoid leftIntakePneumatic =
       new DoubleSolenoid(PneumaticsModuleType.CTREPCM, pneumaticPortLeftA, pneumaticPortLeftB);
 
-  @Log public boolean isRunning = false;
-  public boolean isExtended = false;
+  @Log private IntakeState state = IntakeState.IDLE_RETRACTED;
+
+  public enum IntakeState {
+    SPIT_EXTENDED,
+    SUCK_EXTENDED,
+    SUCK_RETRACTED,
+    IDLE_RETRACTED
+  }
 
   public IntakeSubsystem() {
     intakeMotor.configFactoryDefault(); // Initialize motor set up
     intakeMotor.setNeutralMode(NeutralMode.Coast);
     intakeMotor.configOpenloopRamp(0.1); // Ramp up (Trapezoid)
     intakeMotor.configClosedloopRamp(0.1); // Ramp down (Trapezoid)
-
-    NetworkTableEntry intakeNTE =
-        Shuffleboard.getTab("852 - Dashboard").add("Intake Active", false).getEntry();
   }
 
   public void startIntake() { // Enables intake
     intakeMotor.set(ControlMode.PercentOutput, Constants.MechanismConstants.intakeSpeed);
-    isRunning = true;
   }
 
-  public void stopIntake() { // Disables intake
+  private void stopIntake() { // Disables intake
     intakeMotor.set(ControlMode.PercentOutput, 0);
-    isRunning = false;
   }
 
-  public void toggleIntake() {
-    if (isRunning) stopIntake();
-    else startIntake();
-  } // Toggles intake
-
-  public void startIntakeInverted() { // Inverts intake wheel direction
+  private void startIntakeInverted() { // Inverts intake wheel direction
     intakeMotor.set(ControlMode.PercentOutput, -Constants.MechanismConstants.intakeSpeed);
   }
 
-  public void extendPneumatic() { // Extends pneumatic
+  private void extendPneumatic() { // Extends pneumatic
     rightIntakePneumatic.set(DoubleSolenoid.Value.kForward);
     leftIntakePneumatic.set(DoubleSolenoid.Value.kForward);
-    isExtended = true;
   }
 
-  public void retractPneumatic() { // Retracts pneumatic
+  private void retractPneumatic() { // Retracts pneumatic
     rightIntakePneumatic.set(DoubleSolenoid.Value.kReverse);
     leftIntakePneumatic.set(DoubleSolenoid.Value.kReverse);
-    isExtended = false;
   }
 
-  public void togglePneumatic() { // Toggles solenoid state
-    if (rightIntakePneumatic.get() == DoubleSolenoid.Value.kForward) {
-      retractPneumatic();
-    } else {
-      extendPneumatic();
-    }
+  @Log.ToString
+  public IntakeState getState() {
+    return state;
   }
 
-  public void disable() { // Disables intake subsystem
-    stopIntake();
-    retractPneumatic();
+  public Command suckExtended() {
+    return new InstantCommand(
+        () -> {
+          if (!RobotContainer.portal.ballPrimed()) RobotContainer.portal.run();
+
+          state = IntakeState.SUCK_EXTENDED;
+          extendPneumatic();
+          startIntake();
+        });
   }
 
-  @Override
-  public void periodic() {}
+  public Command spitExtended() {
+    return new InstantCommand(
+        () -> {
+          state = IntakeState.SPIT_EXTENDED;
+          extendPneumatic();
+          startIntakeInverted();
+        });
+  }
+
+  public Command suckRetracted() {
+    return new InstantCommand(
+        () -> {
+          state = IntakeState.SUCK_RETRACTED;
+          retractPneumatic();
+          startIntake();
+        });
+  }
+
+  public Command idleRetracted() {
+    return new InstantCommand(
+        () -> {
+          RobotContainer.portal.run2();
+          state = IntakeState.IDLE_RETRACTED;
+          retractPneumatic();
+          stopIntake();
+        });
+  }
 }

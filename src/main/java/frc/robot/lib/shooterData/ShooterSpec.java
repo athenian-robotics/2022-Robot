@@ -16,8 +16,8 @@ public class ShooterSpec implements Serializable {
   }
 
   public ShooterSpec(double theta, double power, double tof) {
-    this.hoodAngle = theta;
-    this.power = power;
+    this.hoodAngle = theta + .8;
+    this.power = power + 2;
     this.tof = tof;
   }
 

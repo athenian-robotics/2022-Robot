@@ -63,12 +63,7 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     m_robotContainer.setAlliance(DriverStation.getAlliance());
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-    RobotContainer.turret.setTurretStartingAngleDegrees(-180);
-    RobotContainer.turret.setTurretSetpointRadians(-Math.PI);
-    // schedule the autonomous command (example)
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.schedule();
-    }
+    m_autonomousCommand.schedule();
   }
 
   /** This function is called periodically during autonomous. */
@@ -78,10 +73,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopInit() {
     m_robotContainer.setAlliance(DriverStation.getAlliance());
-
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.cancel();
-    }
+    //    m_autonomousCommand.cancel();
   }
 
   /*

@@ -99,25 +99,20 @@ public final class Constants {
     // Pneumatics constants ...
   }
 
-  public static final class LEDConstants {
-    public static final int LEDPort = 0;
-    public static final int LEDStripLength = 40;
-  }
-
   public static final class Shooter {
     public static final double ks = 0.51149;
     public static final double ka = 0.0091765;
     public static final double kv = 0.10818;
 
-    public static final double maxError = 0.05;
+    public static final double maxError = 0.4;
     public static final double maxControlEffort = 12;
     public static final double modelDeviation = 0.075;
     public static final double encoderDeviation = 0.02;
   }
 
   public static final class Turret {
-    public static final double ks = 0.192422;
-    public static final double ka = 0.22218;
-    public static final double kv = 0.03877;
+    public static final double ks = 0.68813;
+    public static final double ka = 0.02195;
+    public static final double kv = 0.2134;
   }
 }

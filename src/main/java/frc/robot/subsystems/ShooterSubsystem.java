@@ -3,56 +3,51 @@ package frc.robot.subsystems;
 import static com.ctre.phoenix.motorcontrol.NeutralMode.Coast;
 import static frc.robot.Constants.MechanismConstants.shooterMotorPortA;
 import static frc.robot.Constants.MechanismConstants.shooterMotorPortB;
+import static frc.robot.RobotContainer.limelight;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Constants;
-import frc.robot.RobotContainer;
 import frc.robot.lib.controllers.SimpleVelocitySystem;
+import frc.robot.lib.motors.TalonFXFactory;
+import frc.robot.lib.shooterData.ShooterDataTable;
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Log;
 import java.util.Map;
 
 public class ShooterSubsystem extends SubsystemBase implements Loggable {
   // Setup motors, pid controller, and booleans
-  private final TalonFX shooterMotorFront = new TalonFX(shooterMotorPortA);
-  private final NetworkTableEntry shooterAdjustmentNTE;
-  // private final NetworkTableEntry shooterPowerNTE; // used for shooterdata table
+  private final WPI_TalonFX shooterMotorFront;
   private final SimpleVelocitySystem sys;
-  public double shuffleboardShooterPower;
-  public double shuffleboardShooterAdjustment;
+  private final ShooterDataTable shooterDataTable;
+  @Log.ToString public ShooterState state = ShooterState.IDLE;
+  private final PoseEstimator poseEstimator;
+  private final NetworkTableEntry shooterPowerNTE;
 
-  @io.github.oblarg.oblog.annotations.Log private double shooterRPS = 0;
-  @Log private double goal;
-
-  public ShooterSubsystem() {
+  public ShooterSubsystem(PoseEstimator poseEstimator, ShooterDataTable shooterDataTable) {
+    this.poseEstimator = poseEstimator;
+    this.shooterDataTable = shooterDataTable;
+    shooterMotorFront = TalonFXFactory.createDefaultTalon(shooterMotorPortA);
     shooterMotorFront.setInverted(false);
-    TalonFX shooterMotorBack = new TalonFX(shooterMotorPortB);
+    WPI_TalonFX shooterMotorBack =
+        TalonFXFactory.createPermanentSlaveTalon(shooterMotorPortB, shooterMotorPortA);
     shooterMotorBack.setInverted(false);
 
     shooterMotorFront.setNeutralMode(Coast);
     shooterMotorBack.setNeutralMode(Coast);
     shooterMotorBack.follow(shooterMotorFront);
 
-    shooterAdjustmentNTE =
+    // for shooterDataTable values
+    shooterPowerNTE =
         Shuffleboard.getTab("852 - Dashboard")
-            .add("Shooter Power Adjustment", 1)
-            .withWidget(BuiltInWidgets.kNumberSlider)
-            .withProperties(Map.of("min", 0.75, "max", 1.25, "default value", 1))
+            .add("Shooter Power", 0)
+            .withWidget(BuiltInWidgets.kTextView)
+            .withProperties(Map.of("min", 0, "max", 500))
             .getEntry();
-
-    //    shooterPowerNTE =
-    //        Shuffleboard.getTab("852 - Dashboard")
-    //            .add("Shooter Power", 0)
-    //            .withWidget(BuiltInWidgets.kTextView)
-    //            .withProperties(Map.of("min", 0, "max", 500))
-    //            .getEntry();
-    //            for shooterdata table
 
     shooterMotorFront.configVoltageCompSaturation(12);
     shooterMotorBack.configVoltageCompSaturation(12);
@@ -71,44 +66,75 @@ public class ShooterSubsystem extends SubsystemBase implements Loggable {
             Constants.looptime);
   }
 
-  public void setShooterPower(double power) { // Enables both wheels
+  private void setShooterPower(double power) { // Enables both wheels
     if (power > 1.0) power = 1.0;
     if (power < 0.0) power = 0.0;
     shooterMotorFront.set(ControlMode.PercentOutput, power);
   }
 
   @Log
-  public double getWheelSpeed() {
+  private double getWheelSpeed() {
     return shooterMotorFront.getSelectedSensorVelocity() / 2048;
   }
 
-  public double getRPS() {
+  private boolean atSetpoint() {
+    return Math.abs(sys.getError()) < Constants.Shooter.maxError;
+  }
+
+  @Log
+  @SuppressWarnings("unused")
+  private double getRPS() {
     return sys.getVelocity();
   }
 
-  public void setRPS(double rps) {
-    double shooterAdjustment = shooterAdjustmentNTE.getDouble(1);
-    sys.set(rps * shooterAdjustment);
-    shooterRPS = rps * shooterAdjustment;
-  }
-
-  public double getTargetRPS() {
-    return shooterRPS;
-  }
-
-  public void disable() { // Disables shooter
-    setShooterPower(0);
-    shooterRPS = 0;
+  public ShooterState getState() {
+    return state;
   }
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Shooter Power", shooterRPS);
+    if (state != ShooterState.IDLE) {
+      sys.update(getWheelSpeed());
+      if (state == ShooterState.TESTING) {
+        sys.set(shooterPowerNTE.getDouble(0));
+      } else {
+        sys.set(shooterDataTable.getSpecs(limelight.getDistance()).getPower());
+      }
+      setShooterPower(sys.getOutput());
+      if (atSetpoint()) {
+        state = ShooterState.READY;
+      }
+    } else {
+      setShooterPower(0);
+      // shooter data table values
+    }
+  }
 
-    // setRPS(shooterPowerNTE.getDouble(0)); used for shooterdata table
-    goal = RobotContainer.shooterDataTable.getSpecs(RobotContainer.limelight.distance).getPower();
-    setRPS(goal);
-    sys.update(getWheelSpeed());
-    setShooterPower(sys.getOutput());
+  public Command requestShot() {
+    return new InstantCommand(() -> state = ShooterState.APPROACHING);
+  }
+
+  public Command discard() {
+    return new InstantCommand(() -> state = ShooterState.DISCARD);
+  }
+
+  public Command idle() {
+    return new InstantCommand(() -> state = ShooterState.IDLE);
+  }
+
+  public Command waitUntilReady() {
+    return new WaitUntilCommand(() -> state == ShooterState.READY);
+  }
+
+  public enum ShooterState {
+    IDLE, // default state
+    DISCARD, // discarding enemy balls
+    READY, // at setpoint and withing tolerance
+    APPROACHING, // approaching setpoint
+    TESTING // for collecting shooter data table values
+  }
+
+  public Command test() {
+    return new InstantCommand(() -> state = ShooterState.TESTING);
   }
 }
