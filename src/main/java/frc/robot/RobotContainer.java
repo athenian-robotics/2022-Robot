@@ -17,6 +17,10 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.auto.Forward2AndHalfMeters;
+import frc.robot.auto.TwoBallBottomLeft;
+import frc.robot.auto.TwoBallMidBottom;
+import frc.robot.auto.TwoBallTopLeftDefense;
 import frc.robot.lib.controllers.FightStick;
 import frc.robot.lib.shooterData.ShooterDataTable;
 import frc.robot.subsystems.*;
@@ -38,7 +42,6 @@ public class RobotContainer {
   public static final IntakeSubsystem intake = new IntakeSubsystem();
   public static final ClimberSubsystem climb = new ClimberSubsystem();
   public static ShooterSubsystem shooter;
-  public static TurretSubsystem turret;
   public static HoodSubsystem hood;
   public static Superstructure superstructure;
   // CONTROLLERS
@@ -74,9 +77,8 @@ public class RobotContainer {
     }
     poseEstimator = new PoseEstimator(shooterDataTable);
     shooter = new ShooterSubsystem(poseEstimator, shooterDataTable);
-    turret = new TurretSubsystem(limelight, poseEstimator);
     hood = new HoodSubsystem(shooterDataTable, limelight);
-    superstructure = new Superstructure(drivetrain, hood, intake, portal, shooter, indexer, turret);
+    superstructure = new Superstructure(hood, portal, shooter, indexer);
     xboxButtonSetup();
     configureButtonBindings();
     configureAutoChooser();
@@ -95,14 +97,15 @@ public class RobotContainer {
 
     FightStick.fightStickY.whenPressed(superstructure.shoot());
     FightStick.fightStickB.whenPressed(intake.suckRetracted());
-    FightStick.fightStickLB.whenHeld(climb.telescopeDown());
-    FightStick.fightStickRB.whenHeld(climb.telescopeUp());
+    FightStick.fightStickRB.whenHeld(climb.telescopeDown());
+    FightStick.fightStickLB.whenHeld(climb.telescopeUp());
     FightStick.fightStickOption.whenPressed(hood.approachTarget());
+    FightStick.fightStickLT.whenActive(superstructure.shootHub());
     //    fightStickLT.whenActive(
     //        new ShootLowGoalNextToTarget(drivetrain, indexer, intake, shooter, hood, portal,
     // turret));
     FightStick.fightStickX.whenPressed(intake.idleRetracted());
-
+    // xboxB.whenPressed(superstructure.shootHub());
     //    xboxB.whenPressed(
     //        new ShootLowGoalNextToTarget(drivetrain, indexer, intake, shooter, hood, portal,
     // turret));
@@ -149,6 +152,17 @@ public class RobotContainer {
   }
 
   private void configureAutoChooser() {
+    chooser.setDefaultOption(
+        "2.5 Meters Forward", new Forward2AndHalfMeters(drivetrain, poseEstimator));
+    chooser.addOption(
+        "TWoBallBottomLeft",
+        new TwoBallBottomLeft(drivetrain, intake, superstructure, poseEstimator));
+    chooser.addOption(
+        "TwoBallMidBottom",
+        new TwoBallMidBottom(drivetrain, intake, poseEstimator, superstructure));
+    chooser.addOption(
+        "twoBallTopLeftDefense",
+        new TwoBallTopLeftDefense(drivetrain, intake, poseEstimator, superstructure));
     //    chooser.setDefaultOption("0: 2.5 Meters Forward", new Forward2AndHalfMeters(drivetrain));
     //    chooser.addOption(
     //        "1: 5 Ball Auto - Bottom Left Start",
@@ -261,6 +275,5 @@ public class RobotContainer {
     hood.disable();
     indexer.disable();
     portal.disable();
-    turret.disable();
   }
 }

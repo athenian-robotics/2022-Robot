@@ -23,6 +23,7 @@ public class HoodSubsystem extends SubsystemBase {
   private final ShooterDataTable table;
   private final LimelightSubsystem limelight;
   @Log public double lastHoodAngle;
+  private double HUB_ANGLE = 0; // TODO: test
 
   public HoodSubsystem(ShooterDataTable table, LimelightSubsystem limelight) {
     this.table = table;
@@ -97,5 +98,13 @@ public class HoodSubsystem extends SubsystemBase {
   public void disable() {
     leftHoodAngleServo.setSpeed(0);
     rightHoodAngleServo.setSpeed(0);
+  }
+
+  public Command hoodHub() {
+    return new InstantCommand(
+        () -> {
+          setHoodAngle(HUB_ANGLE);
+        },
+        this);
   }
 }

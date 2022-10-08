@@ -6,7 +6,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ClimberSubsystem extends SubsystemBase {
@@ -27,10 +27,10 @@ public class ClimberSubsystem extends SubsystemBase {
   }
 
   public Command telescopeUp() {
-    return new InstantCommand(() -> setTelescopeSpeed(.5));
+    return new StartEndCommand(() -> setTelescopeSpeed(.5), () -> setTelescopeSpeed(0));
   }
 
   public Command telescopeDown() {
-    return new InstantCommand(() -> setTelescopeSpeed(-.5));
+    return new StartEndCommand(() -> setTelescopeSpeed(-.5), () -> setTelescopeSpeed(0));
   }
 }

@@ -20,6 +20,7 @@ import io.github.oblarg.oblog.annotations.Log;
 import java.util.Map;
 
 public class ShooterSubsystem extends SubsystemBase implements Loggable {
+  private static final double HUB_POWER = 0; // TODO: test
   // Setup motors, pid controller, and booleans
   private final WPI_TalonFX shooterMotorFront;
   private final SimpleVelocitySystem sys;
@@ -93,25 +94,31 @@ public class ShooterSubsystem extends SubsystemBase implements Loggable {
 
   @Override
   public void periodic() {
-    if (state != ShooterState.IDLE) {
+    if (state == ShooterState.IDLE) {
+      setShooterPower(0);
+      // shooter data table values
+    } else {
       sys.update(getWheelSpeed());
       if (state == ShooterState.TESTING) {
         sys.set(shooterPowerNTE.getDouble(0));
-      } else {
+      } else if (state == ShooterState.APPROACHING) {
         sys.set(shooterDataTable.getSpecs(limelight.getDistance()).getPower());
+      } else if (state == ShooterState.HUB) {
+        sys.set(HUB_POWER);
       }
       setShooterPower(sys.getOutput());
       if (atSetpoint()) {
         state = ShooterState.READY;
       }
-    } else {
-      setShooterPower(0);
-      // shooter data table values
     }
   }
 
   public Command requestShot() {
     return new InstantCommand(() -> state = ShooterState.APPROACHING);
+  }
+
+  public Command shootHub() {
+    return new InstantCommand(() -> state = ShooterState.HUB);
   }
 
   public Command discard() {
@@ -131,6 +138,7 @@ public class ShooterSubsystem extends SubsystemBase implements Loggable {
     DISCARD, // discarding enemy balls
     READY, // at setpoint and withing tolerance
     APPROACHING, // approaching setpoint
+    HUB,
     TESTING // for collecting shooter data table values
   }
 

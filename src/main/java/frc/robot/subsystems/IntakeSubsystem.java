@@ -70,7 +70,6 @@ public class IntakeSubsystem extends SubsystemBase {
     return new InstantCommand(
         () -> {
           if (!RobotContainer.portal.ballPrimed()) RobotContainer.portal.run();
-
           state = IntakeState.SUCK_EXTENDED;
           extendPneumatic();
           startIntake();

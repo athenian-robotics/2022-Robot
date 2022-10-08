@@ -133,21 +133,27 @@ public class PoseEstimator extends SubsystemBase implements Loggable {
   @Override
   public void periodic() {
     try {
-      //      Pose2d localizationPose =
-      //          poseEstimator.update(
-      //              gyro.getRotation2d(),
-      //              getWheelSpeeds(),
-      //              leftEncoder.getDistance(),
-      //              rightEncoder.getDistance());
+      poseEstimator.update(
+          gyro.getRotation2d(),
+          getWheelSpeeds(),
+          leftEncoder.getDistance(),
+          rightEncoder.getDistance());
     } catch (Exception ignored) {
     }
   }
 
-  private DifferentialDriveWheelSpeeds getWheelSpeeds() {
+  public DifferentialDriveWheelSpeeds getWheelSpeeds() {
     return new DifferentialDriveWheelSpeeds(leftEncoder.getRate(), rightEncoder.getRate());
   }
 
   public Pose2d getVisionPose() {
     return visionPose;
+  }
+
+  public void resetOdometry(Pose2d initialPose) {
+    leftEncoder.reset();
+    rightEncoder.reset();
+    gyro.reset();
+    poseEstimator.resetPosition(initialPose, gyro.getRotation2d());
   }
 }

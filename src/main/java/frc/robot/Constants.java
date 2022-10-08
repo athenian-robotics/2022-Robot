@@ -62,7 +62,7 @@ public final class Constants {
     public static final int intakeToIndexerMotorPort = 13;
     public static final double indexerSpeed = 0.3; // 0.25
     public static final double intakeToIndexerSpeed = 0.19;
-    public static final int intakeToIndexerResidualIndexTimeMillis = 650;
+    public static final int m_KIntakeToIndexerResidualIndexTimeMillis = 650;
     // CLIMBER
     public static final int leftClimberMotorPort = 15;
     public static final int rightClimberMotorPort = 16;
@@ -108,11 +108,5 @@ public final class Constants {
     public static final double maxControlEffort = 12;
     public static final double modelDeviation = 0.075;
     public static final double encoderDeviation = 0.02;
-  }
-
-  public static final class Turret {
-    public static final double ks = 0.68813;
-    public static final double ka = 0.02195;
-    public static final double kv = 0.2134;
   }
 }
