@@ -22,8 +22,8 @@ public class FightStick {
       new FightStickDigitalButton(fightStickJoystick, 9, FightStickInput.input.L3);
   public static final FightStickDigitalButton fightStickR3 =
       new FightStickDigitalButton(fightStickJoystick, 10, FightStickInput.input.R3);
-  public static final FightStickAxisButton fightStickLT =
-      new FightStickAxisButton(fightStickJoystick, 2, FightStickInput.input.lightKick);
+  public static final FightStickDigitalButton fightStickLT =
+      new FightStickDigitalButton(fightStickJoystick, 2, FightStickInput.input.lightKick);
   public static final FightStickAxisButton fightStickRT =
       new FightStickAxisButton(fightStickJoystick, 3, FightStickInput.input.R2);
   public static FightStickDigitalButton fightStickShare =

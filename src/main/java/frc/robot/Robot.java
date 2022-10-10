@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import io.github.oblarg.oblog.Logger;
 
 /**
@@ -17,7 +18,7 @@ import io.github.oblarg.oblog.Logger;
  * project.
  */
 public class Robot extends TimedRobot {
-  private Command m_autonomousCommand;
+  private Command m_autonomousCommand = new InstantCommand();
 
   private RobotContainer m_robotContainer;
 

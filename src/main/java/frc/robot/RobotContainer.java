@@ -95,12 +95,12 @@ public class RobotContainer {
   private void configureButtonBindings() {
     FightStick.fightStickA.whenPressed(intake.suckExtended());
 
-    FightStick.fightStickY.whenPressed(superstructure.shoot());
+    // FightStick.fightStickY.whenPressed(superstructure.shoot());
     FightStick.fightStickB.whenPressed(intake.suckRetracted());
-    FightStick.fightStickRB.whenHeld(climb.telescopeDown());
-    FightStick.fightStickLB.whenHeld(climb.telescopeUp());
+    FightStick.fightStickLB.whenHeld(climb.telescopeDown());
+    FightStick.fightStickRB.whenHeld(climb.telescopeUp());
     FightStick.fightStickOption.whenPressed(hood.approachTarget());
-    FightStick.fightStickLT.whenActive(superstructure.shootHub());
+    FightStick.fightStickY.whenPressed(superstructure.shootHub());
     //    fightStickLT.whenActive(
     //        new ShootLowGoalNextToTarget(drivetrain, indexer, intake, shooter, hood, portal,
     // turret));
@@ -132,8 +132,8 @@ public class RobotContainer {
     //            drivetrain));
     xboxLP.whenPressed(new InstantCommand(drivetrain::shiftDown, drivetrain)); // Shift down
     xboxRP.whenPressed(new InstantCommand(drivetrain::shiftUp, drivetrain)); // Shift up
-    xboxB.whenHeld(intake.suckRetracted());
-    xboxY.whenPressed(shooter.test());
+    xboxB.whenPressed(intake.suckRetracted());
+    xboxY.whenPressed(superstructure.shootHub());
   }
 
   // Connects xbox buttons to button #'s for the driver station

@@ -3,7 +3,6 @@ package frc.robot.subsystems;
 import static com.ctre.phoenix.motorcontrol.NeutralMode.Coast;
 import static frc.robot.Constants.MechanismConstants.shooterMotorPortA;
 import static frc.robot.Constants.MechanismConstants.shooterMotorPortB;
-import static frc.robot.RobotContainer.limelight;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
@@ -20,11 +19,12 @@ import io.github.oblarg.oblog.annotations.Log;
 import java.util.Map;
 
 public class ShooterSubsystem extends SubsystemBase implements Loggable {
-  private static final double HUB_POWER = 0; // TODO: test
+  private static final double HUB_POWER = 32; // TODO: test
   // Setup motors, pid controller, and booleans
   private final WPI_TalonFX shooterMotorFront;
   private final SimpleVelocitySystem sys;
   private final ShooterDataTable shooterDataTable;
+  private final WPI_TalonFX shooterMotorBack;
   @Log.ToString public ShooterState state = ShooterState.IDLE;
   private final PoseEstimator poseEstimator;
   private final NetworkTableEntry shooterPowerNTE;
@@ -34,7 +34,7 @@ public class ShooterSubsystem extends SubsystemBase implements Loggable {
     this.shooterDataTable = shooterDataTable;
     shooterMotorFront = TalonFXFactory.createDefaultTalon(shooterMotorPortA);
     shooterMotorFront.setInverted(false);
-    WPI_TalonFX shooterMotorBack =
+    shooterMotorBack =
         TalonFXFactory.createPermanentSlaveTalon(shooterMotorPortB, shooterMotorPortA);
     shooterMotorBack.setInverted(false);
 
@@ -74,8 +74,13 @@ public class ShooterSubsystem extends SubsystemBase implements Loggable {
   }
 
   @Log
-  private double getWheelSpeed() {
+  private double getFrontWheelSpeed() {
     return shooterMotorFront.getSelectedSensorVelocity() / 2048;
+  }
+
+  @Log
+  private double getRearWheelSpeed() {
+    return shooterMotorBack.getSelectedSensorVelocity() / 2048;
   }
 
   private boolean atSetpoint() {
@@ -97,19 +102,19 @@ public class ShooterSubsystem extends SubsystemBase implements Loggable {
     if (state == ShooterState.IDLE) {
       setShooterPower(0);
       // shooter data table values
-    } else {
-      sys.update(getWheelSpeed());
-      if (state == ShooterState.TESTING) {
-        sys.set(shooterPowerNTE.getDouble(0));
-      } else if (state == ShooterState.APPROACHING) {
-        sys.set(shooterDataTable.getSpecs(limelight.getDistance()).getPower());
-      } else if (state == ShooterState.HUB) {
-        sys.set(HUB_POWER);
-      }
-      setShooterPower(sys.getOutput());
-      if (atSetpoint()) {
-        state = ShooterState.READY;
-      }
+    }
+    sys.update(getFrontWheelSpeed());
+    if (state == ShooterState.TESTING) {
+      sys.set(shooterPowerNTE.getDouble(0));
+    } else if (state == ShooterState.APPROACHING) {
+      // sys.set(shooterDataTable.getSpecs(limelight.getDistance()).getPower());
+      sys.set(HUB_POWER);
+    } else if (state == ShooterState.HUB) {
+      sys.set(HUB_POWER);
+    }
+    setShooterPower(sys.getOutput());
+    if (atSetpoint()) {
+      state = ShooterState.READY;
     }
   }
 

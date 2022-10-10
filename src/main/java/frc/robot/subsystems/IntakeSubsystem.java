@@ -12,9 +12,10 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
+import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Log;
 
-public class IntakeSubsystem extends SubsystemBase {
+public class IntakeSubsystem extends SubsystemBase implements Loggable {
   // Configure intake motor, solenoid, and booleans
   private final TalonFX intakeMotor = new TalonFX(Constants.MechanismConstants.intakeMotorPort);
 
@@ -23,7 +24,7 @@ public class IntakeSubsystem extends SubsystemBase {
   private final DoubleSolenoid leftIntakePneumatic =
       new DoubleSolenoid(PneumaticsModuleType.CTREPCM, pneumaticPortLeftA, pneumaticPortLeftB);
 
-  @Log private IntakeState state = IntakeState.IDLE_RETRACTED;
+  @Log.ToString private IntakeState state = IntakeState.IDLE_RETRACTED;
 
   public enum IntakeState {
     SPIT_EXTENDED,
@@ -61,16 +62,11 @@ public class IntakeSubsystem extends SubsystemBase {
     leftIntakePneumatic.set(DoubleSolenoid.Value.kReverse);
   }
 
-  @Log.ToString
-  public IntakeState getState() {
-    return state;
-  }
-
   public Command suckExtended() {
     return new InstantCommand(
         () -> {
-          if (!RobotContainer.portal.ballPrimed()) RobotContainer.portal.run();
           state = IntakeState.SUCK_EXTENDED;
+          RobotContainer.portal.startPortal();
           extendPneumatic();
           startIntake();
         });
@@ -88,6 +84,7 @@ public class IntakeSubsystem extends SubsystemBase {
   public Command suckRetracted() {
     return new InstantCommand(
         () -> {
+          RobotContainer.portal.stopPortal();
           state = IntakeState.SUCK_RETRACTED;
           retractPneumatic();
           startIntake();

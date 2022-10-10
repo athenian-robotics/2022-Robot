@@ -43,14 +43,10 @@ public class Superstructure extends SubsystemBase {
   // shoot when next to hub
   public CommandGroupBase shootHub() {
     return sequence(
-        parallel(
-                shooter.shootHub(),
-                shooter.waitUntilReady(),
-                hood.hoodHub(),
-                hood.waitUntilSetpoint())
-            .withTimeout(3),
-        parallel(indexer.startIndexer(), portal.startPortal()),
-        new WaitCommand(1.7), // TODO: tower shorter
+        parallel(shooter.shootHub(), shooter.waitUntilReady()).withTimeout(1.5),
+        indexer.startIndexer(),
+        portal.startPortal(),
+        new WaitCommand(1.3), // TODO: tower shorter
         indexer.stopIndexer(),
         portal.stopPortal(),
         shooter.idle());
@@ -59,15 +55,16 @@ public class Superstructure extends SubsystemBase {
   public CommandGroupBase shoot() {
     return sequence(
         parallel(
-                shooter.requestShot(),
-                shooter.waitUntilReady(),
-                hood.approachTarget(),
-                hood.waitUntilSetpoint())
-            .withTimeout(3),
-        parallel(indexer.startIndexer(), portal.startPortal()),
-        new WaitCommand(1.7),
-        indexer.stopIndexer(),
-        portal.stopPortal(),
-        shooter.idle());
+            shooter.requestShot(),
+            shooter
+                .waitUntilReady() // ,
+                // hood.approachTarget(),
+                // hood.waitUntilSetpoint())
+                .withTimeout(1.5),
+            parallel(indexer.startIndexer(), portal.startPortal()),
+            new WaitCommand(1.7),
+            indexer.stopIndexer(),
+            portal.stopPortal(),
+            shooter.idle()));
   }
 }

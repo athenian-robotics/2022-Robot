@@ -15,6 +15,7 @@ public class TwoBallBottomLeft extends SequentialCommandGroup {
         intake.suckExtended(),
         new PPRamsete(drivetrain, poseEstimator, "Auto Routine 1 Part 1", 1.5, 0.7, true),
         new WaitCommand(0.25),
-        superstructure.shoot());
+        intake.idleRetracted(),
+        superstructure.shootHub());
   }
 }
