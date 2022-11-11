@@ -27,13 +27,11 @@ public class Superstructure extends SubsystemBase {
 
   public CommandGroupBase datatableTesting() {
     return sequence(
-        parallel(
-                shooter.requestShot(),
-                shooter.waitUntilReady(),
-                hood.approachTarget(),
-                hood.waitUntilSetpoint())
-            .withTimeout(3),
-        parallel(indexer.startIndexer(), portal.startPortal()),
+        parallel(shooter.test(), shooter.waitUntilReady(), hood.test()),
+        new WaitCommand(1.5),
+        indexer.startIndexer(),
+        new WaitCommand(1),
+        portal.startPortal(),
         new WaitCommand(1.7), // TODO: tower shorter
         indexer.stopIndexer(),
         portal.stopPortal(),

@@ -108,8 +108,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
   public void configureDriveMotors(TalonFX[] driveMotors) {
     for (TalonFX motor : driveMotors) {
       motor.configFactoryDefault(); // Initialize motor set up
-      motor.configOpenloopRamp(0.77); // Ramp up (Trapezoid)
-      motor.configClosedloopRamp(0.77); // Ramp down (Trapezoid)
+      motor.configOpenloopRamp(0.35); // Ramp up (Trapezoid)
+      motor.configClosedloopRamp(0.35); // Ramp down (Trapezoid)
       motor.setNeutralMode(
           NeutralMode.Brake); // Default robot mode should be Coasting (So it doesn't wobble
       // cuz top heavy yaknow)
@@ -123,8 +123,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     driveShifterLeft.set(DoubleSolenoid.Value.kForward);
     for (WPI_TalonFX motor : driveMotors) {
-      motor.configOpenloopRamp(0.8);
-      motor.configClosedloopRamp(1.1);
+      motor.configOpenloopRamp(0.35);
+      motor.configClosedloopRamp(.35);
     }
   }
 
@@ -132,7 +132,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     driveShifterRight.set(DoubleSolenoid.Value.kReverse);
     driveShifterLeft.set(DoubleSolenoid.Value.kReverse);
     for (WPI_TalonFX motor : driveMotors) {
-      motor.configClosedloopRamp(0.77);
+      motor.configClosedloopRamp(0.82);
       motor.configOpenloopRamp(0.77);
     }
   }

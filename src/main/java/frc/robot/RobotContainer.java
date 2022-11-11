@@ -133,7 +133,7 @@ public class RobotContainer {
     xboxLP.whenPressed(new InstantCommand(drivetrain::shiftDown, drivetrain)); // Shift down
     xboxRP.whenPressed(new InstantCommand(drivetrain::shiftUp, drivetrain)); // Shift up
     xboxB.whenPressed(intake.suckRetracted());
-    xboxY.whenPressed(superstructure.shootHub());
+    xboxY.whenPressed(superstructure.datatableTesting());
   }
 
   // Connects xbox buttons to button #'s for the driver station
@@ -243,6 +243,7 @@ public class RobotContainer {
         new RunCommand(
             () -> drivetrain.curvatureDrive(-xboxController.getLeftY(), xboxController.getRightX()),
             drivetrain)); //
+    // hood.setDefaultCommand(hood.rawDog());
   }
 
   public void setAlliance(DriverStation.Alliance alliance) {

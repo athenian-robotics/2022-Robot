@@ -13,7 +13,7 @@ public class LimelightSubsystem extends SubsystemBase implements Loggable {
   @Log private double timeSinceLastUpdate;
 
   public LimelightSubsystem() {
-    limelight = new PhotonCamera("limelight");
+    limelight = new PhotonCamera("gloworm");
   }
 
   @Override
@@ -31,7 +31,7 @@ public class LimelightSubsystem extends SubsystemBase implements Loggable {
   public double getDistance() {
     PhotonTrackedTarget target = getTrackedTarget();
     double yaw = target.getPitch();
-    return (2.6416 - 0.8) / Math.tan(Math.toRadians(40 + yaw));
+    return (2.6416 - 0.71) / Math.tan(Math.toRadians(40 + yaw));
   }
 
   public double getTimeSinceLastUpdate() {

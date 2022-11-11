@@ -79,8 +79,8 @@ public final class Constants {
     // SHOOTER HOOD
     public static final int leftHoodServoPort = 2;
     public static final int rightHoodServoPort = 3;
-    public static final double minimumHoodAngle = 8;
-    public static final double maximumHoodAngle = 41;
+    public static final double minimumHoodAngle = 41;
+    public static final double maximumHoodAngle = 105;
     public static final double defaultHoodAngle = 33;
     // MAX MECHANISM SPEEDS
     public static final double intakeSpeed = 0.27;

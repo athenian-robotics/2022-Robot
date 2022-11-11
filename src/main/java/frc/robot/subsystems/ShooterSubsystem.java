@@ -79,6 +79,7 @@ public class ShooterSubsystem extends SubsystemBase implements Loggable {
   }
 
   @Log
+  @SuppressWarnings("unused")
   private double getRearWheelSpeed() {
     return shooterMotorBack.getSelectedSensorVelocity() / 2048;
   }
@@ -100,7 +101,7 @@ public class ShooterSubsystem extends SubsystemBase implements Loggable {
   @Override
   public void periodic() {
     if (state == ShooterState.IDLE) {
-      setShooterPower(0);
+      sys.set(0);
       // shooter data table values
     }
     sys.update(getFrontWheelSpeed());
@@ -131,7 +132,7 @@ public class ShooterSubsystem extends SubsystemBase implements Loggable {
   }
 
   public Command idle() {
-    return new InstantCommand(() -> state = ShooterState.IDLE);
+    return new InstantCommand(() -> state = ShooterState.IDLE, this);
   }
 
   public Command waitUntilReady() {

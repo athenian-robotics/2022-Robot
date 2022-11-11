@@ -2,21 +2,17 @@ package frc.robot.subsystems;
 
 import static frc.robot.Constants.MechanismConstants.*;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.Servo;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.lib.shooterData.ShooterDataTable;
-import frc.robot.lib.shooterData.ShooterSpec;
+import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Log;
 import java.util.Map;
 
-public class HoodSubsystem extends SubsystemBase {
-  private final NetworkTableEntry hoodAngleAdjustmentNTE;
+public class HoodSubsystem extends SubsystemBase implements Loggable {
   private final NetworkTableEntry fuckLeo;
   private final Servo leftHoodAngleServo = new Servo(leftHoodServoPort);
   private final Servo rightHoodAngleServo = new Servo(rightHoodServoPort);
@@ -24,6 +20,8 @@ public class HoodSubsystem extends SubsystemBase {
   private final LimelightSubsystem limelight;
   @Log public double lastHoodAngle;
   private double HUB_ANGLE = 0; // TODO: test
+  @Log private double setpoint;
+  @Log private double logClamped;
 
   public HoodSubsystem(ShooterDataTable table, LimelightSubsystem limelight) {
     this.table = table;
@@ -32,46 +30,31 @@ public class HoodSubsystem extends SubsystemBase {
     rightHoodAngleServo.setBounds(
         2.0, 1.8, 1.5, 1.2, 1.0); // Manufacturer specified for Actuonix linear servos
 
-    hoodAngleAdjustmentNTE =
-        Shuffleboard.getTab("852 - Dashboard")
-            .add("Hood Angle Adjustment", 1)
-            .withWidget(BuiltInWidgets.kNumberSlider)
-            .withProperties(Map.of("min", 0.75, "max", 1.25, "default value", 1))
-            .getEntry();
     fuckLeo =
         Shuffleboard.getTab("852 - Dashboard")
-            .add("fuck", 33)
-            .withWidget(BuiltInWidgets.kNumberSlider)
-            .withProperties(Map.of("min", 8, "max", 41, "default value", 33))
+            .add("fuck", 25)
+            .withProperties(Map.of("min", 25, "max", 33.9, "default value", 25))
             .getEntry();
     this.limelight = limelight;
   }
 
   @Log
   public double getHoodAngle() {
-    return Math.toRadians(
-        ((maximumHoodAngle - minimumHoodAngle)
-                * (leftHoodAngleServo.getAngle() + rightHoodAngleServo.getAngle())
-                / 360)
-            + minimumHoodAngle);
+    return leftHoodAngleServo.getAngle() / 180;
   }
 
   public void setHoodAngle(double angle) {
-    lastHoodAngle = getHoodAngle();
-    if (angle >= minimumHoodAngle && angle <= maximumHoodAngle) {
-      leftHoodAngleServo.setAngle(
-          hoodAngleAdjustmentNTE.getDouble(1)
-              * 180
-              * (angle - minimumHoodAngle)
-              / (maximumHoodAngle - minimumHoodAngle));
-      // 0 - 180 DEGREES
-      rightHoodAngleServo.setAngle(
-          hoodAngleAdjustmentNTE.getDouble(1)
-              * 180
-              * (angle - minimumHoodAngle)
-              / (maximumHoodAngle - minimumHoodAngle));
-      // 0 - 180 DEGREES
-    }
+    // angle is in degrees between 25 and 33.9, the input to the servo is a value between 41 and 105
+    double normAngle = 7.19101 * angle - 138.775; // dont ask
+    double clampedAngle = MathUtil.clamp(normAngle, 41, 105);
+    logClamped = clampedAngle;
+    leftHoodAngleServo.setAngle(clampedAngle);
+    rightHoodAngleServo.setAngle(clampedAngle);
+  }
+
+  public void setHoodAngleRaw(double angle) {
+    rightHoodAngleServo.setAngle(angle);
+    leftHoodAngleServo.setAngle(angle);
   }
 
   public boolean atLimelightSetpoint() {
@@ -86,9 +69,12 @@ public class HoodSubsystem extends SubsystemBase {
 
   public Command approachTarget() {
     double distance = limelight.getDistance();
-    ShooterSpec fuck = table.getSpecs(distance);
     return new InstantCommand(
         () -> setHoodAngle(table.getSpecs(limelight.getDistance()).getAngle()), this);
+  }
+
+  public Command waitUntilSetpointTest() {
+    return new WaitUntilCommand(() -> Math.abs(getHoodAngle() - setpoint) <= 5);
   }
 
   public Command waitUntilSetpoint() {
@@ -106,5 +92,9 @@ public class HoodSubsystem extends SubsystemBase {
           setHoodAngle(HUB_ANGLE);
         },
         this);
+  }
+
+  public Command test() {
+    return new InstantCommand(() -> setHoodAngle(fuckLeo.getDouble(25)));
   }
 }
