@@ -40,4 +40,5 @@ public class FightStick {
       new FightStickPOVDirection(FightStickInput.input.POVright);
   public static FightStickPOVDirection POVLeft =
       new FightStickPOVDirection(FightStickInput.input.POVleft);
+  ;
 }

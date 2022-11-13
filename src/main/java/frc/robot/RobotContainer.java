@@ -8,6 +8,7 @@ import edu.wpi.first.util.net.PortForwarder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Axis;
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -63,6 +64,7 @@ public class RobotContainer {
 
   // Sets up controllers, configures controllers, and sets the default drive mode (tank or arcade)
   public RobotContainer() {
+    LiveWindow.setEnabled(false);
     try {
       ObjectInputStream fin =
           new ObjectInputStream(new FileInputStream("/home/lvuser/deploy/dt.ser"));
@@ -76,9 +78,10 @@ public class RobotContainer {
       System.out.println("file not found, or class not found: " + e);
     }
     poseEstimator = new PoseEstimator(shooterDataTable);
-    shooter = new ShooterSubsystem(poseEstimator, shooterDataTable);
+    shooter = new ShooterSubsystem(poseEstimator, shooterDataTable, limelight);
     hood = new HoodSubsystem(shooterDataTable, limelight);
-    superstructure = new Superstructure(hood, portal, shooter, indexer);
+    superstructure =
+        new Superstructure(hood, portal, shooter, indexer, drivetrain, limelight, poseEstimator);
     xboxButtonSetup();
     configureButtonBindings();
     configureAutoChooser();
@@ -93,25 +96,25 @@ public class RobotContainer {
 
   // Configures xbox buttons to commands
   private void configureButtonBindings() {
-    FightStick.fightStickA.whenPressed(intake.suckExtended());
 
     // FightStick.fightStickY.whenPressed(superstructure.shoot());
+    FightStick.fightStickA.whenPressed(intake.idleRetracted());
     FightStick.fightStickB.whenPressed(intake.suckRetracted());
+    FightStick.fightStickY.whenPressed(intake.suckExtended());
     FightStick.fightStickLB.whenHeld(climb.telescopeDown());
     FightStick.fightStickRB.whenHeld(climb.telescopeUp());
-    FightStick.fightStickOption.whenPressed(hood.approachTarget());
-    FightStick.fightStickY.whenPressed(superstructure.shootHub());
+    FightStick.fightStickLT.whenPressed(portal.startPortal());
     //    fightStickLT.whenActive(
     //        new ShootLowGoalNextToTarget(drivetrain, indexer, intake, shooter, hood, portal,
     // turret));
-    FightStick.fightStickX.whenPressed(intake.idleRetracted());
+    FightStick.fightStickX.whenPressed(superstructure.shoot());
     // xboxB.whenPressed(superstructure.shootHub());
     //    xboxB.whenPressed(
     //        new ShootLowGoalNextToTarget(drivetrain, indexer, intake, shooter, hood, portal,
     // turret));
     xboxA.whenPressed(intake.suckExtended());
     xboxX.whenPressed(intake.idleRetracted());
-    xboxRB.whenPressed(superstructure.shoot());
+    xboxY.whenPressed(superstructure.shoot());
 
     /* MISC COMMANDS (Random lib of commands. Written using functional commands because most are just one line ) */
     // have fun with this - jason and jacob '22   ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ
@@ -133,7 +136,6 @@ public class RobotContainer {
     xboxLP.whenPressed(new InstantCommand(drivetrain::shiftDown, drivetrain)); // Shift down
     xboxRP.whenPressed(new InstantCommand(drivetrain::shiftUp, drivetrain)); // Shift up
     xboxB.whenPressed(intake.suckRetracted());
-    xboxY.whenPressed(superstructure.datatableTesting());
   }
 
   // Connects xbox buttons to button #'s for the driver station

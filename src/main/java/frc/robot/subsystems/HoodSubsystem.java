@@ -38,11 +38,6 @@ public class HoodSubsystem extends SubsystemBase implements Loggable {
     this.limelight = limelight;
   }
 
-  @Log
-  public double getHoodAngle() {
-    return leftHoodAngleServo.getAngle() / 180;
-  }
-
   public void setHoodAngle(double angle) {
     // angle is in degrees between 25 and 33.9, the input to the servo is a value between 41 and 105
     double normAngle = 7.19101 * angle - 138.775; // dont ask
@@ -57,28 +52,10 @@ public class HoodSubsystem extends SubsystemBase implements Loggable {
     leftHoodAngleServo.setAngle(angle);
   }
 
-  public boolean atLimelightSetpoint() {
-    return Math.abs(
-            getHoodAngle()
-                - table
-                    .getSpecs(
-                        limelight.getTrackedTarget().getCameraToTarget().getTranslation().getNorm())
-                    .getAngle())
-        < 0.75;
-  }
-
   public Command approachTarget() {
-    double distance = limelight.getDistance();
+    if (!limelight.isTarget()) return new InstantCommand(() -> {});
     return new InstantCommand(
-        () -> setHoodAngle(table.getSpecs(limelight.getDistance()).getAngle()), this);
-  }
-
-  public Command waitUntilSetpointTest() {
-    return new WaitUntilCommand(() -> Math.abs(getHoodAngle() - setpoint) <= 5);
-  }
-
-  public Command waitUntilSetpoint() {
-    return new WaitUntilCommand(this::atLimelightSetpoint);
+        () -> setHoodAngle(table.getSpecs(limelight.getDistance()).getAngle()), this, limelight);
   }
 
   public void disable() {
@@ -88,9 +65,7 @@ public class HoodSubsystem extends SubsystemBase implements Loggable {
 
   public Command hoodHub() {
     return new InstantCommand(
-        () -> {
-          setHoodAngle(HUB_ANGLE);
-        },
+        () -> setHoodAngle(HUB_ANGLE),
         this);
   }
 

@@ -7,8 +7,8 @@ import java.io.Serializable;
 import java.util.TreeMap;
 
 public class ShooterDataTable implements Serializable {
-  private static final double MINDIST = 1.94;
-  private static final double MAXDIST = 8;
+  private static final double MINDIST = 1.53;
+  private static final double MAXDIST = 5.94;
   private static final double shooterDataTableScalar =
       1; // we had to change the limelight code and scale the distances to what they used to be
   // private ShooterSpec[] dataTable;
@@ -22,7 +22,16 @@ public class ShooterDataTable implements Serializable {
   // main method for testing
   public static void main(String[] args) {
     ShooterDataTable dt = new ShooterDataTable();
-    dt.addSpecs(1, 25, 30, 0.1);
+    dt.addSpecs(1.53, 27.5, 33, 0.1);
+    dt.addSpecs(2.03, 33, 34, 0.1);
+    dt.addSpecs(2.52, 33, 36, 0.1);
+    dt.addSpecs(3.00, 33.9, 38, 0.1);
+    dt.addSpecs(3.50, 33.9, 40.8, 0.1);
+    dt.addSpecs(4.00, 33.9, 43, 0.1);
+    dt.addSpecs(4.50, 33.9, 44.6, 0.1);
+    dt.addSpecs(5.05, 33.9, 46.2, 0.1);
+    dt.addSpecs(5.57, 33.9, 47.3, 0.1);
+    dt.addSpecs(5.94, 33.8, 48.3, 0.1);
     // dt.addSpecs(1.5, );
     try {
       FileOutputStream fileOut = new FileOutputStream("src/main/deploy/dt.ser");

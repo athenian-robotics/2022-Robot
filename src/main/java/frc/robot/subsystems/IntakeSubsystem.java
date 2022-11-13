@@ -94,7 +94,7 @@ public class IntakeSubsystem extends SubsystemBase implements Loggable {
   public Command idleRetracted() {
     return new InstantCommand(
         () -> {
-          RobotContainer.portal.run2();
+          RobotContainer.portal.stop();
           state = IntakeState.IDLE_RETRACTED;
           retractPneumatic();
           stopIntake();

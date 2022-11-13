@@ -36,7 +36,7 @@ public class PortalSubsystem extends SubsystemBase {
   }
 
   public Command stopPortal() {
-    return new InstantCommand(this::run2);
+    return new InstantCommand(this::stop);
   }
 
   public boolean ballPrimed() {
@@ -65,7 +65,7 @@ public class PortalSubsystem extends SubsystemBase {
   public void periodic() {
     currentColor = colorWheelUtils.currentColor();
     currentProximity = colorWheelUtils.currentProximity();
-    if (ballPrimed() && !indexer.fuckLeoButNotInASexualMannerMoreOfADerogatoryone) run2();
+    if (ballPrimed() && !indexer.fuckLeoButNotInASexualMannerMoreOfADerogatoryone) stop();
     SmartDashboard.putBoolean("Ball Primed", ballPrimed());
   }
 
@@ -73,7 +73,7 @@ public class PortalSubsystem extends SubsystemBase {
     portalMotor.set(Constants.MechanismConstants.intakeToIndexerSpeed);
   }
 
-  public void run2() {
+  public void stop() {
     portalMotor.set(0);
   }
 }

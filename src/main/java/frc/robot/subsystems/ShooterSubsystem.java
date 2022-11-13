@@ -25,11 +25,16 @@ public class ShooterSubsystem extends SubsystemBase implements Loggable {
   private final SimpleVelocitySystem sys;
   private final ShooterDataTable shooterDataTable;
   private final WPI_TalonFX shooterMotorBack;
+  private final LimelightSubsystem limelight;
   @Log.ToString public ShooterState state = ShooterState.IDLE;
   private final PoseEstimator poseEstimator;
   private final NetworkTableEntry shooterPowerNTE;
 
-  public ShooterSubsystem(PoseEstimator poseEstimator, ShooterDataTable shooterDataTable) {
+  public ShooterSubsystem(
+      PoseEstimator poseEstimator,
+      ShooterDataTable shooterDataTable,
+      LimelightSubsystem limelight) {
+    this.limelight = limelight;
     this.poseEstimator = poseEstimator;
     this.shooterDataTable = shooterDataTable;
     shooterMotorFront = TalonFXFactory.createDefaultTalon(shooterMotorPortA);
@@ -108,8 +113,8 @@ public class ShooterSubsystem extends SubsystemBase implements Loggable {
     if (state == ShooterState.TESTING) {
       sys.set(shooterPowerNTE.getDouble(0));
     } else if (state == ShooterState.APPROACHING) {
-      // sys.set(shooterDataTable.getSpecs(limelight.getDistance()).getPower());
-      sys.set(HUB_POWER);
+      if (limelight.isTarget())
+        sys.set(shooterDataTable.getSpecs(limelight.getDistance()).getPower());
     } else if (state == ShooterState.HUB) {
       sys.set(HUB_POWER);
     }

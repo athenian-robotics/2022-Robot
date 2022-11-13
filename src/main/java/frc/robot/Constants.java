@@ -24,8 +24,8 @@ public final class Constants {
     public static final double kRamseteB = 2.0;
     public static final double kRamseteZeta = 0.7;
     public static final double kPDriveVel = 4.5729;
-    public static final double kvAngular = 1; // use sys id angular drivetrain thing
-    public static final double kaAngular = 1; // use sys id angular drivetrain thing
+    public static final double kvAngular = .27217;
+    public static final double kaAngular = .016402;
   }
 
   public static final class DriveConstants {
